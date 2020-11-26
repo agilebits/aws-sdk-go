@@ -2768,6 +2768,107 @@ func (c *StorageGateway) DescribeBandwidthRateLimitWithContext(ctx aws.Context, 
 	return out, req.Send()
 }
 
+const opDescribeBandwidthRateLimitSchedule = "DescribeBandwidthRateLimitSchedule"
+
+// DescribeBandwidthRateLimitScheduleRequest generates a "aws/request.Request" representing the
+// client's request for the DescribeBandwidthRateLimitSchedule operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See DescribeBandwidthRateLimitSchedule for more information on using the DescribeBandwidthRateLimitSchedule
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the DescribeBandwidthRateLimitScheduleRequest method.
+//    req, resp := client.DescribeBandwidthRateLimitScheduleRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/DescribeBandwidthRateLimitSchedule
+func (c *StorageGateway) DescribeBandwidthRateLimitScheduleRequest(input *DescribeBandwidthRateLimitScheduleInput) (req *request.Request, output *DescribeBandwidthRateLimitScheduleOutput) {
+	op := &request.Operation{
+		Name:       opDescribeBandwidthRateLimitSchedule,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &DescribeBandwidthRateLimitScheduleInput{}
+	}
+
+	output = &DescribeBandwidthRateLimitScheduleOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// DescribeBandwidthRateLimitSchedule API operation for AWS Storage Gateway.
+//
+// Returns information about the bandwidth rate limit schedule of a gateway.
+// By default, gateways do not have bandwidth rate limit schedules, which means
+// no bandwidth rate limiting is in effect. This operation is supported only
+// in the volume and tape gateway types.
+//
+// This operation returns information about a gateway's bandwidth rate limit
+// schedule. A bandwidth rate limit schedule consists of one or more bandwidth
+// rate limit intervals. A bandwidth rate limit interval defines a period of
+// time on one or more days of the week, during which bandwidth rate limits
+// are specified for uploading, downloading, or both.
+//
+// A bandwidth rate limit interval consists of one or more days of the week,
+// a start hour and minute, an ending hour and minute, and bandwidth rate limits
+// for uploading and downloading
+//
+// If no bandwidth rate limit schedule intervals are set for the gateway, this
+// operation returns an empty response. To specify which gateway to describe,
+// use the Amazon Resource Name (ARN) of the gateway in your request.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Storage Gateway's
+// API operation DescribeBandwidthRateLimitSchedule for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidGatewayRequestException
+//   An exception occurred because an invalid gateway request was issued to the
+//   service. For more information, see the error and message fields.
+//
+//   * InternalServerError
+//   An internal server error has occurred during the request. For more information,
+//   see the error and message fields.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/DescribeBandwidthRateLimitSchedule
+func (c *StorageGateway) DescribeBandwidthRateLimitSchedule(input *DescribeBandwidthRateLimitScheduleInput) (*DescribeBandwidthRateLimitScheduleOutput, error) {
+	req, out := c.DescribeBandwidthRateLimitScheduleRequest(input)
+	return out, req.Send()
+}
+
+// DescribeBandwidthRateLimitScheduleWithContext is the same as DescribeBandwidthRateLimitSchedule with the addition of
+// the ability to pass a context and additional request options.
+//
+// See DescribeBandwidthRateLimitSchedule for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *StorageGateway) DescribeBandwidthRateLimitScheduleWithContext(ctx aws.Context, input *DescribeBandwidthRateLimitScheduleInput, opts ...request.Option) (*DescribeBandwidthRateLimitScheduleOutput, error) {
+	req, out := c.DescribeBandwidthRateLimitScheduleRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opDescribeCache = "DescribeCache"
 
 // DescribeCacheRequest generates a "aws/request.Request" representing the
@@ -5311,6 +5412,12 @@ func (c *StorageGateway) ListTapePoolsRequest(input *ListTapePoolsInput) (req *r
 		Name:       opListTapePools,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
+		Paginator: &request.Paginator{
+			InputTokens:     []string{"Marker"},
+			OutputTokens:    []string{"Marker"},
+			LimitToken:      "Limit",
+			TruncationToken: "",
+		},
 	}
 
 	if input == nil {
@@ -5370,6 +5477,58 @@ func (c *StorageGateway) ListTapePoolsWithContext(ctx aws.Context, input *ListTa
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
+}
+
+// ListTapePoolsPages iterates over the pages of a ListTapePools operation,
+// calling the "fn" function with the response data for each page. To stop
+// iterating, return false from the fn function.
+//
+// See ListTapePools method for more information on how to use this operation.
+//
+// Note: This operation can generate multiple requests to a service.
+//
+//    // Example iterating over at most 3 pages of a ListTapePools operation.
+//    pageNum := 0
+//    err := client.ListTapePoolsPages(params,
+//        func(page *storagegateway.ListTapePoolsOutput, lastPage bool) bool {
+//            pageNum++
+//            fmt.Println(page)
+//            return pageNum <= 3
+//        })
+//
+func (c *StorageGateway) ListTapePoolsPages(input *ListTapePoolsInput, fn func(*ListTapePoolsOutput, bool) bool) error {
+	return c.ListTapePoolsPagesWithContext(aws.BackgroundContext(), input, fn)
+}
+
+// ListTapePoolsPagesWithContext same as ListTapePoolsPages except
+// it takes a Context and allows setting request options on the pages.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *StorageGateway) ListTapePoolsPagesWithContext(ctx aws.Context, input *ListTapePoolsInput, fn func(*ListTapePoolsOutput, bool) bool, opts ...request.Option) error {
+	p := request.Pagination{
+		NewRequest: func() (*request.Request, error) {
+			var inCpy *ListTapePoolsInput
+			if input != nil {
+				tmp := *input
+				inCpy = &tmp
+			}
+			req, _ := c.ListTapePoolsRequest(inCpy)
+			req.SetContext(ctx)
+			req.ApplyOptions(opts...)
+			return req, nil
+		},
+	}
+
+	for p.Next() {
+		if !fn(p.Page().(*ListTapePoolsOutput), !p.HasNextPage()) {
+			break
+		}
+	}
+
+	return p.Err()
 }
 
 const opListTapes = "ListTapes"
@@ -7072,6 +7231,94 @@ func (c *StorageGateway) UpdateBandwidthRateLimitWithContext(ctx aws.Context, in
 	return out, req.Send()
 }
 
+const opUpdateBandwidthRateLimitSchedule = "UpdateBandwidthRateLimitSchedule"
+
+// UpdateBandwidthRateLimitScheduleRequest generates a "aws/request.Request" representing the
+// client's request for the UpdateBandwidthRateLimitSchedule operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See UpdateBandwidthRateLimitSchedule for more information on using the UpdateBandwidthRateLimitSchedule
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the UpdateBandwidthRateLimitScheduleRequest method.
+//    req, resp := client.UpdateBandwidthRateLimitScheduleRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/UpdateBandwidthRateLimitSchedule
+func (c *StorageGateway) UpdateBandwidthRateLimitScheduleRequest(input *UpdateBandwidthRateLimitScheduleInput) (req *request.Request, output *UpdateBandwidthRateLimitScheduleOutput) {
+	op := &request.Operation{
+		Name:       opUpdateBandwidthRateLimitSchedule,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &UpdateBandwidthRateLimitScheduleInput{}
+	}
+
+	output = &UpdateBandwidthRateLimitScheduleOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// UpdateBandwidthRateLimitSchedule API operation for AWS Storage Gateway.
+//
+// Updates the bandwidth rate limit schedule for a specified gateway. By default,
+// gateways do not have bandwidth rate limit schedules, which means no bandwidth
+// rate limiting is in effect. Use this to initiate or update a gateway's bandwidth
+// rate limit schedule. This operation is supported in the volume and tape gateway
+// types.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Storage Gateway's
+// API operation UpdateBandwidthRateLimitSchedule for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidGatewayRequestException
+//   An exception occurred because an invalid gateway request was issued to the
+//   service. For more information, see the error and message fields.
+//
+//   * InternalServerError
+//   An internal server error has occurred during the request. For more information,
+//   see the error and message fields.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/UpdateBandwidthRateLimitSchedule
+func (c *StorageGateway) UpdateBandwidthRateLimitSchedule(input *UpdateBandwidthRateLimitScheduleInput) (*UpdateBandwidthRateLimitScheduleOutput, error) {
+	req, out := c.UpdateBandwidthRateLimitScheduleRequest(input)
+	return out, req.Send()
+}
+
+// UpdateBandwidthRateLimitScheduleWithContext is the same as UpdateBandwidthRateLimitSchedule with the addition of
+// the ability to pass a context and additional request options.
+//
+// See UpdateBandwidthRateLimitSchedule for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *StorageGateway) UpdateBandwidthRateLimitScheduleWithContext(ctx aws.Context, input *UpdateBandwidthRateLimitScheduleInput, opts ...request.Option) (*UpdateBandwidthRateLimitScheduleOutput, error) {
+	req, out := c.UpdateBandwidthRateLimitScheduleRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opUpdateChapCredentials = "UpdateChapCredentials"
 
 // UpdateChapCredentialsRequest generates a "aws/request.Request" representing the
@@ -7486,7 +7733,7 @@ func (c *StorageGateway) UpdateNFSFileShareRequest(input *UpdateNFSFileShareInpu
 // To leave a file share field unchanged, set the corresponding input field
 // to null.
 //
-// Updates the following file share setting:
+// Updates the following file share settings:
 //
 //    * Default storage class for your S3 bucket
 //
@@ -7497,9 +7744,6 @@ func (c *StorageGateway) UpdateNFSFileShareRequest(input *UpdateNFSFileShareInpu
 //    * Squash settings
 //
 //    * Write status of your file share
-//
-// To leave a file share field unchanged, set the corresponding input field
-// to null. This operation is only supported in file gateways.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -7583,10 +7827,11 @@ func (c *StorageGateway) UpdateSMBFileShareRequest(input *UpdateSMBFileShareInpu
 
 // UpdateSMBFileShare API operation for AWS Storage Gateway.
 //
-// Updates a Server Message Block (SMB) file share.
+// Updates a Server Message Block (SMB) file share. This operation is only supported
+// for file gateways.
 //
 // To leave a file share field unchanged, set the corresponding input field
-// to null. This operation is only supported for file gateways.
+// to null.
 //
 // File gateways require AWS Security Token Service (AWS STS) to be activated
 // to enable you to create a file share. Make sure that AWS STS is activated
@@ -7630,6 +7875,91 @@ func (c *StorageGateway) UpdateSMBFileShare(input *UpdateSMBFileShareInput) (*Up
 // for more information on using Contexts.
 func (c *StorageGateway) UpdateSMBFileShareWithContext(ctx aws.Context, input *UpdateSMBFileShareInput, opts ...request.Option) (*UpdateSMBFileShareOutput, error) {
 	req, out := c.UpdateSMBFileShareRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opUpdateSMBFileShareVisibility = "UpdateSMBFileShareVisibility"
+
+// UpdateSMBFileShareVisibilityRequest generates a "aws/request.Request" representing the
+// client's request for the UpdateSMBFileShareVisibility operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See UpdateSMBFileShareVisibility for more information on using the UpdateSMBFileShareVisibility
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the UpdateSMBFileShareVisibilityRequest method.
+//    req, resp := client.UpdateSMBFileShareVisibilityRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/UpdateSMBFileShareVisibility
+func (c *StorageGateway) UpdateSMBFileShareVisibilityRequest(input *UpdateSMBFileShareVisibilityInput) (req *request.Request, output *UpdateSMBFileShareVisibilityOutput) {
+	op := &request.Operation{
+		Name:       opUpdateSMBFileShareVisibility,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &UpdateSMBFileShareVisibilityInput{}
+	}
+
+	output = &UpdateSMBFileShareVisibilityOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// UpdateSMBFileShareVisibility API operation for AWS Storage Gateway.
+//
+// Controls whether the shares on a gateway are visible in a net view or browse
+// list.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Storage Gateway's
+// API operation UpdateSMBFileShareVisibility for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidGatewayRequestException
+//   An exception occurred because an invalid gateway request was issued to the
+//   service. For more information, see the error and message fields.
+//
+//   * InternalServerError
+//   An internal server error has occurred during the request. For more information,
+//   see the error and message fields.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/storagegateway-2013-06-30/UpdateSMBFileShareVisibility
+func (c *StorageGateway) UpdateSMBFileShareVisibility(input *UpdateSMBFileShareVisibilityInput) (*UpdateSMBFileShareVisibilityOutput, error) {
+	req, out := c.UpdateSMBFileShareVisibilityRequest(input)
+	return out, req.Send()
+}
+
+// UpdateSMBFileShareVisibilityWithContext is the same as UpdateSMBFileShareVisibility with the addition of
+// the ability to pass a context and additional request options.
+//
+// See UpdateSMBFileShareVisibility for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *StorageGateway) UpdateSMBFileShareVisibilityWithContext(ctx aws.Context, input *UpdateSMBFileShareVisibilityInput, opts ...request.Option) (*UpdateSMBFileShareVisibilityOutput, error) {
+	req, out := c.UpdateSMBFileShareVisibilityRequest(input)
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
@@ -8884,6 +9214,142 @@ func (s *AutomaticTapeCreationRule) SetWorm(v bool) *AutomaticTapeCreationRule {
 	return s
 }
 
+// Describes a bandwidth rate limit interval for a gateway. A bandwidth rate
+// limit schedule consists of one or more bandwidth rate limit intervals. A
+// bandwidth rate limit interval defines a period of time on one or more days
+// of the week, during which bandwidth rate limits are specified for uploading,
+// downloading, or both.
+type BandwidthRateLimitInterval struct {
+	_ struct{} `type:"structure"`
+
+	// The average download rate limit component of the bandwidth rate limit interval,
+	// in bits per second. This field does not appear in the response if the download
+	// rate limit is not set.
+	AverageDownloadRateLimitInBitsPerSec *int64 `min:"102400" type:"long"`
+
+	// The average upload rate limit component of the bandwidth rate limit interval,
+	// in bits per second. This field does not appear in the response if the upload
+	// rate limit is not set.
+	AverageUploadRateLimitInBitsPerSec *int64 `min:"51200" type:"long"`
+
+	// The days of the week component of the bandwidth rate limit interval, represented
+	// as ordinal numbers from 0 to 6, where 0 represents Sunday and 6 Saturday.
+	//
+	// DaysOfWeek is a required field
+	DaysOfWeek []*int64 `min:"1" type:"list" required:"true"`
+
+	// The hour of the day to end the bandwidth rate limit interval.
+	//
+	// EndHourOfDay is a required field
+	EndHourOfDay *int64 `type:"integer" required:"true"`
+
+	// The minute of the hour to end the bandwidth rate limit interval.
+	//
+	// The bandwidth rate limit interval ends at the end of the minute. To end an
+	// interval at the end of an hour, use the value 59.
+	//
+	// EndMinuteOfHour is a required field
+	EndMinuteOfHour *int64 `type:"integer" required:"true"`
+
+	// The hour of the day to start the bandwidth rate limit interval.
+	//
+	// StartHourOfDay is a required field
+	StartHourOfDay *int64 `type:"integer" required:"true"`
+
+	// The minute of the hour to start the bandwidth rate limit interval. The interval
+	// begins at the start of that minute. To begin an interval exactly at the start
+	// of the hour, use the value 0.
+	//
+	// StartMinuteOfHour is a required field
+	StartMinuteOfHour *int64 `type:"integer" required:"true"`
+}
+
+// String returns the string representation
+func (s BandwidthRateLimitInterval) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s BandwidthRateLimitInterval) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *BandwidthRateLimitInterval) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "BandwidthRateLimitInterval"}
+	if s.AverageDownloadRateLimitInBitsPerSec != nil && *s.AverageDownloadRateLimitInBitsPerSec < 102400 {
+		invalidParams.Add(request.NewErrParamMinValue("AverageDownloadRateLimitInBitsPerSec", 102400))
+	}
+	if s.AverageUploadRateLimitInBitsPerSec != nil && *s.AverageUploadRateLimitInBitsPerSec < 51200 {
+		invalidParams.Add(request.NewErrParamMinValue("AverageUploadRateLimitInBitsPerSec", 51200))
+	}
+	if s.DaysOfWeek == nil {
+		invalidParams.Add(request.NewErrParamRequired("DaysOfWeek"))
+	}
+	if s.DaysOfWeek != nil && len(s.DaysOfWeek) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("DaysOfWeek", 1))
+	}
+	if s.EndHourOfDay == nil {
+		invalidParams.Add(request.NewErrParamRequired("EndHourOfDay"))
+	}
+	if s.EndMinuteOfHour == nil {
+		invalidParams.Add(request.NewErrParamRequired("EndMinuteOfHour"))
+	}
+	if s.StartHourOfDay == nil {
+		invalidParams.Add(request.NewErrParamRequired("StartHourOfDay"))
+	}
+	if s.StartMinuteOfHour == nil {
+		invalidParams.Add(request.NewErrParamRequired("StartMinuteOfHour"))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetAverageDownloadRateLimitInBitsPerSec sets the AverageDownloadRateLimitInBitsPerSec field's value.
+func (s *BandwidthRateLimitInterval) SetAverageDownloadRateLimitInBitsPerSec(v int64) *BandwidthRateLimitInterval {
+	s.AverageDownloadRateLimitInBitsPerSec = &v
+	return s
+}
+
+// SetAverageUploadRateLimitInBitsPerSec sets the AverageUploadRateLimitInBitsPerSec field's value.
+func (s *BandwidthRateLimitInterval) SetAverageUploadRateLimitInBitsPerSec(v int64) *BandwidthRateLimitInterval {
+	s.AverageUploadRateLimitInBitsPerSec = &v
+	return s
+}
+
+// SetDaysOfWeek sets the DaysOfWeek field's value.
+func (s *BandwidthRateLimitInterval) SetDaysOfWeek(v []*int64) *BandwidthRateLimitInterval {
+	s.DaysOfWeek = v
+	return s
+}
+
+// SetEndHourOfDay sets the EndHourOfDay field's value.
+func (s *BandwidthRateLimitInterval) SetEndHourOfDay(v int64) *BandwidthRateLimitInterval {
+	s.EndHourOfDay = &v
+	return s
+}
+
+// SetEndMinuteOfHour sets the EndMinuteOfHour field's value.
+func (s *BandwidthRateLimitInterval) SetEndMinuteOfHour(v int64) *BandwidthRateLimitInterval {
+	s.EndMinuteOfHour = &v
+	return s
+}
+
+// SetStartHourOfDay sets the StartHourOfDay field's value.
+func (s *BandwidthRateLimitInterval) SetStartHourOfDay(v int64) *BandwidthRateLimitInterval {
+	s.StartHourOfDay = &v
+	return s
+}
+
+// SetStartMinuteOfHour sets the StartMinuteOfHour field's value.
+func (s *BandwidthRateLimitInterval) SetStartMinuteOfHour(v int64) *BandwidthRateLimitInterval {
+	s.StartMinuteOfHour = &v
+	return s
+}
+
 // Lists refresh cache information.
 type CacheAttributes struct {
 	_ struct{} `type:"structure"`
@@ -9585,6 +10051,9 @@ type CreateNFSFileShareInput struct {
 	// File share default values. Optional.
 	NFSFileShareDefaults *NFSFileShareDefaults `type:"structure"`
 
+	// The notification policy of the file share.
+	NotificationPolicy *string `min:"2" type:"string"`
+
 	// A value that sets the access control list (ACL) permission for objects in
 	// the S3 bucket that a file gateway puts objects into. The default value is
 	// private.
@@ -9677,6 +10146,9 @@ func (s *CreateNFSFileShareInput) Validate() error {
 	}
 	if s.LocationARN != nil && len(*s.LocationARN) < 16 {
 		invalidParams.Add(request.NewErrParamMinLen("LocationARN", 16))
+	}
+	if s.NotificationPolicy != nil && len(*s.NotificationPolicy) < 2 {
+		invalidParams.Add(request.NewErrParamMinLen("NotificationPolicy", 2))
 	}
 	if s.Role == nil {
 		invalidParams.Add(request.NewErrParamRequired("Role"))
@@ -9775,6 +10247,12 @@ func (s *CreateNFSFileShareInput) SetNFSFileShareDefaults(v *NFSFileShareDefault
 	return s
 }
 
+// SetNotificationPolicy sets the NotificationPolicy field's value.
+func (s *CreateNFSFileShareInput) SetNotificationPolicy(v string) *CreateNFSFileShareInput {
+	s.NotificationPolicy = &v
+	return s
+}
+
 // SetObjectACL sets the ObjectACL field's value.
 func (s *CreateNFSFileShareInput) SetObjectACL(v string) *CreateNFSFileShareInput {
 	s.ObjectACL = &v
@@ -9838,6 +10316,10 @@ func (s *CreateNFSFileShareOutput) SetFileShareARN(v string) *CreateNFSFileShare
 // CreateSMBFileShareInput
 type CreateSMBFileShareInput struct {
 	_ struct{} `type:"structure"`
+
+	// The files and folders on this share will only be visible to users with read
+	// access.
+	AccessBasedEnumeration *bool `type:"boolean"`
 
 	// A list of users or groups in the Active Directory that will be granted administrator
 	// privileges on the file share. These users can do all file operations as the
@@ -9916,6 +10398,9 @@ type CreateSMBFileShareInput struct {
 	//
 	// LocationARN is a required field
 	LocationARN *string `min:"16" type:"string" required:"true"`
+
+	// The notification policy of the file share.
+	NotificationPolicy *string `min:"2" type:"string"`
 
 	// A value that sets the access control list (ACL) permission for objects in
 	// the S3 bucket that a file gateway puts objects into. The default value is
@@ -10016,6 +10501,9 @@ func (s *CreateSMBFileShareInput) Validate() error {
 	if s.LocationARN != nil && len(*s.LocationARN) < 16 {
 		invalidParams.Add(request.NewErrParamMinLen("LocationARN", 16))
 	}
+	if s.NotificationPolicy != nil && len(*s.NotificationPolicy) < 2 {
+		invalidParams.Add(request.NewErrParamMinLen("NotificationPolicy", 2))
+	}
 	if s.Role == nil {
 		invalidParams.Add(request.NewErrParamRequired("Role"))
 	}
@@ -10037,6 +10525,12 @@ func (s *CreateSMBFileShareInput) Validate() error {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetAccessBasedEnumeration sets the AccessBasedEnumeration field's value.
+func (s *CreateSMBFileShareInput) SetAccessBasedEnumeration(v bool) *CreateSMBFileShareInput {
+	s.AccessBasedEnumeration = &v
+	return s
 }
 
 // SetAdminUserList sets the AdminUserList field's value.
@@ -10120,6 +10614,12 @@ func (s *CreateSMBFileShareInput) SetKMSKey(v string) *CreateSMBFileShareInput {
 // SetLocationARN sets the LocationARN field's value.
 func (s *CreateSMBFileShareInput) SetLocationARN(v string) *CreateSMBFileShareInput {
 	s.LocationARN = &v
+	return s
+}
+
+// SetNotificationPolicy sets the NotificationPolicy field's value.
+func (s *CreateSMBFileShareInput) SetNotificationPolicy(v string) *CreateSMBFileShareInput {
+	s.NotificationPolicy = &v
 	return s
 }
 
@@ -12167,6 +12667,82 @@ func (s *DescribeBandwidthRateLimitOutput) SetGatewayARN(v string) *DescribeBand
 	return s
 }
 
+type DescribeBandwidthRateLimitScheduleInput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
+	// to return a list of gateways for your account and AWS Region.
+	//
+	// GatewayARN is a required field
+	GatewayARN *string `min:"50" type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s DescribeBandwidthRateLimitScheduleInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DescribeBandwidthRateLimitScheduleInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *DescribeBandwidthRateLimitScheduleInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "DescribeBandwidthRateLimitScheduleInput"}
+	if s.GatewayARN == nil {
+		invalidParams.Add(request.NewErrParamRequired("GatewayARN"))
+	}
+	if s.GatewayARN != nil && len(*s.GatewayARN) < 50 {
+		invalidParams.Add(request.NewErrParamMinLen("GatewayARN", 50))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetGatewayARN sets the GatewayARN field's value.
+func (s *DescribeBandwidthRateLimitScheduleInput) SetGatewayARN(v string) *DescribeBandwidthRateLimitScheduleInput {
+	s.GatewayARN = &v
+	return s
+}
+
+type DescribeBandwidthRateLimitScheduleOutput struct {
+	_ struct{} `type:"structure"`
+
+	// An array that contains the bandwidth rate limit intervals for a tape or volume
+	// gateway.
+	BandwidthRateLimitIntervals []*BandwidthRateLimitInterval `type:"list"`
+
+	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
+	// to return a list of gateways for your account and AWS Region.
+	GatewayARN *string `min:"50" type:"string"`
+}
+
+// String returns the string representation
+func (s DescribeBandwidthRateLimitScheduleOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DescribeBandwidthRateLimitScheduleOutput) GoString() string {
+	return s.String()
+}
+
+// SetBandwidthRateLimitIntervals sets the BandwidthRateLimitIntervals field's value.
+func (s *DescribeBandwidthRateLimitScheduleOutput) SetBandwidthRateLimitIntervals(v []*BandwidthRateLimitInterval) *DescribeBandwidthRateLimitScheduleOutput {
+	s.BandwidthRateLimitIntervals = v
+	return s
+}
+
+// SetGatewayARN sets the GatewayARN field's value.
+func (s *DescribeBandwidthRateLimitScheduleOutput) SetGatewayARN(v string) *DescribeBandwidthRateLimitScheduleOutput {
+	s.GatewayARN = &v
+	return s
+}
+
 type DescribeCacheInput struct {
 	_ struct{} `type:"structure"`
 
@@ -13013,6 +13589,9 @@ type DescribeSMBSettingsOutput struct {
 	// The name of the domain that the gateway is joined to.
 	DomainName *string `min:"1" type:"string"`
 
+	// The shares on this gateway appear when listing shares.
+	FileSharesVisible *bool `type:"boolean"`
+
 	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
 	// to return a list of gateways for your account and AWS Region.
 	GatewayARN *string `min:"50" type:"string"`
@@ -13060,6 +13639,12 @@ func (s *DescribeSMBSettingsOutput) SetActiveDirectoryStatus(v string) *Describe
 // SetDomainName sets the DomainName field's value.
 func (s *DescribeSMBSettingsOutput) SetDomainName(v string) *DescribeSMBSettingsOutput {
 	s.DomainName = &v
+	return s
+}
+
+// SetFileSharesVisible sets the FileSharesVisible field's value.
+func (s *DescribeSMBSettingsOutput) SetFileSharesVisible(v bool) *DescribeSMBSettingsOutput {
+	s.FileSharesVisible = &v
 	return s
 }
 
@@ -15819,6 +16404,9 @@ type NFSFileShareInfo struct {
 	// gateways.
 	NFSFileShareDefaults *NFSFileShareDefaults `type:"structure"`
 
+	// The notification policy of the file share.
+	NotificationPolicy *string `min:"2" type:"string"`
+
 	// A value that sets the access control list (ACL) permission for objects in
 	// the S3 bucket that a file gateway puts objects into. The default value is
 	// private.
@@ -15949,6 +16537,12 @@ func (s *NFSFileShareInfo) SetLocationARN(v string) *NFSFileShareInfo {
 // SetNFSFileShareDefaults sets the NFSFileShareDefaults field's value.
 func (s *NFSFileShareInfo) SetNFSFileShareDefaults(v *NFSFileShareDefaults) *NFSFileShareInfo {
 	s.NFSFileShareDefaults = v
+	return s
+}
+
+// SetNotificationPolicy sets the NotificationPolicy field's value.
+func (s *NFSFileShareInfo) SetNotificationPolicy(v string) *NFSFileShareInfo {
+	s.NotificationPolicy = &v
 	return s
 }
 
@@ -16631,6 +17225,9 @@ func (s *RetrieveTapeRecoveryPointOutput) SetTapeARN(v string) *RetrieveTapeReco
 type SMBFileShareInfo struct {
 	_ struct{} `type:"structure"`
 
+	// Indicates whether AccessBasedEnumeration is enabled.
+	AccessBasedEnumeration *bool `type:"boolean"`
+
 	// A list of users or groups in the Active Directory that have administrator
 	// rights to the file share. A group must be prefixed with the @ character.
 	// Acceptable formats include: DOMAIN\User1, user1, @group1, and @DOMAIN\group1.
@@ -16707,6 +17304,9 @@ type SMBFileShareInfo struct {
 	// can be added to the S3 bucket name. It must end with a "/".
 	LocationARN *string `min:"16" type:"string"`
 
+	// The notification policy of the file share.
+	NotificationPolicy *string `min:"2" type:"string"`
+
 	// A value that sets the access control list (ACL) permission for objects in
 	// the S3 bucket that a file gateway puts objects into. The default value is
 	// private.
@@ -16766,6 +17366,12 @@ func (s SMBFileShareInfo) String() string {
 // GoString returns the string representation
 func (s SMBFileShareInfo) GoString() string {
 	return s.String()
+}
+
+// SetAccessBasedEnumeration sets the AccessBasedEnumeration field's value.
+func (s *SMBFileShareInfo) SetAccessBasedEnumeration(v bool) *SMBFileShareInfo {
+	s.AccessBasedEnumeration = &v
+	return s
 }
 
 // SetAdminUserList sets the AdminUserList field's value.
@@ -16861,6 +17467,12 @@ func (s *SMBFileShareInfo) SetKMSKey(v string) *SMBFileShareInfo {
 // SetLocationARN sets the LocationARN field's value.
 func (s *SMBFileShareInfo) SetLocationARN(v string) *SMBFileShareInfo {
 	s.LocationARN = &v
+	return s
+}
+
+// SetNotificationPolicy sets the NotificationPolicy field's value.
+func (s *SMBFileShareInfo) SetNotificationPolicy(v string) *SMBFileShareInfo {
+	s.NotificationPolicy = &v
 	return s
 }
 
@@ -18219,6 +18831,98 @@ func (s *UpdateBandwidthRateLimitOutput) SetGatewayARN(v string) *UpdateBandwidt
 	return s
 }
 
+type UpdateBandwidthRateLimitScheduleInput struct {
+	_ struct{} `type:"structure"`
+
+	// An array containing bandwidth rate limit schedule intervals for a gateway.
+	// When no bandwidth rate limit intervals have been scheduled, the array is
+	// empty.
+	//
+	// BandwidthRateLimitIntervals is a required field
+	BandwidthRateLimitIntervals []*BandwidthRateLimitInterval `type:"list" required:"true"`
+
+	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
+	// to return a list of gateways for your account and AWS Region.
+	//
+	// GatewayARN is a required field
+	GatewayARN *string `min:"50" type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s UpdateBandwidthRateLimitScheduleInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpdateBandwidthRateLimitScheduleInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *UpdateBandwidthRateLimitScheduleInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "UpdateBandwidthRateLimitScheduleInput"}
+	if s.BandwidthRateLimitIntervals == nil {
+		invalidParams.Add(request.NewErrParamRequired("BandwidthRateLimitIntervals"))
+	}
+	if s.GatewayARN == nil {
+		invalidParams.Add(request.NewErrParamRequired("GatewayARN"))
+	}
+	if s.GatewayARN != nil && len(*s.GatewayARN) < 50 {
+		invalidParams.Add(request.NewErrParamMinLen("GatewayARN", 50))
+	}
+	if s.BandwidthRateLimitIntervals != nil {
+		for i, v := range s.BandwidthRateLimitIntervals {
+			if v == nil {
+				continue
+			}
+			if err := v.Validate(); err != nil {
+				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "BandwidthRateLimitIntervals", i), err.(request.ErrInvalidParams))
+			}
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetBandwidthRateLimitIntervals sets the BandwidthRateLimitIntervals field's value.
+func (s *UpdateBandwidthRateLimitScheduleInput) SetBandwidthRateLimitIntervals(v []*BandwidthRateLimitInterval) *UpdateBandwidthRateLimitScheduleInput {
+	s.BandwidthRateLimitIntervals = v
+	return s
+}
+
+// SetGatewayARN sets the GatewayARN field's value.
+func (s *UpdateBandwidthRateLimitScheduleInput) SetGatewayARN(v string) *UpdateBandwidthRateLimitScheduleInput {
+	s.GatewayARN = &v
+	return s
+}
+
+type UpdateBandwidthRateLimitScheduleOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
+	// to return a list of gateways for your account and AWS Region.
+	GatewayARN *string `min:"50" type:"string"`
+}
+
+// String returns the string representation
+func (s UpdateBandwidthRateLimitScheduleOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpdateBandwidthRateLimitScheduleOutput) GoString() string {
+	return s.String()
+}
+
+// SetGatewayARN sets the GatewayARN field's value.
+func (s *UpdateBandwidthRateLimitScheduleOutput) SetGatewayARN(v string) *UpdateBandwidthRateLimitScheduleOutput {
+	s.GatewayARN = &v
+	return s
+}
+
 // A JSON object containing one or more of the following fields:
 //
 //    * UpdateChapCredentialsInput$InitiatorName
@@ -18723,6 +19427,9 @@ type UpdateNFSFileShareInput struct {
 	// The default values for the file share. Optional.
 	NFSFileShareDefaults *NFSFileShareDefaults `type:"structure"`
 
+	// The notification policy of the file share.
+	NotificationPolicy *string `min:"2" type:"string"`
+
 	// A value that sets the access control list (ACL) permission for objects in
 	// the S3 bucket that a file gateway puts objects into. The default value is
 	// private.
@@ -18788,6 +19495,9 @@ func (s *UpdateNFSFileShareInput) Validate() error {
 	}
 	if s.KMSKey != nil && len(*s.KMSKey) < 7 {
 		invalidParams.Add(request.NewErrParamMinLen("KMSKey", 7))
+	}
+	if s.NotificationPolicy != nil && len(*s.NotificationPolicy) < 2 {
+		invalidParams.Add(request.NewErrParamMinLen("NotificationPolicy", 2))
 	}
 	if s.Squash != nil && len(*s.Squash) < 5 {
 		invalidParams.Add(request.NewErrParamMinLen("Squash", 5))
@@ -18858,6 +19568,12 @@ func (s *UpdateNFSFileShareInput) SetNFSFileShareDefaults(v *NFSFileShareDefault
 	return s
 }
 
+// SetNotificationPolicy sets the NotificationPolicy field's value.
+func (s *UpdateNFSFileShareInput) SetNotificationPolicy(v string) *UpdateNFSFileShareInput {
+	s.NotificationPolicy = &v
+	return s
+}
+
 // SetObjectACL sets the ObjectACL field's value.
 func (s *UpdateNFSFileShareInput) SetObjectACL(v string) *UpdateNFSFileShareInput {
 	s.ObjectACL = &v
@@ -18909,6 +19625,10 @@ func (s *UpdateNFSFileShareOutput) SetFileShareARN(v string) *UpdateNFSFileShare
 // UpdateSMBFileShareInput
 type UpdateSMBFileShareInput struct {
 	_ struct{} `type:"structure"`
+
+	// The files and folders on this share will only be visible to users with read
+	// access.
+	AccessBasedEnumeration *bool `type:"boolean"`
 
 	// A list of users or groups in the Active Directory that have administrator
 	// rights to the file share. A group must be prefixed with the @ character.
@@ -18966,6 +19686,9 @@ type UpdateSMBFileShareInput struct {
 	// for Amazon S3 server-side encryption. Storage Gateway does not support asymmetric
 	// CMKs. This value can only be set when KMSEncrypted is true. Optional.
 	KMSKey *string `min:"7" type:"string"`
+
+	// The notification policy of the file share.
+	NotificationPolicy *string `min:"2" type:"string"`
 
 	// A value that sets the access control list (ACL) permission for objects in
 	// the S3 bucket that a file gateway puts objects into. The default value is
@@ -19036,11 +19759,20 @@ func (s *UpdateSMBFileShareInput) Validate() error {
 	if s.KMSKey != nil && len(*s.KMSKey) < 7 {
 		invalidParams.Add(request.NewErrParamMinLen("KMSKey", 7))
 	}
+	if s.NotificationPolicy != nil && len(*s.NotificationPolicy) < 2 {
+		invalidParams.Add(request.NewErrParamMinLen("NotificationPolicy", 2))
+	}
 
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetAccessBasedEnumeration sets the AccessBasedEnumeration field's value.
+func (s *UpdateSMBFileShareInput) SetAccessBasedEnumeration(v bool) *UpdateSMBFileShareInput {
+	s.AccessBasedEnumeration = &v
+	return s
 }
 
 // SetAdminUserList sets the AdminUserList field's value.
@@ -19109,6 +19841,12 @@ func (s *UpdateSMBFileShareInput) SetKMSKey(v string) *UpdateSMBFileShareInput {
 	return s
 }
 
+// SetNotificationPolicy sets the NotificationPolicy field's value.
+func (s *UpdateSMBFileShareInput) SetNotificationPolicy(v string) *UpdateSMBFileShareInput {
+	s.NotificationPolicy = &v
+	return s
+}
+
 // SetObjectACL sets the ObjectACL field's value.
 func (s *UpdateSMBFileShareInput) SetObjectACL(v string) *UpdateSMBFileShareInput {
 	s.ObjectACL = &v
@@ -19160,6 +19898,86 @@ func (s UpdateSMBFileShareOutput) GoString() string {
 // SetFileShareARN sets the FileShareARN field's value.
 func (s *UpdateSMBFileShareOutput) SetFileShareARN(v string) *UpdateSMBFileShareOutput {
 	s.FileShareARN = &v
+	return s
+}
+
+type UpdateSMBFileShareVisibilityInput struct {
+	_ struct{} `type:"structure"`
+
+	// The shares on this gateway appear when listing shares.
+	//
+	// FileSharesVisible is a required field
+	FileSharesVisible *bool `type:"boolean" required:"true"`
+
+	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
+	// to return a list of gateways for your account and AWS Region.
+	//
+	// GatewayARN is a required field
+	GatewayARN *string `min:"50" type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s UpdateSMBFileShareVisibilityInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpdateSMBFileShareVisibilityInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *UpdateSMBFileShareVisibilityInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "UpdateSMBFileShareVisibilityInput"}
+	if s.FileSharesVisible == nil {
+		invalidParams.Add(request.NewErrParamRequired("FileSharesVisible"))
+	}
+	if s.GatewayARN == nil {
+		invalidParams.Add(request.NewErrParamRequired("GatewayARN"))
+	}
+	if s.GatewayARN != nil && len(*s.GatewayARN) < 50 {
+		invalidParams.Add(request.NewErrParamMinLen("GatewayARN", 50))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetFileSharesVisible sets the FileSharesVisible field's value.
+func (s *UpdateSMBFileShareVisibilityInput) SetFileSharesVisible(v bool) *UpdateSMBFileShareVisibilityInput {
+	s.FileSharesVisible = &v
+	return s
+}
+
+// SetGatewayARN sets the GatewayARN field's value.
+func (s *UpdateSMBFileShareVisibilityInput) SetGatewayARN(v string) *UpdateSMBFileShareVisibilityInput {
+	s.GatewayARN = &v
+	return s
+}
+
+type UpdateSMBFileShareVisibilityOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
+	// to return a list of gateways for your account and AWS Region.
+	GatewayARN *string `min:"50" type:"string"`
+}
+
+// String returns the string representation
+func (s UpdateSMBFileShareVisibilityOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpdateSMBFileShareVisibilityOutput) GoString() string {
+	return s.String()
+}
+
+// SetGatewayARN sets the GatewayARN field's value.
+func (s *UpdateSMBFileShareVisibilityOutput) SetGatewayARN(v string) *UpdateSMBFileShareVisibilityOutput {
+	s.GatewayARN = &v
 	return s
 }
 

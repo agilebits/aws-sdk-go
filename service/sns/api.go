@@ -553,10 +553,10 @@ func (c *SNS) CreateTopicRequest(input *CreateTopicInput) (req *request.Request,
 // CreateTopic API operation for Amazon Simple Notification Service.
 //
 // Creates a topic to which notifications can be published. Users can create
-// at most 100,000 topics. For more information, see https://aws.amazon.com/sns
-// (http://aws.amazon.com/sns/). This action is idempotent, so if the requester
-// already owns a topic with the specified name, that topic's ARN is returned
-// without creating a new topic.
+// at most 100,000 standard topics (at most 1,000 FIFO topics). For more information,
+// see https://aws.amazon.com/sns (http://aws.amazon.com/sns/). This action
+// is idempotent, so if the requester already owns a topic with the specified
+// name, that topic's ARN is returned without creating a new topic.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -2862,7 +2862,7 @@ func (c *SNS) SetSMSAttributesRequest(input *SetSMSAttributesInput) (req *reques
 //
 // You can override some of these settings for a single message when you use
 // the Publish action with the MessageAttributes.entry.N parameter. For more
-// information, see Sending an SMS Message (https://docs.aws.amazon.com/sns/latest/dg/sms_publish-to-phone.html)
+// information, see Publishing to a mobile phone (https://docs.aws.amazon.com/sns/latest/dg/sms_publish-to-phone.html)
 // in the Amazon SNS Developer Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
@@ -3142,7 +3142,8 @@ func (c *SNS) SubscribeRequest(input *SubscribeInput) (req *request.Request, out
 //
 // Subscribes an endpoint to an Amazon SNS topic. If the endpoint type is HTTP/S
 // or email, or if the endpoint and the topic are not in the same AWS account,
-// the endpoint owner must the ConfirmSubscription action to confirm the subscription.
+// the endpoint owner must run the ConfirmSubscription action to confirm the
+// subscription.
 //
 // You call the ConfirmSubscription action with the token from the subscription
 // response. Confirmation tokens are valid for three days.
@@ -3992,15 +3993,31 @@ type CreateTopicInput struct {
 	//
 	//    * DisplayName – The display name to use for a topic with SMS subscriptions.
 	//
+	//    * FifoTopic – Set to true to create a FIFO topic.
+	//
 	//    * Policy – The policy that defines who can access your topic. By default,
 	//    only the topic owner can publish or subscribe to the topic.
 	//
 	// The following attribute applies only to server-side-encryption (https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html):
 	//
-	//    * KmsMasterKeyId - The ID of an AWS-managed customer master key (CMK)
+	//    * KmsMasterKeyId – The ID of an AWS-managed customer master key (CMK)
 	//    for Amazon SNS or a custom CMK. For more information, see Key Terms (https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html#sse-key-terms).
 	//    For more examples, see KeyId (https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters)
 	//    in the AWS Key Management Service API Reference.
+	//
+	// The following attributes apply only to FIFO topics (https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html):
+	//
+	//    * FifoTopic – When this is set to true, a FIFO topic is created.
+	//
+	//    * ContentBasedDeduplication – Enables content-based deduplication for
+	//    FIFO topics. By default, ContentBasedDeduplication is set to false. If
+	//    you create a FIFO topic and this attribute is false, you must specify
+	//    a value for the MessageDeduplicationId parameter for the Publish (https://docs.aws.amazon.com/sns/latest/api/API_Publish.html)
+	//    action. When you set ContentBasedDeduplication to true, Amazon SNS uses
+	//    a SHA-256 hash to generate the MessageDeduplicationId using the body of
+	//    the message (but not the attributes of the message). (Optional) To override
+	//    the generated value, you can specify a value for the the MessageDeduplicationId
+	//    parameter for the Publish action.
 	Attributes map[string]*string `type:"map"`
 
 	// The name of the topic you want to create.
@@ -4008,6 +4025,8 @@ type CreateTopicInput struct {
 	// Constraints: Topic names must be made up of only uppercase and lowercase
 	// ASCII letters, numbers, underscores, and hyphens, and must be between 1 and
 	// 256 characters long.
+	//
+	// For a FIFO (first-in-first-out) topic, the name must end with the .fifo suffix.
 	//
 	// Name is a required field
 	Name *string `type:"string" required:"true"`
@@ -4664,6 +4683,20 @@ type GetTopicAttributesOutput struct {
 	//    for Amazon SNS or a custom CMK. For more information, see Key Terms (https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html#sse-key-terms).
 	//    For more examples, see KeyId (https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters)
 	//    in the AWS Key Management Service API Reference.
+	//
+	// The following attributes apply only to FIFO topics (https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html):
+	//
+	//    * FifoTopic – When this is set to true, a FIFO topic is created.
+	//
+	//    * ContentBasedDeduplication – Enables content-based deduplication for
+	//    FIFO topics. By default, ContentBasedDeduplication is set to false. If
+	//    you create a FIFO topic and this attribute is false, you must specify
+	//    a value for the MessageDeduplicationId parameter for the Publish (https://docs.aws.amazon.com/sns/latest/api/API_Publish.html)
+	//    action. When you set ContentBasedDeduplication to true, Amazon SNS uses
+	//    a SHA-256 hash to generate the MessageDeduplicationId using the body of
+	//    the message (but not the attributes of the message). (Optional) To override
+	//    the generated value, you can specify a value for the the MessageDeduplicationId
+	//    parameter for the Publish action.
 	Attributes map[string]*string `type:"map"`
 }
 
@@ -5155,8 +5188,10 @@ func (s *ListTopicsOutput) SetTopics(v []*Topic) *ListTopicsOutput {
 // Name, type, and value must not be empty or null. In addition, the message
 // body should not be empty or null. All parts of the message attribute, including
 // name, type, and value, are included in the message size restriction, which
-// is currently 256 KB (262,144 bytes). For more information, see Using Amazon
-// SNS Message Attributes (https://docs.aws.amazon.com/sns/latest/dg/SNSMessageAttributes.html).
+// is currently 256 KB (262,144 bytes). For more information, see Amazon SNS
+// message attributes (https://docs.aws.amazon.com/sns/latest/dg/SNSMessageAttributes.html)
+// and Publishing to a mobile phone (https://docs.aws.amazon.com/sns/latest/dg/sms_publish-to-phone.html)
+// in the Amazon SNS Developer Guide.
 type MessageAttributeValue struct {
 	_ struct{} `type:"structure"`
 
@@ -5362,6 +5397,30 @@ type PublishInput struct {
 	// Message attributes for Publish action.
 	MessageAttributes map[string]*MessageAttributeValue `locationNameKey:"Name" locationNameValue:"Value" type:"map"`
 
+	// This parameter applies only to FIFO (first-in-first-out) topics. The MessageDeduplicationId
+	// can contain up to 128 alphanumeric characters (a-z, A-Z, 0-9) and punctuation
+	// (!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~).
+	//
+	// Every message must have a unique MessageDeduplicationId, which is a token
+	// used for deduplication of sent messages. If a message with a particular MessageDeduplicationId
+	// is sent successfully, any message sent with the same MessageDeduplicationId
+	// during the 5-minute deduplication interval is treated as a duplicate.
+	//
+	// If the topic has ContentBasedDeduplication set, the system generates a MessageDeduplicationId
+	// based on the contents of the message. Your MessageDeduplicationId overrides
+	// the generated one.
+	MessageDeduplicationId *string `type:"string"`
+
+	// This parameter applies only to FIFO (first-in-first-out) topics. The MessageGroupId
+	// can contain up to 128 alphanumeric characters (a-z, A-Z, 0-9) and punctuation
+	// (!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~).
+	//
+	// The MessageGroupId is a tag that specifies that a message belongs to a specific
+	// message group. Messages that belong to the same message group are processed
+	// in a FIFO manner (however, messages in different message groups might be
+	// processed out of order). Every message must include a MessageGroupId.
+	MessageGroupId *string `type:"string"`
+
 	// Set MessageStructure to json if you want to send a different message for
 	// each protocol. For example, using one publish action, you can send a short
 	// message to your SMS subscribers and a longer message to your email subscribers.
@@ -5449,6 +5508,18 @@ func (s *PublishInput) SetMessageAttributes(v map[string]*MessageAttributeValue)
 	return s
 }
 
+// SetMessageDeduplicationId sets the MessageDeduplicationId field's value.
+func (s *PublishInput) SetMessageDeduplicationId(v string) *PublishInput {
+	s.MessageDeduplicationId = &v
+	return s
+}
+
+// SetMessageGroupId sets the MessageGroupId field's value.
+func (s *PublishInput) SetMessageGroupId(v string) *PublishInput {
+	s.MessageGroupId = &v
+	return s
+}
+
 // SetMessageStructure sets the MessageStructure field's value.
 func (s *PublishInput) SetMessageStructure(v string) *PublishInput {
 	s.MessageStructure = &v
@@ -5487,6 +5558,13 @@ type PublishOutput struct {
 	//
 	// Length Constraint: Maximum 100 characters
 	MessageId *string `type:"string"`
+
+	// This response element applies only to FIFO (first-in-first-out) topics.
+	//
+	// The sequence number is a large, non-consecutive number that Amazon SNS assigns
+	// to each message. The length of SequenceNumber is 128 bits. SequenceNumber
+	// continues to increase for each MessageGroupId.
+	SequenceNumber *string `type:"string"`
 }
 
 // String returns the string representation
@@ -5502,6 +5580,12 @@ func (s PublishOutput) GoString() string {
 // SetMessageId sets the MessageId field's value.
 func (s *PublishOutput) SetMessageId(v string) *PublishOutput {
 	s.MessageId = &v
+	return s
+}
+
+// SetSequenceNumber sets the SequenceNumber field's value.
+func (s *PublishOutput) SetSequenceNumber(v string) *PublishOutput {
+	s.SequenceNumber = &v
 	return s
 }
 
@@ -5886,7 +5970,7 @@ type SetSubscriptionAttributesInput struct {
 	// A map of attributes with their corresponding values.
 	//
 	// The following lists the names, descriptions, and values of the special request
-	// parameters that the SetTopicAttributes action uses:
+	// parameters that this action uses:
 	//
 	//    * DeliveryPolicy – The policy that defines how Amazon SNS retries failed
 	//    deliveries to HTTP/S endpoints.
@@ -5996,10 +6080,22 @@ type SetTopicAttributesInput struct {
 	//
 	// The following attribute applies only to server-side-encryption (https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html):
 	//
-	//    * KmsMasterKeyId - The ID of an AWS-managed customer master key (CMK)
+	//    * KmsMasterKeyId – The ID of an AWS-managed customer master key (CMK)
 	//    for Amazon SNS or a custom CMK. For more information, see Key Terms (https://docs.aws.amazon.com/sns/latest/dg/sns-server-side-encryption.html#sse-key-terms).
 	//    For more examples, see KeyId (https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters)
 	//    in the AWS Key Management Service API Reference.
+	//
+	// The following attribute applies only to FIFO topics (https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html):
+	//
+	//    * ContentBasedDeduplication – Enables content-based deduplication for
+	//    FIFO topics. By default, ContentBasedDeduplication is set to false. If
+	//    you create a FIFO topic and this attribute is false, you must specify
+	//    a value for the MessageDeduplicationId parameter for the Publish (https://docs.aws.amazon.com/sns/latest/api/API_Publish.html)
+	//    action. When you set ContentBasedDeduplication to true, Amazon SNS uses
+	//    a SHA-256 hash to generate the MessageDeduplicationId using the body of
+	//    the message (but not the attributes of the message). (Optional) To override
+	//    the generated value, you can specify a value for the the MessageDeduplicationId
+	//    parameter for the Publish action.
 	//
 	// AttributeName is a required field
 	AttributeName *string `type:"string" required:"true"`

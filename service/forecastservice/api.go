@@ -177,8 +177,8 @@ func (c *ForecastService) CreateDatasetGroupRequest(input *CreateDatasetGroupInp
 //
 // To get a list of all your datasets groups, use the ListDatasetGroups operation.
 //
-// The Status of a dataset group must be ACTIVE before you can create use the
-// dataset group to create a predictor. To get the status, use the DescribeDatasetGroup
+// The Status of a dataset group must be ACTIVE before you can use the dataset
+// group to create a predictor. To get the status, use the DescribeDatasetGroup
 // operation.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
@@ -613,34 +613,36 @@ func (c *ForecastService) CreatePredictorRequest(input *CreatePredictorInput) (r
 //
 // Creates an Amazon Forecast predictor.
 //
-// In the request, you provide a dataset group and either specify an algorithm
-// or let Amazon Forecast choose the algorithm for you using AutoML. If you
-// specify an algorithm, you also can override algorithm-specific hyperparameters.
+// In the request, provide a dataset group and either specify an algorithm or
+// let Amazon Forecast choose an algorithm for you using AutoML. If you specify
+// an algorithm, you also can override algorithm-specific hyperparameters.
 //
-// Amazon Forecast uses the chosen algorithm to train a model using the latest
-// version of the datasets in the specified dataset group. The result is called
-// a predictor. You then generate a forecast using the CreateForecast operation.
+// Amazon Forecast uses the algorithm to train a predictor using the latest
+// version of the datasets in the specified dataset group. You can then generate
+// a forecast using the CreateForecast operation.
 //
-// After training a model, the CreatePredictor operation also evaluates it.
-// To see the evaluation metrics, use the GetAccuracyMetrics operation. Always
-// review the evaluation metrics before deciding to use the predictor to generate
-// a forecast.
+// To see the evaluation metrics, use the GetAccuracyMetrics operation.
 //
-// Optionally, you can specify a featurization configuration to fill and aggregate
-// the data fields in the TARGET_TIME_SERIES dataset to improve model training.
-// For more information, see FeaturizationConfig.
+// You can specify a featurization configuration to fill and aggregate the data
+// fields in the TARGET_TIME_SERIES dataset to improve model training. For more
+// information, see FeaturizationConfig.
 //
 // For RELATED_TIME_SERIES datasets, CreatePredictor verifies that the DataFrequency
 // specified when the dataset was created matches the ForecastFrequency. TARGET_TIME_SERIES
 // datasets don't have this restriction. Amazon Forecast also verifies the delimiter
 // and timestamp format. For more information, see howitworks-datasets-groups.
 //
+// By default, predictors are trained and evaluated at the 0.1 (P10), 0.5 (P50),
+// and 0.9 (P90) quantiles. You can choose custom forecast types to train and
+// evaluate your predictor by setting the ForecastTypes.
+//
 // AutoML
 //
 // If you want Amazon Forecast to evaluate each algorithm and choose the one
 // that minimizes the objective function, set PerformAutoML to true. The objective
-// function is defined as the mean of the weighted p10, p50, and p90 quantile
-// losses. For more information, see EvaluationResult.
+// function is defined as the mean of the weighted losses over the forecast
+// types. By default, these are the p10, p50, and p90 quantile losses. For more
+// information, see EvaluationResult.
 //
 // When AutoML is enabled, the following properties are disallowed:
 //
@@ -700,6 +702,104 @@ func (c *ForecastService) CreatePredictor(input *CreatePredictorInput) (*CreateP
 // for more information on using Contexts.
 func (c *ForecastService) CreatePredictorWithContext(ctx aws.Context, input *CreatePredictorInput, opts ...request.Option) (*CreatePredictorOutput, error) {
 	req, out := c.CreatePredictorRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opCreatePredictorBacktestExportJob = "CreatePredictorBacktestExportJob"
+
+// CreatePredictorBacktestExportJobRequest generates a "aws/request.Request" representing the
+// client's request for the CreatePredictorBacktestExportJob operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See CreatePredictorBacktestExportJob for more information on using the CreatePredictorBacktestExportJob
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the CreatePredictorBacktestExportJobRequest method.
+//    req, resp := client.CreatePredictorBacktestExportJobRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/forecast-2018-06-26/CreatePredictorBacktestExportJob
+func (c *ForecastService) CreatePredictorBacktestExportJobRequest(input *CreatePredictorBacktestExportJobInput) (req *request.Request, output *CreatePredictorBacktestExportJobOutput) {
+	op := &request.Operation{
+		Name:       opCreatePredictorBacktestExportJob,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &CreatePredictorBacktestExportJobInput{}
+	}
+
+	output = &CreatePredictorBacktestExportJobOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// CreatePredictorBacktestExportJob API operation for Amazon Forecast Service.
+//
+// Exports backtest forecasts and accuracy metrics generated by the CreatePredictor
+// operation. Two CSV files are exported to a specified S3 bucket.
+//
+// You must specify a DataDestination object that includes an AWS Identity and
+// Access Management (IAM) role that Amazon Forecast can assume to access the
+// Amazon S3 bucket. For more information, see aws-forecast-iam-roles.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for Amazon Forecast Service's
+// API operation CreatePredictorBacktestExportJob for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   We can't process the request because it includes an invalid value or a value
+//   that exceeds the valid range.
+//
+//   * ResourceAlreadyExistsException
+//   There is already a resource with this name. Try again with a different name.
+//
+//   * ResourceNotFoundException
+//   We can't find a resource with that Amazon Resource Name (ARN). Check the
+//   ARN and try again.
+//
+//   * ResourceInUseException
+//   The specified resource is in use.
+//
+//   * LimitExceededException
+//   The limit on the number of resources per account has been exceeded.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/forecast-2018-06-26/CreatePredictorBacktestExportJob
+func (c *ForecastService) CreatePredictorBacktestExportJob(input *CreatePredictorBacktestExportJobInput) (*CreatePredictorBacktestExportJobOutput, error) {
+	req, out := c.CreatePredictorBacktestExportJobRequest(input)
+	return out, req.Send()
+}
+
+// CreatePredictorBacktestExportJobWithContext is the same as CreatePredictorBacktestExportJob with the addition of
+// the ability to pass a context and additional request options.
+//
+// See CreatePredictorBacktestExportJob for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *ForecastService) CreatePredictorBacktestExportJobWithContext(ctx aws.Context, input *CreatePredictorBacktestExportJobInput, opts ...request.Option) (*CreatePredictorBacktestExportJobOutput, error) {
+	req, out := c.CreatePredictorBacktestExportJobRequest(input)
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
@@ -1249,6 +1349,94 @@ func (c *ForecastService) DeletePredictor(input *DeletePredictorInput) (*DeleteP
 // for more information on using Contexts.
 func (c *ForecastService) DeletePredictorWithContext(ctx aws.Context, input *DeletePredictorInput, opts ...request.Option) (*DeletePredictorOutput, error) {
 	req, out := c.DeletePredictorRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opDeletePredictorBacktestExportJob = "DeletePredictorBacktestExportJob"
+
+// DeletePredictorBacktestExportJobRequest generates a "aws/request.Request" representing the
+// client's request for the DeletePredictorBacktestExportJob operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See DeletePredictorBacktestExportJob for more information on using the DeletePredictorBacktestExportJob
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the DeletePredictorBacktestExportJobRequest method.
+//    req, resp := client.DeletePredictorBacktestExportJobRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/forecast-2018-06-26/DeletePredictorBacktestExportJob
+func (c *ForecastService) DeletePredictorBacktestExportJobRequest(input *DeletePredictorBacktestExportJobInput) (req *request.Request, output *DeletePredictorBacktestExportJobOutput) {
+	op := &request.Operation{
+		Name:       opDeletePredictorBacktestExportJob,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &DeletePredictorBacktestExportJobInput{}
+	}
+
+	output = &DeletePredictorBacktestExportJobOutput{}
+	req = c.newRequest(op, input, output)
+	req.Handlers.Unmarshal.Swap(jsonrpc.UnmarshalHandler.Name, protocol.UnmarshalDiscardBodyHandler)
+	return
+}
+
+// DeletePredictorBacktestExportJob API operation for Amazon Forecast Service.
+//
+// Deletes a predictor backtest export job.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for Amazon Forecast Service's
+// API operation DeletePredictorBacktestExportJob for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   We can't process the request because it includes an invalid value or a value
+//   that exceeds the valid range.
+//
+//   * ResourceNotFoundException
+//   We can't find a resource with that Amazon Resource Name (ARN). Check the
+//   ARN and try again.
+//
+//   * ResourceInUseException
+//   The specified resource is in use.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/forecast-2018-06-26/DeletePredictorBacktestExportJob
+func (c *ForecastService) DeletePredictorBacktestExportJob(input *DeletePredictorBacktestExportJobInput) (*DeletePredictorBacktestExportJobOutput, error) {
+	req, out := c.DeletePredictorBacktestExportJobRequest(input)
+	return out, req.Send()
+}
+
+// DeletePredictorBacktestExportJobWithContext is the same as DeletePredictorBacktestExportJob with the addition of
+// the ability to pass a context and additional request options.
+//
+// See DeletePredictorBacktestExportJob for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *ForecastService) DeletePredictorBacktestExportJobWithContext(ctx aws.Context, input *DeletePredictorBacktestExportJobInput, opts ...request.Option) (*DeletePredictorBacktestExportJobOutput, error) {
+	req, out := c.DeletePredictorBacktestExportJobRequest(input)
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
@@ -1835,6 +2023,102 @@ func (c *ForecastService) DescribePredictorWithContext(ctx aws.Context, input *D
 	return out, req.Send()
 }
 
+const opDescribePredictorBacktestExportJob = "DescribePredictorBacktestExportJob"
+
+// DescribePredictorBacktestExportJobRequest generates a "aws/request.Request" representing the
+// client's request for the DescribePredictorBacktestExportJob operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See DescribePredictorBacktestExportJob for more information on using the DescribePredictorBacktestExportJob
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the DescribePredictorBacktestExportJobRequest method.
+//    req, resp := client.DescribePredictorBacktestExportJobRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/forecast-2018-06-26/DescribePredictorBacktestExportJob
+func (c *ForecastService) DescribePredictorBacktestExportJobRequest(input *DescribePredictorBacktestExportJobInput) (req *request.Request, output *DescribePredictorBacktestExportJobOutput) {
+	op := &request.Operation{
+		Name:       opDescribePredictorBacktestExportJob,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &DescribePredictorBacktestExportJobInput{}
+	}
+
+	output = &DescribePredictorBacktestExportJobOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// DescribePredictorBacktestExportJob API operation for Amazon Forecast Service.
+//
+// Describes a predictor backtest export job created using the CreatePredictorBacktestExportJob
+// operation.
+//
+// In addition to listing the properties provided by the user in the CreatePredictorBacktestExportJob
+// request, this operation lists the following properties:
+//
+//    * CreationTime
+//
+//    * LastModificationTime
+//
+//    * Status
+//
+//    * Message (if an error occurred)
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for Amazon Forecast Service's
+// API operation DescribePredictorBacktestExportJob for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   We can't process the request because it includes an invalid value or a value
+//   that exceeds the valid range.
+//
+//   * ResourceNotFoundException
+//   We can't find a resource with that Amazon Resource Name (ARN). Check the
+//   ARN and try again.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/forecast-2018-06-26/DescribePredictorBacktestExportJob
+func (c *ForecastService) DescribePredictorBacktestExportJob(input *DescribePredictorBacktestExportJobInput) (*DescribePredictorBacktestExportJobOutput, error) {
+	req, out := c.DescribePredictorBacktestExportJobRequest(input)
+	return out, req.Send()
+}
+
+// DescribePredictorBacktestExportJobWithContext is the same as DescribePredictorBacktestExportJob with the addition of
+// the ability to pass a context and additional request options.
+//
+// See DescribePredictorBacktestExportJob for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *ForecastService) DescribePredictorBacktestExportJobWithContext(ctx aws.Context, input *DescribePredictorBacktestExportJobInput, opts ...request.Option) (*DescribePredictorBacktestExportJobOutput, error) {
+	req, out := c.DescribePredictorBacktestExportJobRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opGetAccuracyMetrics = "GetAccuracyMetrics"
 
 // GetAccuracyMetricsRequest generates a "aws/request.Request" representing the
@@ -1882,7 +2166,7 @@ func (c *ForecastService) GetAccuracyMetricsRequest(input *GetAccuracyMetricsInp
 // Provides metrics on the accuracy of the models that were trained by the CreatePredictor
 // operation. Use metrics to see how well the model performed and to decide
 // whether to use the predictor to generate a forecast. For more information,
-// see metrics.
+// see Predictor Metrics (https://docs.aws.amazon.com/forecast/latest/dg/metrics.html).
 //
 // This operation generates metrics for each backtest window that was evaluated.
 // The number of backtest windows (NumberOfBacktestWindows) is specified using
@@ -2649,6 +2933,152 @@ func (c *ForecastService) ListForecastsPagesWithContext(ctx aws.Context, input *
 
 	for p.Next() {
 		if !fn(p.Page().(*ListForecastsOutput), !p.HasNextPage()) {
+			break
+		}
+	}
+
+	return p.Err()
+}
+
+const opListPredictorBacktestExportJobs = "ListPredictorBacktestExportJobs"
+
+// ListPredictorBacktestExportJobsRequest generates a "aws/request.Request" representing the
+// client's request for the ListPredictorBacktestExportJobs operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See ListPredictorBacktestExportJobs for more information on using the ListPredictorBacktestExportJobs
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the ListPredictorBacktestExportJobsRequest method.
+//    req, resp := client.ListPredictorBacktestExportJobsRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/forecast-2018-06-26/ListPredictorBacktestExportJobs
+func (c *ForecastService) ListPredictorBacktestExportJobsRequest(input *ListPredictorBacktestExportJobsInput) (req *request.Request, output *ListPredictorBacktestExportJobsOutput) {
+	op := &request.Operation{
+		Name:       opListPredictorBacktestExportJobs,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+		Paginator: &request.Paginator{
+			InputTokens:     []string{"NextToken"},
+			OutputTokens:    []string{"NextToken"},
+			LimitToken:      "MaxResults",
+			TruncationToken: "",
+		},
+	}
+
+	if input == nil {
+		input = &ListPredictorBacktestExportJobsInput{}
+	}
+
+	output = &ListPredictorBacktestExportJobsOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// ListPredictorBacktestExportJobs API operation for Amazon Forecast Service.
+//
+// Returns a list of predictor backtest export jobs created using the CreatePredictorBacktestExportJob
+// operation. This operation returns a summary for each backtest export job.
+// You can filter the list using an array of Filter objects.
+//
+// To retrieve the complete set of properties for a particular backtest export
+// job, use the ARN with the DescribePredictorBacktestExportJob operation.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for Amazon Forecast Service's
+// API operation ListPredictorBacktestExportJobs for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidNextTokenException
+//   The token is not valid. Tokens expire after 24 hours.
+//
+//   * InvalidInputException
+//   We can't process the request because it includes an invalid value or a value
+//   that exceeds the valid range.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/forecast-2018-06-26/ListPredictorBacktestExportJobs
+func (c *ForecastService) ListPredictorBacktestExportJobs(input *ListPredictorBacktestExportJobsInput) (*ListPredictorBacktestExportJobsOutput, error) {
+	req, out := c.ListPredictorBacktestExportJobsRequest(input)
+	return out, req.Send()
+}
+
+// ListPredictorBacktestExportJobsWithContext is the same as ListPredictorBacktestExportJobs with the addition of
+// the ability to pass a context and additional request options.
+//
+// See ListPredictorBacktestExportJobs for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *ForecastService) ListPredictorBacktestExportJobsWithContext(ctx aws.Context, input *ListPredictorBacktestExportJobsInput, opts ...request.Option) (*ListPredictorBacktestExportJobsOutput, error) {
+	req, out := c.ListPredictorBacktestExportJobsRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+// ListPredictorBacktestExportJobsPages iterates over the pages of a ListPredictorBacktestExportJobs operation,
+// calling the "fn" function with the response data for each page. To stop
+// iterating, return false from the fn function.
+//
+// See ListPredictorBacktestExportJobs method for more information on how to use this operation.
+//
+// Note: This operation can generate multiple requests to a service.
+//
+//    // Example iterating over at most 3 pages of a ListPredictorBacktestExportJobs operation.
+//    pageNum := 0
+//    err := client.ListPredictorBacktestExportJobsPages(params,
+//        func(page *forecastservice.ListPredictorBacktestExportJobsOutput, lastPage bool) bool {
+//            pageNum++
+//            fmt.Println(page)
+//            return pageNum <= 3
+//        })
+//
+func (c *ForecastService) ListPredictorBacktestExportJobsPages(input *ListPredictorBacktestExportJobsInput, fn func(*ListPredictorBacktestExportJobsOutput, bool) bool) error {
+	return c.ListPredictorBacktestExportJobsPagesWithContext(aws.BackgroundContext(), input, fn)
+}
+
+// ListPredictorBacktestExportJobsPagesWithContext same as ListPredictorBacktestExportJobsPages except
+// it takes a Context and allows setting request options on the pages.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *ForecastService) ListPredictorBacktestExportJobsPagesWithContext(ctx aws.Context, input *ListPredictorBacktestExportJobsInput, fn func(*ListPredictorBacktestExportJobsOutput, bool) bool, opts ...request.Option) error {
+	p := request.Pagination{
+		NewRequest: func() (*request.Request, error) {
+			var inCpy *ListPredictorBacktestExportJobsInput
+			if input != nil {
+				tmp := *input
+				inCpy = &tmp
+			}
+			req, _ := c.ListPredictorBacktestExportJobsRequest(inCpy)
+			req.SetContext(ctx)
+			req.ApplyOptions(opts...)
+			return req, nil
+		},
+	}
+
+	for p.Next() {
+		if !fn(p.Page().(*ListPredictorBacktestExportJobsOutput), !p.HasNextPage()) {
 			break
 		}
 	}
@@ -4128,6 +4558,150 @@ func (s *CreateForecastOutput) SetForecastArn(v string) *CreateForecastOutput {
 	return s
 }
 
+type CreatePredictorBacktestExportJobInput struct {
+	_ struct{} `type:"structure"`
+
+	// The destination for an export job, an AWS Identity and Access Management
+	// (IAM) role that allows Amazon Forecast to access the location and, optionally,
+	// an AWS Key Management Service (KMS) key.
+	//
+	// Destination is a required field
+	Destination *DataDestination `type:"structure" required:"true"`
+
+	// The Amazon Resource Name (ARN) of the predictor that you want to export.
+	//
+	// PredictorArn is a required field
+	PredictorArn *string `type:"string" required:"true"`
+
+	// The name for the backtest export job.
+	//
+	// PredictorBacktestExportJobName is a required field
+	PredictorBacktestExportJobName *string `min:"1" type:"string" required:"true"`
+
+	// Optional metadata to help you categorize and organize your backtests. Each
+	// tag consists of a key and an optional value, both of which you define. Tag
+	// keys and values are case sensitive.
+	//
+	// The following restrictions apply to tags:
+	//
+	//    * For each resource, each tag key must be unique and each tag key must
+	//    have one value.
+	//
+	//    * Maximum number of tags per resource: 50.
+	//
+	//    * Maximum key length: 128 Unicode characters in UTF-8.
+	//
+	//    * Maximum value length: 256 Unicode characters in UTF-8.
+	//
+	//    * Accepted characters: all letters and numbers, spaces representable in
+	//    UTF-8, and + - = . _ : / @. If your tagging schema is used across other
+	//    services and resources, the character restrictions of those services also
+	//    apply.
+	//
+	//    * Key prefixes cannot include any upper or lowercase combination of aws:
+	//    or AWS:. Values can have this prefix. If a tag value has aws as its prefix
+	//    but the key does not, Forecast considers it to be a user tag and will
+	//    count against the limit of 50 tags. Tags with only the key prefix of aws
+	//    do not count against your tags per resource limit. You cannot edit or
+	//    delete tag keys with this prefix.
+	Tags []*Tag `type:"list"`
+}
+
+// String returns the string representation
+func (s CreatePredictorBacktestExportJobInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreatePredictorBacktestExportJobInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *CreatePredictorBacktestExportJobInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "CreatePredictorBacktestExportJobInput"}
+	if s.Destination == nil {
+		invalidParams.Add(request.NewErrParamRequired("Destination"))
+	}
+	if s.PredictorArn == nil {
+		invalidParams.Add(request.NewErrParamRequired("PredictorArn"))
+	}
+	if s.PredictorBacktestExportJobName == nil {
+		invalidParams.Add(request.NewErrParamRequired("PredictorBacktestExportJobName"))
+	}
+	if s.PredictorBacktestExportJobName != nil && len(*s.PredictorBacktestExportJobName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("PredictorBacktestExportJobName", 1))
+	}
+	if s.Destination != nil {
+		if err := s.Destination.Validate(); err != nil {
+			invalidParams.AddNested("Destination", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.Tags != nil {
+		for i, v := range s.Tags {
+			if v == nil {
+				continue
+			}
+			if err := v.Validate(); err != nil {
+				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "Tags", i), err.(request.ErrInvalidParams))
+			}
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetDestination sets the Destination field's value.
+func (s *CreatePredictorBacktestExportJobInput) SetDestination(v *DataDestination) *CreatePredictorBacktestExportJobInput {
+	s.Destination = v
+	return s
+}
+
+// SetPredictorArn sets the PredictorArn field's value.
+func (s *CreatePredictorBacktestExportJobInput) SetPredictorArn(v string) *CreatePredictorBacktestExportJobInput {
+	s.PredictorArn = &v
+	return s
+}
+
+// SetPredictorBacktestExportJobName sets the PredictorBacktestExportJobName field's value.
+func (s *CreatePredictorBacktestExportJobInput) SetPredictorBacktestExportJobName(v string) *CreatePredictorBacktestExportJobInput {
+	s.PredictorBacktestExportJobName = &v
+	return s
+}
+
+// SetTags sets the Tags field's value.
+func (s *CreatePredictorBacktestExportJobInput) SetTags(v []*Tag) *CreatePredictorBacktestExportJobInput {
+	s.Tags = v
+	return s
+}
+
+type CreatePredictorBacktestExportJobOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource Name (ARN) of the predictor backtest export job that
+	// you want to export.
+	PredictorBacktestExportJobArn *string `type:"string"`
+}
+
+// String returns the string representation
+func (s CreatePredictorBacktestExportJobOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreatePredictorBacktestExportJobOutput) GoString() string {
+	return s.String()
+}
+
+// SetPredictorBacktestExportJobArn sets the PredictorBacktestExportJobArn field's value.
+func (s *CreatePredictorBacktestExportJobOutput) SetPredictorBacktestExportJobArn(v string) *CreatePredictorBacktestExportJobOutput {
+	s.PredictorBacktestExportJobArn = &v
+	return s
+}
+
 type CreatePredictorInput struct {
 	_ struct{} `type:"structure"`
 
@@ -4138,8 +4712,9 @@ type CreatePredictorInput struct {
 	//
 	//    * arn:aws:forecast:::algorithm/ARIMA
 	//
-	//    * arn:aws:forecast:::algorithm/Deep_AR_Plus Supports hyperparameter optimization
-	//    (HPO)
+	//    * arn:aws:forecast:::algorithm/CNN-QR
+	//
+	//    * arn:aws:forecast:::algorithm/Deep_AR_Plus
 	//
 	//    * arn:aws:forecast:::algorithm/ETS
 	//
@@ -4175,6 +4750,14 @@ type CreatePredictorInput struct {
 	//
 	// ForecastHorizon is a required field
 	ForecastHorizon *int64 `type:"integer" required:"true"`
+
+	// Specifies the forecast types used to train a predictor. You can specify up
+	// to five forecast types. Forecast types can be quantiles from 0.01 to 0.99,
+	// by increments of 0.01 or higher. You can also specify the mean forecast with
+	// mean.
+	//
+	// The default value is ["0.10", "0.50", "0.9"].
+	ForecastTypes []*string `min:"1" type:"list"`
 
 	// Provides hyperparameter override values for the algorithm. If you don't provide
 	// this parameter, Amazon Forecast uses default values. The individual algorithms
@@ -4214,9 +4797,11 @@ type CreatePredictorInput struct {
 	// for each tunable hyperparameter. In this case, you are required to specify
 	// an algorithm and PerformAutoML must be false.
 	//
-	// The following algorithm supports HPO:
+	// The following algorithms support HPO:
 	//
 	//    * DeepAR+
+	//
+	//    * CNN-QR
 	PerformHPO *bool `type:"boolean"`
 
 	// A name for the predictor.
@@ -4279,6 +4864,9 @@ func (s *CreatePredictorInput) Validate() error {
 	}
 	if s.ForecastHorizon == nil {
 		invalidParams.Add(request.NewErrParamRequired("ForecastHorizon"))
+	}
+	if s.ForecastTypes != nil && len(s.ForecastTypes) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("ForecastTypes", 1))
 	}
 	if s.InputDataConfig == nil {
 		invalidParams.Add(request.NewErrParamRequired("InputDataConfig"))
@@ -4356,6 +4944,12 @@ func (s *CreatePredictorInput) SetForecastHorizon(v int64) *CreatePredictorInput
 	return s
 }
 
+// SetForecastTypes sets the ForecastTypes field's value.
+func (s *CreatePredictorInput) SetForecastTypes(v []*string) *CreatePredictorInput {
+	s.ForecastTypes = v
+	return s
+}
+
 // SetHPOConfig sets the HPOConfig field's value.
 func (s *CreatePredictorInput) SetHPOConfig(v *HyperParameterTuningJobConfig) *CreatePredictorInput {
 	s.HPOConfig = v
@@ -4421,10 +5015,9 @@ func (s *CreatePredictorOutput) SetPredictorArn(v string) *CreatePredictorOutput
 	return s
 }
 
-// The destination for an exported forecast, an AWS Identity and Access Management
+// The destination for an export job, an AWS Identity and Access Management
 // (IAM) role that allows Amazon Forecast to access the location and, optionally,
-// an AWS Key Management Service (KMS) key. This object is submitted in the
-// CreateForecastExportJob request.
+// an AWS Key Management Service (KMS) key.
 type DataDestination struct {
 	_ struct{} `type:"structure"`
 
@@ -5003,6 +5596,58 @@ func (s DeleteForecastOutput) String() string {
 
 // GoString returns the string representation
 func (s DeleteForecastOutput) GoString() string {
+	return s.String()
+}
+
+type DeletePredictorBacktestExportJobInput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource Name (ARN) of the predictor backtest export job to delete.
+	//
+	// PredictorBacktestExportJobArn is a required field
+	PredictorBacktestExportJobArn *string `type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s DeletePredictorBacktestExportJobInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeletePredictorBacktestExportJobInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *DeletePredictorBacktestExportJobInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "DeletePredictorBacktestExportJobInput"}
+	if s.PredictorBacktestExportJobArn == nil {
+		invalidParams.Add(request.NewErrParamRequired("PredictorBacktestExportJobArn"))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetPredictorBacktestExportJobArn sets the PredictorBacktestExportJobArn field's value.
+func (s *DeletePredictorBacktestExportJobInput) SetPredictorBacktestExportJobArn(v string) *DeletePredictorBacktestExportJobInput {
+	s.PredictorBacktestExportJobArn = &v
+	return s
+}
+
+type DeletePredictorBacktestExportJobOutput struct {
+	_ struct{} `type:"structure"`
+}
+
+// String returns the string representation
+func (s DeletePredictorBacktestExportJobOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeletePredictorBacktestExportJobOutput) GoString() string {
 	return s.String()
 }
 
@@ -5814,6 +6459,146 @@ func (s *DescribeForecastOutput) SetStatus(v string) *DescribeForecastOutput {
 	return s
 }
 
+type DescribePredictorBacktestExportJobInput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource Name (ARN) of the predictor backtest export job.
+	//
+	// PredictorBacktestExportJobArn is a required field
+	PredictorBacktestExportJobArn *string `type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s DescribePredictorBacktestExportJobInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DescribePredictorBacktestExportJobInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *DescribePredictorBacktestExportJobInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "DescribePredictorBacktestExportJobInput"}
+	if s.PredictorBacktestExportJobArn == nil {
+		invalidParams.Add(request.NewErrParamRequired("PredictorBacktestExportJobArn"))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetPredictorBacktestExportJobArn sets the PredictorBacktestExportJobArn field's value.
+func (s *DescribePredictorBacktestExportJobInput) SetPredictorBacktestExportJobArn(v string) *DescribePredictorBacktestExportJobInput {
+	s.PredictorBacktestExportJobArn = &v
+	return s
+}
+
+type DescribePredictorBacktestExportJobOutput struct {
+	_ struct{} `type:"structure"`
+
+	// When the predictor backtest export job was created.
+	CreationTime *time.Time `type:"timestamp"`
+
+	// The destination for an export job, an AWS Identity and Access Management
+	// (IAM) role that allows Amazon Forecast to access the location and, optionally,
+	// an AWS Key Management Service (KMS) key.
+	Destination *DataDestination `type:"structure"`
+
+	// When the last successful export job finished.
+	LastModificationTime *time.Time `type:"timestamp"`
+
+	// Information about any errors that may have occurred during the backtest export.
+	Message *string `type:"string"`
+
+	// The Amazon Resource Name (ARN) of the predictor.
+	PredictorArn *string `type:"string"`
+
+	// The Amazon Resource Name (ARN) of the predictor backtest export job.
+	PredictorBacktestExportJobArn *string `type:"string"`
+
+	// The name of the predictor backtest export job.
+	PredictorBacktestExportJobName *string `min:"1" type:"string"`
+
+	// The status of the predictor backtest export job. States include:
+	//
+	//    * ACTIVE
+	//
+	//    * CREATE_PENDING
+	//
+	//    * CREATE_IN_PROGRESS
+	//
+	//    * CREATE_FAILED
+	//
+	//    * DELETE_PENDING
+	//
+	//    * DELETE_IN_PROGRESS
+	//
+	//    * DELETE_FAILED
+	Status *string `type:"string"`
+}
+
+// String returns the string representation
+func (s DescribePredictorBacktestExportJobOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DescribePredictorBacktestExportJobOutput) GoString() string {
+	return s.String()
+}
+
+// SetCreationTime sets the CreationTime field's value.
+func (s *DescribePredictorBacktestExportJobOutput) SetCreationTime(v time.Time) *DescribePredictorBacktestExportJobOutput {
+	s.CreationTime = &v
+	return s
+}
+
+// SetDestination sets the Destination field's value.
+func (s *DescribePredictorBacktestExportJobOutput) SetDestination(v *DataDestination) *DescribePredictorBacktestExportJobOutput {
+	s.Destination = v
+	return s
+}
+
+// SetLastModificationTime sets the LastModificationTime field's value.
+func (s *DescribePredictorBacktestExportJobOutput) SetLastModificationTime(v time.Time) *DescribePredictorBacktestExportJobOutput {
+	s.LastModificationTime = &v
+	return s
+}
+
+// SetMessage sets the Message field's value.
+func (s *DescribePredictorBacktestExportJobOutput) SetMessage(v string) *DescribePredictorBacktestExportJobOutput {
+	s.Message = &v
+	return s
+}
+
+// SetPredictorArn sets the PredictorArn field's value.
+func (s *DescribePredictorBacktestExportJobOutput) SetPredictorArn(v string) *DescribePredictorBacktestExportJobOutput {
+	s.PredictorArn = &v
+	return s
+}
+
+// SetPredictorBacktestExportJobArn sets the PredictorBacktestExportJobArn field's value.
+func (s *DescribePredictorBacktestExportJobOutput) SetPredictorBacktestExportJobArn(v string) *DescribePredictorBacktestExportJobOutput {
+	s.PredictorBacktestExportJobArn = &v
+	return s
+}
+
+// SetPredictorBacktestExportJobName sets the PredictorBacktestExportJobName field's value.
+func (s *DescribePredictorBacktestExportJobOutput) SetPredictorBacktestExportJobName(v string) *DescribePredictorBacktestExportJobOutput {
+	s.PredictorBacktestExportJobName = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *DescribePredictorBacktestExportJobOutput) SetStatus(v string) *DescribePredictorBacktestExportJobOutput {
+	s.Status = &v
+	return s
+}
+
 type DescribePredictorInput struct {
 	_ struct{} `type:"structure"`
 
@@ -5886,6 +6671,9 @@ type DescribePredictorOutput struct {
 	// the prediction length.
 	ForecastHorizon *int64 `type:"integer"`
 
+	// The forecast types used during predictor training. Default value is ["0.1","0.5","0.9"]
+	ForecastTypes []*string `min:"1" type:"list"`
+
 	// The hyperparameter override values for the algorithm.
 	HPOConfig *HyperParameterTuningJobConfig `type:"structure"`
 
@@ -5933,9 +6721,9 @@ type DescribePredictorOutput struct {
 	Status *string `type:"string"`
 
 	// The default training parameters or overrides selected during model training.
-	// If using the AutoML algorithm or if HPO is turned on while using the DeepAR+
-	// algorithms, the optimized values for the chosen hyperparameters are returned.
-	// For more information, see aws-forecast-choosing-recipes.
+	// When running AutoML or choosing HPO with CNN-QR or DeepAR+, the optimized
+	// values for the chosen hyperparameters are returned. For more information,
+	// see aws-forecast-choosing-recipes.
 	TrainingParameters map[string]*string `type:"map"`
 }
 
@@ -5994,6 +6782,12 @@ func (s *DescribePredictorOutput) SetFeaturizationConfig(v *FeaturizationConfig)
 // SetForecastHorizon sets the ForecastHorizon field's value.
 func (s *DescribePredictorOutput) SetForecastHorizon(v int64) *DescribePredictorOutput {
 	s.ForecastHorizon = &v
+	return s
+}
+
+// SetForecastTypes sets the ForecastTypes field's value.
+func (s *DescribePredictorOutput) SetForecastTypes(v []*string) *DescribePredictorOutput {
+	s.ForecastTypes = v
 	return s
 }
 
@@ -6119,6 +6913,49 @@ func (s *EncryptionConfig) SetKMSKeyArn(v string) *EncryptionConfig {
 // SetRoleArn sets the RoleArn field's value.
 func (s *EncryptionConfig) SetRoleArn(v string) *EncryptionConfig {
 	s.RoleArn = &v
+	return s
+}
+
+// Provides detailed error metrics to evaluate the performance of a predictor.
+// This object is part of the Metrics object.
+type ErrorMetric struct {
+	_ struct{} `type:"structure"`
+
+	// The Forecast type used to compute WAPE and RMSE.
+	ForecastType *string `type:"string"`
+
+	// The root-mean-square error (RMSE).
+	RMSE *float64 `type:"double"`
+
+	// The weighted absolute percentage error (WAPE).
+	WAPE *float64 `type:"double"`
+}
+
+// String returns the string representation
+func (s ErrorMetric) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ErrorMetric) GoString() string {
+	return s.String()
+}
+
+// SetForecastType sets the ForecastType field's value.
+func (s *ErrorMetric) SetForecastType(v string) *ErrorMetric {
+	s.ForecastType = &v
+	return s
+}
+
+// SetRMSE sets the RMSE field's value.
+func (s *ErrorMetric) SetRMSE(v float64) *ErrorMetric {
+	s.RMSE = &v
+	return s
+}
+
+// SetWAPE sets the WAPE field's value.
+func (s *ErrorMetric) SetWAPE(v float64) *ErrorMetric {
+	s.WAPE = &v
 	return s
 }
 
@@ -6444,6 +7281,11 @@ type FeaturizationMethod struct {
 	//    * backfill: zero, value, median, mean, min, max
 	//
 	//    * futurefill: zero, value, median, mean, min, max
+	//
+	// To set a filling method to a specific value, set the fill parameter to value
+	// and define the value in a corresponding _value parameter. For example, to
+	// set backfilling to a value of 2, include the following: "backfill": "value"
+	// and "backfill_value":"2".
 	FeaturizationMethodParameters map[string]*string `min:"1" type:"map"`
 }
 
@@ -7732,6 +8574,124 @@ func (s *ListForecastsOutput) SetNextToken(v string) *ListForecastsOutput {
 	return s
 }
 
+type ListPredictorBacktestExportJobsInput struct {
+	_ struct{} `type:"structure"`
+
+	// An array of filters. For each filter, provide a condition and a match statement.
+	// The condition is either IS or IS_NOT, which specifies whether to include
+	// or exclude the predictor backtest export jobs that match the statement from
+	// the list. The match statement consists of a key and a value.
+	//
+	// Filter properties
+	//
+	//    * Condition - The condition to apply. Valid values are IS and IS_NOT.
+	//    To include the predictor backtest export jobs that match the statement,
+	//    specify IS. To exclude matching predictor backtest export jobs, specify
+	//    IS_NOT.
+	//
+	//    * Key - The name of the parameter to filter on. Valid values are PredictorBacktestExportJobArn
+	//    and Status.
+	//
+	//    * Value - The value to match.
+	Filters []*Filter `type:"list"`
+
+	// The number of items to return in the response.
+	MaxResults *int64 `min:"1" type:"integer"`
+
+	// If the result of the previous request was truncated, the response includes
+	// a NextToken. To retrieve the next set of results, use the token in the next
+	// request. Tokens expire after 24 hours.
+	NextToken *string `min:"1" type:"string"`
+}
+
+// String returns the string representation
+func (s ListPredictorBacktestExportJobsInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ListPredictorBacktestExportJobsInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *ListPredictorBacktestExportJobsInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "ListPredictorBacktestExportJobsInput"}
+	if s.MaxResults != nil && *s.MaxResults < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("MaxResults", 1))
+	}
+	if s.NextToken != nil && len(*s.NextToken) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("NextToken", 1))
+	}
+	if s.Filters != nil {
+		for i, v := range s.Filters {
+			if v == nil {
+				continue
+			}
+			if err := v.Validate(); err != nil {
+				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "Filters", i), err.(request.ErrInvalidParams))
+			}
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetFilters sets the Filters field's value.
+func (s *ListPredictorBacktestExportJobsInput) SetFilters(v []*Filter) *ListPredictorBacktestExportJobsInput {
+	s.Filters = v
+	return s
+}
+
+// SetMaxResults sets the MaxResults field's value.
+func (s *ListPredictorBacktestExportJobsInput) SetMaxResults(v int64) *ListPredictorBacktestExportJobsInput {
+	s.MaxResults = &v
+	return s
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *ListPredictorBacktestExportJobsInput) SetNextToken(v string) *ListPredictorBacktestExportJobsInput {
+	s.NextToken = &v
+	return s
+}
+
+type ListPredictorBacktestExportJobsOutput struct {
+	_ struct{} `type:"structure"`
+
+	// Returns this token if the response is truncated. To retrieve the next set
+	// of results, use the token in the next request.
+	NextToken *string `min:"1" type:"string"`
+
+	// An array of objects that summarize the properties of each predictor backtest
+	// export job.
+	PredictorBacktestExportJobs []*PredictorBacktestExportJobSummary `type:"list"`
+}
+
+// String returns the string representation
+func (s ListPredictorBacktestExportJobsOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ListPredictorBacktestExportJobsOutput) GoString() string {
+	return s.String()
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *ListPredictorBacktestExportJobsOutput) SetNextToken(v string) *ListPredictorBacktestExportJobsOutput {
+	s.NextToken = &v
+	return s
+}
+
+// SetPredictorBacktestExportJobs sets the PredictorBacktestExportJobs field's value.
+func (s *ListPredictorBacktestExportJobsOutput) SetPredictorBacktestExportJobs(v []*PredictorBacktestExportJobSummary) *ListPredictorBacktestExportJobsOutput {
+	s.PredictorBacktestExportJobs = v
+	return s
+}
+
 type ListPredictorsInput struct {
 	_ struct{} `type:"structure"`
 
@@ -7921,8 +8881,14 @@ func (s *ListTagsForResourceOutput) SetTags(v []*Tag) *ListTagsForResourceOutput
 type Metrics struct {
 	_ struct{} `type:"structure"`
 
-	// The root mean square error (RMSE).
-	RMSE *float64 `type:"double"`
+	// Provides detailed error metrics on forecast type, root-mean square-error
+	// (RMSE), and weighted average percentage error (WAPE).
+	ErrorMetrics []*ErrorMetric `type:"list"`
+
+	// The root-mean-square error (RMSE).
+	//
+	// Deprecated: This property is deprecated, please refer to ErrorMetrics for both RMSE and WAPE
+	RMSE *float64 `deprecated:"true" type:"double"`
 
 	// An array of weighted quantile losses. Quantiles divide a probability distribution
 	// into regions of equal probability. The distribution in this case is the loss
@@ -7938,6 +8904,12 @@ func (s Metrics) String() string {
 // GoString returns the string representation
 func (s Metrics) GoString() string {
 	return s.String()
+}
+
+// SetErrorMetrics sets the ErrorMetrics field's value.
+func (s *Metrics) SetErrorMetrics(v []*ErrorMetric) *Metrics {
+	s.ErrorMetrics = v
+	return s
 }
 
 // SetRMSE sets the RMSE field's value.
@@ -8043,6 +9015,103 @@ func (s *ParameterRanges) SetContinuousParameterRanges(v []*ContinuousParameterR
 // SetIntegerParameterRanges sets the IntegerParameterRanges field's value.
 func (s *ParameterRanges) SetIntegerParameterRanges(v []*IntegerParameterRange) *ParameterRanges {
 	s.IntegerParameterRanges = v
+	return s
+}
+
+// Provides a summary of the predictor backtest export job properties used in
+// the ListPredictorBacktestExportJobs operation. To get a complete set of properties,
+// call the DescribePredictorBacktestExportJob operation, and provide the listed
+// PredictorBacktestExportJobArn.
+type PredictorBacktestExportJobSummary struct {
+	_ struct{} `type:"structure"`
+
+	// When the predictor backtest export job was created.
+	CreationTime *time.Time `type:"timestamp"`
+
+	// The destination for an export job, an AWS Identity and Access Management
+	// (IAM) role that allows Amazon Forecast to access the location and, optionally,
+	// an AWS Key Management Service (KMS) key.
+	Destination *DataDestination `type:"structure"`
+
+	// When the last successful export job finished.
+	LastModificationTime *time.Time `type:"timestamp"`
+
+	// Information about any errors that may have occurred during the backtest export.
+	Message *string `type:"string"`
+
+	// The Amazon Resource Name (ARN) of the predictor backtest export job.
+	PredictorBacktestExportJobArn *string `type:"string"`
+
+	// The name of the predictor backtest export job.
+	PredictorBacktestExportJobName *string `min:"1" type:"string"`
+
+	// The status of the predictor backtest export job. States include:
+	//
+	//    * ACTIVE
+	//
+	//    * CREATE_PENDING
+	//
+	//    * CREATE_IN_PROGRESS
+	//
+	//    * CREATE_FAILED
+	//
+	//    * DELETE_PENDING
+	//
+	//    * DELETE_IN_PROGRESS
+	//
+	//    * DELETE_FAILED
+	Status *string `type:"string"`
+}
+
+// String returns the string representation
+func (s PredictorBacktestExportJobSummary) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s PredictorBacktestExportJobSummary) GoString() string {
+	return s.String()
+}
+
+// SetCreationTime sets the CreationTime field's value.
+func (s *PredictorBacktestExportJobSummary) SetCreationTime(v time.Time) *PredictorBacktestExportJobSummary {
+	s.CreationTime = &v
+	return s
+}
+
+// SetDestination sets the Destination field's value.
+func (s *PredictorBacktestExportJobSummary) SetDestination(v *DataDestination) *PredictorBacktestExportJobSummary {
+	s.Destination = v
+	return s
+}
+
+// SetLastModificationTime sets the LastModificationTime field's value.
+func (s *PredictorBacktestExportJobSummary) SetLastModificationTime(v time.Time) *PredictorBacktestExportJobSummary {
+	s.LastModificationTime = &v
+	return s
+}
+
+// SetMessage sets the Message field's value.
+func (s *PredictorBacktestExportJobSummary) SetMessage(v string) *PredictorBacktestExportJobSummary {
+	s.Message = &v
+	return s
+}
+
+// SetPredictorBacktestExportJobArn sets the PredictorBacktestExportJobArn field's value.
+func (s *PredictorBacktestExportJobSummary) SetPredictorBacktestExportJobArn(v string) *PredictorBacktestExportJobSummary {
+	s.PredictorBacktestExportJobArn = &v
+	return s
+}
+
+// SetPredictorBacktestExportJobName sets the PredictorBacktestExportJobName field's value.
+func (s *PredictorBacktestExportJobSummary) SetPredictorBacktestExportJobName(v string) *PredictorBacktestExportJobSummary {
+	s.PredictorBacktestExportJobName = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *PredictorBacktestExportJobSummary) SetStatus(v string) *PredictorBacktestExportJobSummary {
+	s.Status = &v
 	return s
 }
 
@@ -8376,8 +9445,7 @@ func (s *ResourceNotFoundException) RequestID() string {
 // and an AWS Identity and Access Management (IAM) role that Amazon Forecast
 // can assume to access the file(s). Optionally, includes an AWS Key Management
 // Service (KMS) key. This object is part of the DataSource object that is submitted
-// in the CreateDatasetImportJob request, and part of the DataDestination object
-// that is submitted in the CreateForecastExportJob request.
+// in the CreateDatasetImportJob request, and part of the DataDestination object.
 type S3Config struct {
 	_ struct{} `type:"structure"`
 
@@ -8632,39 +9700,10 @@ func (s *Statistics) SetStddev(v float64) *Statistics {
 // Describes a supplementary feature of a dataset group. This object is part
 // of the InputDataConfig object.
 //
-// The only supported feature is a holiday calendar. If you use the calendar,
-// all data in the datasets should belong to the same country as the calendar.
-// For the holiday calendar data, see the Jollyday (http://jollyday.sourceforge.net/data.html)
-// web site.
-//
-// India and Korea's holidays are not included in the Jollyday library, but
-// both are supported by Amazon Forecast. Their holidays are:
-//
-// "IN" - INDIA
-//
-//    * JANUARY 26 - REPUBLIC DAY
-//
-//    * AUGUST 15 - INDEPENDENCE DAY
-//
-//    * OCTOBER 2 GANDHI'S BIRTHDAY
-//
-// "KR" - KOREA
-//
-//    * JANUARY 1 - NEW YEAR
-//
-//    * MARCH 1 - INDEPENDENCE MOVEMENT DAY
-//
-//    * MAY 5 - CHILDREN'S DAY
-//
-//    * JUNE 6 - MEMORIAL DAY
-//
-//    * AUGUST 15 - LIBERATION DAY
-//
-//    * OCTOBER 3 - NATIONAL FOUNDATION DAY
-//
-//    * OCTOBER 9 - HANGEUL DAY
-//
-//    * DECEMBER 25 - CHRISTMAS DAY
+// The only supported feature is Holidays. If you use the calendar, all data
+// in the datasets should belong to the same country as the calendar. For the
+// holiday calendar data, see the Jollyday (http://jollyday.sourceforge.net/data.html)
+// website.
 type SupplementaryFeature struct {
 	_ struct{} `type:"structure"`
 
@@ -8675,19 +9714,35 @@ type SupplementaryFeature struct {
 
 	// One of the following 2 letter country codes:
 	//
+	//    * "AL" - ALBANIA
+	//
 	//    * "AR" - ARGENTINA
 	//
 	//    * "AT" - AUSTRIA
 	//
 	//    * "AU" - AUSTRALIA
 	//
+	//    * "BA" - BOSNIA HERZEGOVINA
+	//
 	//    * "BE" - BELGIUM
+	//
+	//    * "BG" - BULGARIA
+	//
+	//    * "BO" - BOLIVIA
 	//
 	//    * "BR" - BRAZIL
 	//
+	//    * "BY" - BELARUS
+	//
 	//    * "CA" - CANADA
 	//
-	//    * "CN" - CHINA
+	//    * "CL" - CHILE
+	//
+	//    * "CO" - COLOMBIA
+	//
+	//    * "CR" - COSTA RICA
+	//
+	//    * "HR" - CROATIA
 	//
 	//    * "CZ" - CZECH REPUBLIC
 	//
@@ -8695,37 +9750,81 @@ type SupplementaryFeature struct {
 	//
 	//    * "EC" - ECUADOR
 	//
+	//    * "EE" - ESTONIA
+	//
+	//    * "ET" - ETHIOPIA
+	//
 	//    * "FI" - FINLAND
 	//
 	//    * "FR" - FRANCE
 	//
 	//    * "DE" - GERMANY
 	//
+	//    * "GR" - GREECE
+	//
 	//    * "HU" - HUNGARY
 	//
-	//    * "IE" - IRELAND
+	//    * "IS" - ICELAND
 	//
 	//    * "IN" - INDIA
+	//
+	//    * "IE" - IRELAND
 	//
 	//    * "IT" - ITALY
 	//
 	//    * "JP" - JAPAN
 	//
+	//    * "KZ" - KAZAKHSTAN
+	//
 	//    * "KR" - KOREA
+	//
+	//    * "LV" - LATVIA
+	//
+	//    * "LI" - LIECHTENSTEIN
+	//
+	//    * "LT" - LITHUANIA
 	//
 	//    * "LU" - LUXEMBOURG
 	//
+	//    * "MK" - MACEDONIA
+	//
+	//    * "MT" - MALTA
+	//
 	//    * "MX" - MEXICO
+	//
+	//    * "MD" - MOLDOVA
+	//
+	//    * "ME" - MONTENEGRO
 	//
 	//    * "NL" - NETHERLANDS
 	//
+	//    * "NZ" - NEW ZEALAND
+	//
+	//    * "NI" - NICARAGUA
+	//
+	//    * "NG" - NIGERIA
+	//
 	//    * "NO" - NORWAY
+	//
+	//    * "PA" - PANAMA
+	//
+	//    * "PY" - PARAGUAY
+	//
+	//    * "PE" - PERU
 	//
 	//    * "PL" - POLAND
 	//
 	//    * "PT" - PORTUGAL
 	//
+	//    * "RO" - ROMANIA
+	//
 	//    * "RU" - RUSSIA
+	//
+	//    * "RS" - SERBIA
+	//
+	//    * "SK" - SLOVAKIA
+	//
+	//    * "SI" - SLOVENIA
 	//
 	//    * "ZA" - SOUTH AFRICA
 	//
@@ -8735,9 +9834,17 @@ type SupplementaryFeature struct {
 	//
 	//    * "CH" - SWITZERLAND
 	//
+	//    * "UA" - UKRAINE
+	//
+	//    * "AE" - UNITED ARAB EMIRATES
+	//
 	//    * "US" - UNITED STATES
 	//
 	//    * "UK" - UNITED KINGDOM
+	//
+	//    * "UY" - URUGUAY
+	//
+	//    * "VE" - VENEZUELA
 	//
 	// Value is a required field
 	Value *string `type:"string" required:"true"`

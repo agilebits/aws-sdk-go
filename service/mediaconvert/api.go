@@ -3698,6 +3698,124 @@ func (s *AudioSelectorGroup) SetAudioSelectorNames(v []*string) *AudioSelectorGr
 	return s
 }
 
+// Use automated ABR to have MediaConvert set up the renditions in your ABR
+// package for you automatically, based on characteristics of your input video.
+// This feature optimizes video quality while minimizing the overall size of
+// your ABR package.
+type AutomatedAbrSettings struct {
+	_ struct{} `type:"structure"`
+
+	// Optional. The maximum target bit rate used in your automated ABR stack. Use
+	// this value to set an upper limit on the bandwidth consumed by the highest-quality
+	// rendition. This is the rendition that is delivered to viewers with the fastest
+	// internet connections. If you don't specify a value, MediaConvert uses 8,000,000
+	// (8 mb/s) by default.
+	MaxAbrBitrate *int64 `locationName:"maxAbrBitrate" min:"100000" type:"integer"`
+
+	// Optional. The maximum number of renditions that MediaConvert will create
+	// in your automated ABR stack. The number of renditions is determined automatically,
+	// based on analysis of each job, but will never exceed this limit. When you
+	// set this to Auto in the console, which is equivalent to excluding it from
+	// your JSON job specification, MediaConvert defaults to a limit of 15.
+	MaxRenditions *int64 `locationName:"maxRenditions" min:"3" type:"integer"`
+
+	// Optional. The minimum target bitrate used in your automated ABR stack. Use
+	// this value to set a lower limit on the bitrate of video delivered to viewers
+	// with slow internet connections. If you don't specify a value, MediaConvert
+	// uses 600,000 (600 kb/s) by default.
+	MinAbrBitrate *int64 `locationName:"minAbrBitrate" min:"100000" type:"integer"`
+}
+
+// String returns the string representation
+func (s AutomatedAbrSettings) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s AutomatedAbrSettings) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *AutomatedAbrSettings) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "AutomatedAbrSettings"}
+	if s.MaxAbrBitrate != nil && *s.MaxAbrBitrate < 100000 {
+		invalidParams.Add(request.NewErrParamMinValue("MaxAbrBitrate", 100000))
+	}
+	if s.MaxRenditions != nil && *s.MaxRenditions < 3 {
+		invalidParams.Add(request.NewErrParamMinValue("MaxRenditions", 3))
+	}
+	if s.MinAbrBitrate != nil && *s.MinAbrBitrate < 100000 {
+		invalidParams.Add(request.NewErrParamMinValue("MinAbrBitrate", 100000))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetMaxAbrBitrate sets the MaxAbrBitrate field's value.
+func (s *AutomatedAbrSettings) SetMaxAbrBitrate(v int64) *AutomatedAbrSettings {
+	s.MaxAbrBitrate = &v
+	return s
+}
+
+// SetMaxRenditions sets the MaxRenditions field's value.
+func (s *AutomatedAbrSettings) SetMaxRenditions(v int64) *AutomatedAbrSettings {
+	s.MaxRenditions = &v
+	return s
+}
+
+// SetMinAbrBitrate sets the MinAbrBitrate field's value.
+func (s *AutomatedAbrSettings) SetMinAbrBitrate(v int64) *AutomatedAbrSettings {
+	s.MinAbrBitrate = &v
+	return s
+}
+
+// Use automated encoding to have MediaConvert choose your encoding settings
+// for you, based on characteristics of your input video.
+type AutomatedEncodingSettings struct {
+	_ struct{} `type:"structure"`
+
+	// Use automated ABR to have MediaConvert set up the renditions in your ABR
+	// package for you automatically, based on characteristics of your input video.
+	// This feature optimizes video quality while minimizing the overall size of
+	// your ABR package.
+	AbrSettings *AutomatedAbrSettings `locationName:"abrSettings" type:"structure"`
+}
+
+// String returns the string representation
+func (s AutomatedEncodingSettings) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s AutomatedEncodingSettings) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *AutomatedEncodingSettings) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "AutomatedEncodingSettings"}
+	if s.AbrSettings != nil {
+		if err := s.AbrSettings.Validate(); err != nil {
+			invalidParams.AddNested("AbrSettings", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetAbrSettings sets the AbrSettings field's value.
+func (s *AutomatedEncodingSettings) SetAbrSettings(v *AutomatedAbrSettings) *AutomatedEncodingSettings {
+	s.AbrSettings = v
+	return s
+}
+
 // Settings for quality-defined variable bitrate encoding with the AV1 codec.
 // Required when you set Rate control mode to QVBR. Not valid when you set Rate
 // control mode to a value other than QVBR, or when you don't define Rate control
@@ -5269,8 +5387,10 @@ type CmafGroupSettings struct {
 	// than the manifest file.
 	BaseUrl *string `locationName:"baseUrl" type:"string"`
 
-	// When set to ENABLED, sets #EXT-X-ALLOW-CACHE:no tag, which prevents client
-	// from saving media segments for later replay.
+	// Disable this setting only when your workflow requires the #EXT-X-ALLOW-CACHE:no
+	// tag. Otherwise, keep the default value Enabled (ENABLED) and control caching
+	// in your video distribution set up. For example, use the Cache-Control http
+	// header.
 	ClientCache *string `locationName:"clientCache" type:"string" enum:"CmafClientCache"`
 
 	// Specification to use (RFC-6381 or the default RFC-4281) during m3u8 playlist
@@ -5524,6 +5644,21 @@ func (s *CmafGroupSettings) SetWriteSegmentTimelineInRepresentation(v string) *C
 type CmfcSettings struct {
 	_ struct{} `type:"structure"`
 
+	// Specify this setting only when your output will be consumed by a downstream
+	// repackaging workflow that is sensitive to very small duration differences
+	// between video and audio. For this situation, choose Match video duration
+	// (MATCH_VIDEO_DURATION). In all other cases, keep the default value, Default
+	// codec duration (DEFAULT_CODEC_DURATION). When you choose Match video duration,
+	// MediaConvert pads the output audio streams with silence or trims them to
+	// ensure that the total duration of each audio stream is at least as long as
+	// the total duration of the video stream. After padding or trimming, the audio
+	// stream duration is no more than one frame longer than the video stream. MediaConvert
+	// applies audio padding or trimming only to the end of the last segment of
+	// the output. For unsegmented outputs, MediaConvert adds padding only to the
+	// end of the file. When you keep the default value, any minor discrepancies
+	// between audio and video duration will depend on your output audio codec.
+	AudioDuration *string `locationName:"audioDuration" type:"string" enum:"CmfcAudioDuration"`
+
 	// Use this setting only when you specify SCTE-35 markers from ESAM. Choose
 	// INSERT to put SCTE-35 markers in this output at the insertion points that
 	// you specify in an ESAM XML document. Provide the document in the setting
@@ -5545,6 +5680,12 @@ func (s CmfcSettings) String() string {
 // GoString returns the string representation
 func (s CmfcSettings) GoString() string {
 	return s.String()
+}
+
+// SetAudioDuration sets the AudioDuration field's value.
+func (s *CmfcSettings) SetAudioDuration(v string) *CmfcSettings {
+	s.AudioDuration = &v
+	return s
 }
 
 // SetScte35Esam sets the Scte35Esam field's value.
@@ -5917,11 +6058,15 @@ type CreateJobInput struct {
 	StatusUpdateInterval *string `locationName:"statusUpdateInterval" type:"string" enum:"StatusUpdateInterval"`
 
 	// Optional. The tags that you want to add to the resource. You can tag resources
-	// with a key-value pair or with only a key.
+	// with a key-value pair or with only a key. Use standard AWS tags on your job
+	// for automatic integration with AWS services and for custom integrations and
+	// workflows.
 	Tags map[string]*string `locationName:"tags" type:"map"`
 
 	// Optional. User-defined metadata that you want to associate with an MediaConvert
-	// job. You specify metadata in key/value pairs.
+	// job. You specify metadata in key/value pairs. Use only for existing integrations
+	// or workflows that rely on job metadata tags. Otherwise, we recommend that
+	// you use standard AWS tags.
 	UserMetadata map[string]*string `locationName:"userMetadata" type:"map"`
 }
 
@@ -6647,6 +6792,19 @@ type DashIsoGroupSettings struct {
 	// playout.
 	MinBufferTime *int64 `locationName:"minBufferTime" type:"integer"`
 
+	// Keep this setting at the default value of 0, unless you are troubleshooting
+	// a problem with how devices play back the end of your video asset. If you
+	// know that player devices are hanging on the final segment of your video because
+	// the length of your final segment is too short, use this setting to specify
+	// a minimum final segment length, in seconds. Choose a value that is greater
+	// than or equal to 1 and less than your segment length. When you specify a
+	// value for this setting, the encoder will combine any final segment that is
+	// shorter than the length that you specify with the previous segment. For example,
+	// your segment length is 3 seconds and your final segment is .5 seconds without
+	// a minimum final segment length; when you set the minimum final segment length
+	// to 1, your final segment is 3.5 seconds.
+	MinFinalSegmentLength *float64 `locationName:"minFinalSegmentLength" type:"double"`
+
 	// Specify whether your DASH profile is on-demand or main. When you choose Main
 	// profile (MAIN_PROFILE), the service signals urn:mpeg:dash:profile:isoff-main:2011
 	// in your .mpd DASH manifest. When you choose On-demand (ON_DEMAND_PROFILE),
@@ -6758,6 +6916,12 @@ func (s *DashIsoGroupSettings) SetHbbtvCompliance(v string) *DashIsoGroupSetting
 // SetMinBufferTime sets the MinBufferTime field's value.
 func (s *DashIsoGroupSettings) SetMinBufferTime(v int64) *DashIsoGroupSettings {
 	s.MinBufferTime = &v
+	return s
+}
+
+// SetMinFinalSegmentLength sets the MinFinalSegmentLength field's value.
+func (s *DashIsoGroupSettings) SetMinFinalSegmentLength(v float64) *DashIsoGroupSettings {
+	s.MinFinalSegmentLength = &v
 	return s
 }
 
@@ -9104,10 +9268,15 @@ func (s *H264QvbrSettings) SetQvbrQualityLevelFineTune(v float64) *H264QvbrSetti
 type H264Settings struct {
 	_ struct{} `type:"structure"`
 
-	// Specify the strength of any adaptive quantization filters that you enable.
-	// The value that you choose here applies to the following settings: Flicker
-	// adaptive quantization (flickerAdaptiveQuantization), Spatial adaptive quantization
-	// (spatialAdaptiveQuantization), and Temporal adaptive quantization (temporalAdaptiveQuantization).
+	// Keep the default value, Auto (AUTO), for this setting to have MediaConvert
+	// automatically apply the best types of quantization for your video content.
+	// When you want to apply your quantization settings manually, you must set
+	// H264AdaptiveQuantization to a value other than Auto (AUTO). Use this setting
+	// to specify the strength of any adaptive quantization filters that you enable.
+	// If you don't want MediaConvert to do any adaptive quantization in this transcode,
+	// set Adaptive quantization (H264AdaptiveQuantization) to Off (OFF). Related
+	// settings: The value that you choose here applies to the following settings:
+	// H264FlickerAdaptiveQuantization, H264SpatialAdaptiveQuantization, and H264TemporalAdaptiveQuantization.
 	AdaptiveQuantization *string `locationName:"adaptiveQuantization" type:"string" enum:"H264AdaptiveQuantization"`
 
 	// Specify the average bitrate in bits per second. Required for VBR and CBR.
@@ -9138,13 +9307,19 @@ type H264Settings struct {
 	// and create separate interlaced fields.
 	FieldEncoding *string `locationName:"fieldEncoding" type:"string" enum:"H264FieldEncoding"`
 
-	// Enable this setting to have the encoder reduce I-frame pop. I-frame pop appears
+	// Only use this setting when you change the default value, AUTO, for the setting
+	// H264AdaptiveQuantization. When you keep all defaults, excluding H264AdaptiveQuantization
+	// and all other adaptive quantization from your JSON job specification, MediaConvert
+	// automatically applies the best types of quantization for your video content.
+	// When you set H264AdaptiveQuantization to a value other than AUTO, the default
+	// value for H264FlickerAdaptiveQuantization is Disabled (DISABLED). Change
+	// this value to Enabled (ENABLED) to reduce I-frame pop. I-frame pop appears
 	// as a visual flicker that can arise when the encoder saves bits by copying
 	// some macroblocks many times from frame to frame, and then refreshes them
 	// at the I-frame. When you enable this setting, the encoder updates these macroblocks
-	// slightly more often to smooth out the flicker. This setting is disabled by
-	// default. Related setting: In addition to enabling this setting, you must
-	// also set adaptiveQuantization to a value other than Off (OFF).
+	// slightly more often to smooth out the flicker. To manually enable or disable
+	// H264FlickerAdaptiveQuantization, you must set Adaptive quantization (H264AdaptiveQuantization)
+	// to a value other than AUTO.
 	FlickerAdaptiveQuantization *string `locationName:"flickerAdaptiveQuantization" type:"string" enum:"H264FlickerAdaptiveQuantization"`
 
 	// If you are using the console, use the Framerate setting to specify the frame
@@ -9323,7 +9498,13 @@ type H264Settings struct {
 	// of high-frequency data. The value 128 results in the softest video.
 	Softness *int64 `locationName:"softness" type:"integer"`
 
-	// Keep the default value, Enabled (ENABLED), to adjust quantization within
+	// Only use this setting when you change the default value, Auto (AUTO), for
+	// the setting H264AdaptiveQuantization. When you keep all defaults, excluding
+	// H264AdaptiveQuantization and all other adaptive quantization from your JSON
+	// job specification, MediaConvert automatically applies the best types of quantization
+	// for your video content. When you set H264AdaptiveQuantization to a value
+	// other than AUTO, the default value for H264SpatialAdaptiveQuantization is
+	// Enabled (ENABLED). Keep this default value to adjust quantization within
 	// each frame based on spatial variation of content complexity. When you enable
 	// this feature, the encoder uses fewer bits on areas that can sustain more
 	// distortion with no noticeable visual degradation and uses more bits on areas
@@ -9333,11 +9514,13 @@ type H264Settings struct {
 	// quality. Note, though, that this feature doesn't take into account where
 	// the viewer's attention is likely to be. If viewers are likely to be focusing
 	// their attention on a part of the screen with a lot of complex texture, you
-	// might choose to disable this feature. Related setting: When you enable spatial
-	// adaptive quantization, set the value for Adaptive quantization (adaptiveQuantization)
-	// depending on your content. For homogeneous content, such as cartoons and
-	// video games, set it to Low. For content with a wider variety of textures,
-	// set it to High or Higher.
+	// might choose to set H264SpatialAdaptiveQuantization to Disabled (DISABLED).
+	// Related setting: When you enable spatial adaptive quantization, set the value
+	// for Adaptive quantization (H264AdaptiveQuantization) depending on your content.
+	// For homogeneous content, such as cartoons and video games, set it to Low.
+	// For content with a wider variety of textures, set it to High or Higher. To
+	// manually enable or disable H264SpatialAdaptiveQuantization, you must set
+	// Adaptive quantization (H264AdaptiveQuantization) to a value other than AUTO.
 	SpatialAdaptiveQuantization *string `locationName:"spatialAdaptiveQuantization" type:"string" enum:"H264SpatialAdaptiveQuantization"`
 
 	// Produces a bitstream compliant with SMPTE RP-2027.
@@ -9353,19 +9536,27 @@ type H264Settings struct {
 	// the field polarity to create a smoother picture.
 	Telecine *string `locationName:"telecine" type:"string" enum:"H264Telecine"`
 
-	// Keep the default value, Enabled (ENABLED), to adjust quantization within
-	// each frame based on temporal variation of content complexity. When you enable
-	// this feature, the encoder uses fewer bits on areas of the frame that aren't
-	// moving and uses more bits on complex objects with sharp edges that move a
-	// lot. For example, this feature improves the readability of text tickers on
-	// newscasts and scoreboards on sports matches. Enabling this feature will almost
-	// always improve your video quality. Note, though, that this feature doesn't
-	// take into account where the viewer's attention is likely to be. If viewers
-	// are likely to be focusing their attention on a part of the screen that doesn't
-	// have moving objects with sharp edges, such as sports athletes' faces, you
-	// might choose to disable this feature. Related setting: When you enable temporal
-	// quantization, adjust the strength of the filter with the setting Adaptive
-	// quantization (adaptiveQuantization).
+	// Only use this setting when you change the default value, AUTO, for the setting
+	// H264AdaptiveQuantization. When you keep all defaults, excluding H264AdaptiveQuantization
+	// and all other adaptive quantization from your JSON job specification, MediaConvert
+	// automatically applies the best types of quantization for your video content.
+	// When you set H264AdaptiveQuantization to a value other than AUTO, the default
+	// value for H264TemporalAdaptiveQuantization is Enabled (ENABLED). Keep this
+	// default value to adjust quantization within each frame based on temporal
+	// variation of content complexity. When you enable this feature, the encoder
+	// uses fewer bits on areas of the frame that aren't moving and uses more bits
+	// on complex objects with sharp edges that move a lot. For example, this feature
+	// improves the readability of text tickers on newscasts and scoreboards on
+	// sports matches. Enabling this feature will almost always improve your video
+	// quality. Note, though, that this feature doesn't take into account where
+	// the viewer's attention is likely to be. If viewers are likely to be focusing
+	// their attention on a part of the screen that doesn't have moving objects
+	// with sharp edges, such as sports athletes' faces, you might choose to set
+	// H264TemporalAdaptiveQuantization to Disabled (DISABLED). Related setting:
+	// When you enable temporal quantization, adjust the strength of the filter
+	// with the setting Adaptive quantization (adaptiveQuantization). To manually
+	// enable or disable H264TemporalAdaptiveQuantization, you must set Adaptive
+	// quantization (H264AdaptiveQuantization) to a value other than AUTO.
 	TemporalAdaptiveQuantization *string `locationName:"temporalAdaptiveQuantization" type:"string" enum:"H264TemporalAdaptiveQuantization"`
 
 	// Inserts timecode for each frame as 4 bytes of an unregistered SEI message.
@@ -10709,8 +10900,10 @@ type HlsGroupSettings struct {
 	// line from the manifest.
 	CaptionLanguageSetting *string `locationName:"captionLanguageSetting" type:"string" enum:"HlsCaptionLanguageSetting"`
 
-	// When set to ENABLED, sets #EXT-X-ALLOW-CACHE:no tag, which prevents client
-	// from saving media segments for later replay.
+	// Disable this setting only when your workflow requires the #EXT-X-ALLOW-CACHE:no
+	// tag. Otherwise, keep the default value Enabled (ENABLED) and control caching
+	// in your video distribution set up. For example, use the Cache-Control http
+	// header.
 	ClientCache *string `locationName:"clientCache" type:"string" enum:"HlsClientCache"`
 
 	// Specification to use (RFC-6381 or the default RFC-4281) during m3u8 playlist
@@ -13622,6 +13815,21 @@ type M2tsSettings struct {
 	// Selects between the DVB and ATSC buffer models for Dolby Digital audio.
 	AudioBufferModel *string `locationName:"audioBufferModel" type:"string" enum:"M2tsAudioBufferModel"`
 
+	// Specify this setting only when your output will be consumed by a downstream
+	// repackaging workflow that is sensitive to very small duration differences
+	// between video and audio. For this situation, choose Match video duration
+	// (MATCH_VIDEO_DURATION). In all other cases, keep the default value, Default
+	// codec duration (DEFAULT_CODEC_DURATION). When you choose Match video duration,
+	// MediaConvert pads the output audio streams with silence or trims them to
+	// ensure that the total duration of each audio stream is at least as long as
+	// the total duration of the video stream. After padding or trimming, the audio
+	// stream duration is no more than one frame longer than the video stream. MediaConvert
+	// applies audio padding or trimming only to the end of the last segment of
+	// the output. For unsegmented outputs, MediaConvert adds padding only to the
+	// end of the file. When you keep the default value, any minor discrepancies
+	// between audio and video duration will depend on your output audio codec.
+	AudioDuration *string `locationName:"audioDuration" type:"string" enum:"M2tsAudioDuration"`
+
 	// The number of audio frames to insert for each PES packet.
 	AudioFramesPerPes *int64 `locationName:"audioFramesPerPes" type:"integer"`
 
@@ -13866,6 +14074,12 @@ func (s *M2tsSettings) SetAudioBufferModel(v string) *M2tsSettings {
 	return s
 }
 
+// SetAudioDuration sets the AudioDuration field's value.
+func (s *M2tsSettings) SetAudioDuration(v string) *M2tsSettings {
+	s.AudioDuration = &v
+	return s
+}
+
 // SetAudioFramesPerPes sets the AudioFramesPerPes field's value.
 func (s *M2tsSettings) SetAudioFramesPerPes(v int64) *M2tsSettings {
 	s.AudioFramesPerPes = &v
@@ -14080,6 +14294,21 @@ func (s *M2tsSettings) SetVideoPid(v int64) *M2tsSettings {
 type M3u8Settings struct {
 	_ struct{} `type:"structure"`
 
+	// Specify this setting only when your output will be consumed by a downstream
+	// repackaging workflow that is sensitive to very small duration differences
+	// between video and audio. For this situation, choose Match video duration
+	// (MATCH_VIDEO_DURATION). In all other cases, keep the default value, Default
+	// codec duration (DEFAULT_CODEC_DURATION). When you choose Match video duration,
+	// MediaConvert pads the output audio streams with silence or trims them to
+	// ensure that the total duration of each audio stream is at least as long as
+	// the total duration of the video stream. After padding or trimming, the audio
+	// stream duration is no more than one frame longer than the video stream. MediaConvert
+	// applies audio padding or trimming only to the end of the last segment of
+	// the output. For unsegmented outputs, MediaConvert adds padding only to the
+	// end of the file. When you keep the default value, any minor discrepancies
+	// between audio and video duration will depend on your output audio codec.
+	AudioDuration *string `locationName:"audioDuration" type:"string" enum:"M3u8AudioDuration"`
+
 	// The number of audio frames to insert for each PES packet.
 	AudioFramesPerPes *int64 `locationName:"audioFramesPerPes" type:"integer"`
 
@@ -14183,6 +14412,12 @@ func (s *M3u8Settings) Validate() error {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetAudioDuration sets the AudioDuration field's value.
+func (s *M3u8Settings) SetAudioDuration(v string) *M3u8Settings {
+	s.AudioDuration = &v
+	return s
 }
 
 // SetAudioFramesPerPes sets the AudioFramesPerPes field's value.
@@ -14714,6 +14949,21 @@ func (s *Mp3Settings) SetVbrQuality(v int64) *Mp3Settings {
 type Mp4Settings struct {
 	_ struct{} `type:"structure"`
 
+	// Specify this setting only when your output will be consumed by a downstream
+	// repackaging workflow that is sensitive to very small duration differences
+	// between video and audio. For this situation, choose Match video duration
+	// (MATCH_VIDEO_DURATION). In all other cases, keep the default value, Default
+	// codec duration (DEFAULT_CODEC_DURATION). When you choose Match video duration,
+	// MediaConvert pads the output audio streams with silence or trims them to
+	// ensure that the total duration of each audio stream is at least as long as
+	// the total duration of the video stream. After padding or trimming, the audio
+	// stream duration is no more than one frame longer than the video stream. MediaConvert
+	// applies audio padding or trimming only to the end of the last segment of
+	// the output. For unsegmented outputs, MediaConvert adds padding only to the
+	// end of the file. When you keep the default value, any minor discrepancies
+	// between audio and video duration will depend on your output audio codec.
+	AudioDuration *string `locationName:"audioDuration" type:"string" enum:"CmfcAudioDuration"`
+
 	// When enabled, file composition times will start at zero, composition times
 	// in the 'ctts' (composition time to sample) box for B-frames will be negative,
 	// and a 'cslg' (composition shift least greatest) box will be included per
@@ -14751,6 +15001,12 @@ func (s Mp4Settings) GoString() string {
 	return s.String()
 }
 
+// SetAudioDuration sets the AudioDuration field's value.
+func (s *Mp4Settings) SetAudioDuration(v string) *Mp4Settings {
+	s.AudioDuration = &v
+	return s
+}
+
 // SetCslgAtom sets the CslgAtom field's value.
 func (s *Mp4Settings) SetCslgAtom(v string) *Mp4Settings {
 	s.CslgAtom = &v
@@ -14785,6 +15041,29 @@ func (s *Mp4Settings) SetMp4MajorBrand(v string) *Mp4Settings {
 type MpdSettings struct {
 	_ struct{} `type:"structure"`
 
+	// Optional. Choose Include (INCLUDE) to have MediaConvert mark up your DASH
+	// manifest with elements for embedded 608 captions. This markup isn't generally
+	// required, but some video players require it to discover and play embedded
+	// 608 captions. Keep the default value, Exclude (EXCLUDE), to leave these elements
+	// out. When you enable this setting, this is the markup that MediaConvert includes
+	// in your manifest:
+	AccessibilityCaptionHints *string `locationName:"accessibilityCaptionHints" type:"string" enum:"MpdAccessibilityCaptionHints"`
+
+	// Specify this setting only when your output will be consumed by a downstream
+	// repackaging workflow that is sensitive to very small duration differences
+	// between video and audio. For this situation, choose Match video duration
+	// (MATCH_VIDEO_DURATION). In all other cases, keep the default value, Default
+	// codec duration (DEFAULT_CODEC_DURATION). When you choose Match video duration,
+	// MediaConvert pads the output audio streams with silence or trims them to
+	// ensure that the total duration of each audio stream is at least as long as
+	// the total duration of the video stream. After padding or trimming, the audio
+	// stream duration is no more than one frame longer than the video stream. MediaConvert
+	// applies audio padding or trimming only to the end of the last segment of
+	// the output. For unsegmented outputs, MediaConvert adds padding only to the
+	// end of the file. When you keep the default value, any minor discrepancies
+	// between audio and video duration will depend on your output audio codec.
+	AudioDuration *string `locationName:"audioDuration" type:"string" enum:"MpdAudioDuration"`
+
 	// Use this setting only in DASH output groups that include sidecar TTML or
 	// IMSC captions. You specify sidecar captions in a separate output from your
 	// audio and video. Choose Raw (RAW) for captions in a single XML file in a
@@ -14814,6 +15093,18 @@ func (s MpdSettings) String() string {
 // GoString returns the string representation
 func (s MpdSettings) GoString() string {
 	return s.String()
+}
+
+// SetAccessibilityCaptionHints sets the AccessibilityCaptionHints field's value.
+func (s *MpdSettings) SetAccessibilityCaptionHints(v string) *MpdSettings {
+	s.AccessibilityCaptionHints = &v
+	return s
+}
+
+// SetAudioDuration sets the AudioDuration field's value.
+func (s *MpdSettings) SetAudioDuration(v string) *MpdSettings {
+	s.AudioDuration = &v
+	return s
 }
 
 // SetCaptionContainerType sets the CaptionContainerType field's value.
@@ -16404,6 +16695,10 @@ func (s *OutputDetail) SetVideoDetails(v *VideoDetail) *OutputDetail {
 type OutputGroup struct {
 	_ struct{} `type:"structure"`
 
+	// Use automated encoding to have MediaConvert choose your encoding settings
+	// for you, based on characteristics of your input video.
+	AutomatedEncodingSettings *AutomatedEncodingSettings `locationName:"automatedEncodingSettings" type:"structure"`
+
 	// Use Custom Group Name (CustomName) to specify a name for the output group.
 	// This value is displayed on the console and can make your job settings JSON
 	// more human-readable. It does not affect your outputs. Use up to twelve characters
@@ -16434,6 +16729,11 @@ func (s OutputGroup) GoString() string {
 // Validate inspects the fields of the type to determine if they are valid.
 func (s *OutputGroup) Validate() error {
 	invalidParams := request.ErrInvalidParams{Context: "OutputGroup"}
+	if s.AutomatedEncodingSettings != nil {
+		if err := s.AutomatedEncodingSettings.Validate(); err != nil {
+			invalidParams.AddNested("AutomatedEncodingSettings", err.(request.ErrInvalidParams))
+		}
+	}
 	if s.OutputGroupSettings != nil {
 		if err := s.OutputGroupSettings.Validate(); err != nil {
 			invalidParams.AddNested("OutputGroupSettings", err.(request.ErrInvalidParams))
@@ -16454,6 +16754,12 @@ func (s *OutputGroup) Validate() error {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetAutomatedEncodingSettings sets the AutomatedEncodingSettings field's value.
+func (s *OutputGroup) SetAutomatedEncodingSettings(v *AutomatedEncodingSettings) *OutputGroup {
+	s.AutomatedEncodingSettings = v
+	return s
 }
 
 // SetCustomName sets the CustomName field's value.
@@ -21654,8 +21960,10 @@ func CaptionSourceType_Values() []string {
 	}
 }
 
-// When set to ENABLED, sets #EXT-X-ALLOW-CACHE:no tag, which prevents client
-// from saving media segments for later replay.
+// Disable this setting only when your workflow requires the #EXT-X-ALLOW-CACHE:no
+// tag. Otherwise, keep the default value Enabled (ENABLED) and control caching
+// in your video distribution set up. For example, use the Cache-Control http
+// header.
 const (
 	// CmafClientCacheDisabled is a CmafClientCache enum value
 	CmafClientCacheDisabled = "DISABLED"
@@ -21891,6 +22199,35 @@ func CmafWriteSegmentTimelineInRepresentation_Values() []string {
 	return []string{
 		CmafWriteSegmentTimelineInRepresentationEnabled,
 		CmafWriteSegmentTimelineInRepresentationDisabled,
+	}
+}
+
+// Specify this setting only when your output will be consumed by a downstream
+// repackaging workflow that is sensitive to very small duration differences
+// between video and audio. For this situation, choose Match video duration
+// (MATCH_VIDEO_DURATION). In all other cases, keep the default value, Default
+// codec duration (DEFAULT_CODEC_DURATION). When you choose Match video duration,
+// MediaConvert pads the output audio streams with silence or trims them to
+// ensure that the total duration of each audio stream is at least as long as
+// the total duration of the video stream. After padding or trimming, the audio
+// stream duration is no more than one frame longer than the video stream. MediaConvert
+// applies audio padding or trimming only to the end of the last segment of
+// the output. For unsegmented outputs, MediaConvert adds padding only to the
+// end of the file. When you keep the default value, any minor discrepancies
+// between audio and video duration will depend on your output audio codec.
+const (
+	// CmfcAudioDurationDefaultCodecDuration is a CmfcAudioDuration enum value
+	CmfcAudioDurationDefaultCodecDuration = "DEFAULT_CODEC_DURATION"
+
+	// CmfcAudioDurationMatchVideoDuration is a CmfcAudioDuration enum value
+	CmfcAudioDurationMatchVideoDuration = "MATCH_VIDEO_DURATION"
+)
+
+// CmfcAudioDuration_Values returns all elements of the CmfcAudioDuration enum
+func CmfcAudioDuration_Values() []string {
+	return []string{
+		CmfcAudioDurationDefaultCodecDuration,
+		CmfcAudioDurationMatchVideoDuration,
 	}
 }
 
@@ -23181,13 +23518,21 @@ func FontScript_Values() []string {
 	}
 }
 
-// Specify the strength of any adaptive quantization filters that you enable.
-// The value that you choose here applies to the following settings: Flicker
-// adaptive quantization (flickerAdaptiveQuantization), Spatial adaptive quantization
-// (spatialAdaptiveQuantization), and Temporal adaptive quantization (temporalAdaptiveQuantization).
+// Keep the default value, Auto (AUTO), for this setting to have MediaConvert
+// automatically apply the best types of quantization for your video content.
+// When you want to apply your quantization settings manually, you must set
+// H264AdaptiveQuantization to a value other than Auto (AUTO). Use this setting
+// to specify the strength of any adaptive quantization filters that you enable.
+// If you don't want MediaConvert to do any adaptive quantization in this transcode,
+// set Adaptive quantization (H264AdaptiveQuantization) to Off (OFF). Related
+// settings: The value that you choose here applies to the following settings:
+// H264FlickerAdaptiveQuantization, H264SpatialAdaptiveQuantization, and H264TemporalAdaptiveQuantization.
 const (
 	// H264AdaptiveQuantizationOff is a H264AdaptiveQuantization enum value
 	H264AdaptiveQuantizationOff = "OFF"
+
+	// H264AdaptiveQuantizationAuto is a H264AdaptiveQuantization enum value
+	H264AdaptiveQuantizationAuto = "AUTO"
 
 	// H264AdaptiveQuantizationLow is a H264AdaptiveQuantization enum value
 	H264AdaptiveQuantizationLow = "LOW"
@@ -23209,6 +23554,7 @@ const (
 func H264AdaptiveQuantization_Values() []string {
 	return []string{
 		H264AdaptiveQuantizationOff,
+		H264AdaptiveQuantizationAuto,
 		H264AdaptiveQuantizationLow,
 		H264AdaptiveQuantizationMedium,
 		H264AdaptiveQuantizationHigh,
@@ -23386,13 +23732,19 @@ func H264FieldEncoding_Values() []string {
 	}
 }
 
-// Enable this setting to have the encoder reduce I-frame pop. I-frame pop appears
+// Only use this setting when you change the default value, AUTO, for the setting
+// H264AdaptiveQuantization. When you keep all defaults, excluding H264AdaptiveQuantization
+// and all other adaptive quantization from your JSON job specification, MediaConvert
+// automatically applies the best types of quantization for your video content.
+// When you set H264AdaptiveQuantization to a value other than AUTO, the default
+// value for H264FlickerAdaptiveQuantization is Disabled (DISABLED). Change
+// this value to Enabled (ENABLED) to reduce I-frame pop. I-frame pop appears
 // as a visual flicker that can arise when the encoder saves bits by copying
 // some macroblocks many times from frame to frame, and then refreshes them
 // at the I-frame. When you enable this setting, the encoder updates these macroblocks
-// slightly more often to smooth out the flicker. This setting is disabled by
-// default. Related setting: In addition to enabling this setting, you must
-// also set adaptiveQuantization to a value other than Off (OFF).
+// slightly more often to smooth out the flicker. To manually enable or disable
+// H264FlickerAdaptiveQuantization, you must set Adaptive quantization (H264AdaptiveQuantization)
+// to a value other than AUTO.
 const (
 	// H264FlickerAdaptiveQuantizationDisabled is a H264FlickerAdaptiveQuantization enum value
 	H264FlickerAdaptiveQuantizationDisabled = "DISABLED"
@@ -23676,7 +24028,13 @@ func H264SlowPal_Values() []string {
 	}
 }
 
-// Keep the default value, Enabled (ENABLED), to adjust quantization within
+// Only use this setting when you change the default value, Auto (AUTO), for
+// the setting H264AdaptiveQuantization. When you keep all defaults, excluding
+// H264AdaptiveQuantization and all other adaptive quantization from your JSON
+// job specification, MediaConvert automatically applies the best types of quantization
+// for your video content. When you set H264AdaptiveQuantization to a value
+// other than AUTO, the default value for H264SpatialAdaptiveQuantization is
+// Enabled (ENABLED). Keep this default value to adjust quantization within
 // each frame based on spatial variation of content complexity. When you enable
 // this feature, the encoder uses fewer bits on areas that can sustain more
 // distortion with no noticeable visual degradation and uses more bits on areas
@@ -23686,11 +24044,13 @@ func H264SlowPal_Values() []string {
 // quality. Note, though, that this feature doesn't take into account where
 // the viewer's attention is likely to be. If viewers are likely to be focusing
 // their attention on a part of the screen with a lot of complex texture, you
-// might choose to disable this feature. Related setting: When you enable spatial
-// adaptive quantization, set the value for Adaptive quantization (adaptiveQuantization)
-// depending on your content. For homogeneous content, such as cartoons and
-// video games, set it to Low. For content with a wider variety of textures,
-// set it to High or Higher.
+// might choose to set H264SpatialAdaptiveQuantization to Disabled (DISABLED).
+// Related setting: When you enable spatial adaptive quantization, set the value
+// for Adaptive quantization (H264AdaptiveQuantization) depending on your content.
+// For homogeneous content, such as cartoons and video games, set it to Low.
+// For content with a wider variety of textures, set it to High or Higher. To
+// manually enable or disable H264SpatialAdaptiveQuantization, you must set
+// Adaptive quantization (H264AdaptiveQuantization) to a value other than AUTO.
 const (
 	// H264SpatialAdaptiveQuantizationDisabled is a H264SpatialAdaptiveQuantization enum value
 	H264SpatialAdaptiveQuantizationDisabled = "DISABLED"
@@ -23752,19 +24112,27 @@ func H264Telecine_Values() []string {
 	}
 }
 
-// Keep the default value, Enabled (ENABLED), to adjust quantization within
-// each frame based on temporal variation of content complexity. When you enable
-// this feature, the encoder uses fewer bits on areas of the frame that aren't
-// moving and uses more bits on complex objects with sharp edges that move a
-// lot. For example, this feature improves the readability of text tickers on
-// newscasts and scoreboards on sports matches. Enabling this feature will almost
-// always improve your video quality. Note, though, that this feature doesn't
-// take into account where the viewer's attention is likely to be. If viewers
-// are likely to be focusing their attention on a part of the screen that doesn't
-// have moving objects with sharp edges, such as sports athletes' faces, you
-// might choose to disable this feature. Related setting: When you enable temporal
-// quantization, adjust the strength of the filter with the setting Adaptive
-// quantization (adaptiveQuantization).
+// Only use this setting when you change the default value, AUTO, for the setting
+// H264AdaptiveQuantization. When you keep all defaults, excluding H264AdaptiveQuantization
+// and all other adaptive quantization from your JSON job specification, MediaConvert
+// automatically applies the best types of quantization for your video content.
+// When you set H264AdaptiveQuantization to a value other than AUTO, the default
+// value for H264TemporalAdaptiveQuantization is Enabled (ENABLED). Keep this
+// default value to adjust quantization within each frame based on temporal
+// variation of content complexity. When you enable this feature, the encoder
+// uses fewer bits on areas of the frame that aren't moving and uses more bits
+// on complex objects with sharp edges that move a lot. For example, this feature
+// improves the readability of text tickers on newscasts and scoreboards on
+// sports matches. Enabling this feature will almost always improve your video
+// quality. Note, though, that this feature doesn't take into account where
+// the viewer's attention is likely to be. If viewers are likely to be focusing
+// their attention on a part of the screen that doesn't have moving objects
+// with sharp edges, such as sports athletes' faces, you might choose to set
+// H264TemporalAdaptiveQuantization to Disabled (DISABLED). Related setting:
+// When you enable temporal quantization, adjust the strength of the filter
+// with the setting Adaptive quantization (adaptiveQuantization). To manually
+// enable or disable H264TemporalAdaptiveQuantization, you must set Adaptive
+// quantization (H264AdaptiveQuantization) to a value other than AUTO.
 const (
 	// H264TemporalAdaptiveQuantizationDisabled is a H264TemporalAdaptiveQuantization enum value
 	H264TemporalAdaptiveQuantizationDisabled = "DISABLED"
@@ -24570,8 +24938,10 @@ func HlsCaptionLanguageSetting_Values() []string {
 	}
 }
 
-// When set to ENABLED, sets #EXT-X-ALLOW-CACHE:no tag, which prevents client
-// from saving media segments for later replay.
+// Disable this setting only when your workflow requires the #EXT-X-ALLOW-CACHE:no
+// tag. Otherwise, keep the default value Enabled (ENABLED) and control caching
+// in your video distribution set up. For example, use the Cache-Control http
+// header.
 const (
 	// HlsClientCacheDisabled is a HlsClientCache enum value
 	HlsClientCacheDisabled = "DISABLED"
@@ -25902,6 +26272,35 @@ func M2tsAudioBufferModel_Values() []string {
 	}
 }
 
+// Specify this setting only when your output will be consumed by a downstream
+// repackaging workflow that is sensitive to very small duration differences
+// between video and audio. For this situation, choose Match video duration
+// (MATCH_VIDEO_DURATION). In all other cases, keep the default value, Default
+// codec duration (DEFAULT_CODEC_DURATION). When you choose Match video duration,
+// MediaConvert pads the output audio streams with silence or trims them to
+// ensure that the total duration of each audio stream is at least as long as
+// the total duration of the video stream. After padding or trimming, the audio
+// stream duration is no more than one frame longer than the video stream. MediaConvert
+// applies audio padding or trimming only to the end of the last segment of
+// the output. For unsegmented outputs, MediaConvert adds padding only to the
+// end of the file. When you keep the default value, any minor discrepancies
+// between audio and video duration will depend on your output audio codec.
+const (
+	// M2tsAudioDurationDefaultCodecDuration is a M2tsAudioDuration enum value
+	M2tsAudioDurationDefaultCodecDuration = "DEFAULT_CODEC_DURATION"
+
+	// M2tsAudioDurationMatchVideoDuration is a M2tsAudioDuration enum value
+	M2tsAudioDurationMatchVideoDuration = "MATCH_VIDEO_DURATION"
+)
+
+// M2tsAudioDuration_Values returns all elements of the M2tsAudioDuration enum
+func M2tsAudioDuration_Values() []string {
+	return []string{
+		M2tsAudioDurationDefaultCodecDuration,
+		M2tsAudioDurationMatchVideoDuration,
+	}
+}
+
 // Controls what buffer model to use for accurate interleaving. If set to MULTIPLEX,
 // use multiplex buffer model. If set to NONE, this can lead to lower latency,
 // but low-memory devices may not be able to play back the stream without interruptions.
@@ -26140,6 +26539,35 @@ func M2tsSegmentationStyle_Values() []string {
 	return []string{
 		M2tsSegmentationStyleMaintainCadence,
 		M2tsSegmentationStyleResetCadence,
+	}
+}
+
+// Specify this setting only when your output will be consumed by a downstream
+// repackaging workflow that is sensitive to very small duration differences
+// between video and audio. For this situation, choose Match video duration
+// (MATCH_VIDEO_DURATION). In all other cases, keep the default value, Default
+// codec duration (DEFAULT_CODEC_DURATION). When you choose Match video duration,
+// MediaConvert pads the output audio streams with silence or trims them to
+// ensure that the total duration of each audio stream is at least as long as
+// the total duration of the video stream. After padding or trimming, the audio
+// stream duration is no more than one frame longer than the video stream. MediaConvert
+// applies audio padding or trimming only to the end of the last segment of
+// the output. For unsegmented outputs, MediaConvert adds padding only to the
+// end of the file. When you keep the default value, any minor discrepancies
+// between audio and video duration will depend on your output audio codec.
+const (
+	// M3u8AudioDurationDefaultCodecDuration is a M3u8AudioDuration enum value
+	M3u8AudioDurationDefaultCodecDuration = "DEFAULT_CODEC_DURATION"
+
+	// M3u8AudioDurationMatchVideoDuration is a M3u8AudioDuration enum value
+	M3u8AudioDurationMatchVideoDuration = "MATCH_VIDEO_DURATION"
+)
+
+// M3u8AudioDuration_Values returns all elements of the M3u8AudioDuration enum
+func M3u8AudioDuration_Values() []string {
+	return []string{
+		M3u8AudioDurationDefaultCodecDuration,
+		M3u8AudioDurationMatchVideoDuration,
 	}
 }
 
@@ -26406,6 +26834,57 @@ func Mp4MoovPlacement_Values() []string {
 	return []string{
 		Mp4MoovPlacementProgressiveDownload,
 		Mp4MoovPlacementNormal,
+	}
+}
+
+// Optional. Choose Include (INCLUDE) to have MediaConvert mark up your DASH
+// manifest with elements for embedded 608 captions. This markup isn't generally
+// required, but some video players require it to discover and play embedded
+// 608 captions. Keep the default value, Exclude (EXCLUDE), to leave these elements
+// out. When you enable this setting, this is the markup that MediaConvert includes
+// in your manifest:
+const (
+	// MpdAccessibilityCaptionHintsInclude is a MpdAccessibilityCaptionHints enum value
+	MpdAccessibilityCaptionHintsInclude = "INCLUDE"
+
+	// MpdAccessibilityCaptionHintsExclude is a MpdAccessibilityCaptionHints enum value
+	MpdAccessibilityCaptionHintsExclude = "EXCLUDE"
+)
+
+// MpdAccessibilityCaptionHints_Values returns all elements of the MpdAccessibilityCaptionHints enum
+func MpdAccessibilityCaptionHints_Values() []string {
+	return []string{
+		MpdAccessibilityCaptionHintsInclude,
+		MpdAccessibilityCaptionHintsExclude,
+	}
+}
+
+// Specify this setting only when your output will be consumed by a downstream
+// repackaging workflow that is sensitive to very small duration differences
+// between video and audio. For this situation, choose Match video duration
+// (MATCH_VIDEO_DURATION). In all other cases, keep the default value, Default
+// codec duration (DEFAULT_CODEC_DURATION). When you choose Match video duration,
+// MediaConvert pads the output audio streams with silence or trims them to
+// ensure that the total duration of each audio stream is at least as long as
+// the total duration of the video stream. After padding or trimming, the audio
+// stream duration is no more than one frame longer than the video stream. MediaConvert
+// applies audio padding or trimming only to the end of the last segment of
+// the output. For unsegmented outputs, MediaConvert adds padding only to the
+// end of the file. When you keep the default value, any minor discrepancies
+// between audio and video duration will depend on your output audio codec.
+const (
+	// MpdAudioDurationDefaultCodecDuration is a MpdAudioDuration enum value
+	MpdAudioDurationDefaultCodecDuration = "DEFAULT_CODEC_DURATION"
+
+	// MpdAudioDurationMatchVideoDuration is a MpdAudioDuration enum value
+	MpdAudioDurationMatchVideoDuration = "MATCH_VIDEO_DURATION"
+)
+
+// MpdAudioDuration_Values returns all elements of the MpdAudioDuration enum
+func MpdAudioDuration_Values() []string {
+	return []string{
+		MpdAudioDurationDefaultCodecDuration,
+		MpdAudioDurationMatchVideoDuration,
 	}
 }
 

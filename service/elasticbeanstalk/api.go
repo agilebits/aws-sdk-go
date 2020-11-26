@@ -7564,7 +7564,7 @@ type DescribeEnvironmentManagedActionHistoryInput struct {
 	EnvironmentName *string `min:"4" type:"string"`
 
 	// The maximum number of items to return for a single request.
-	MaxItems *int64 `type:"integer"`
+	MaxItems *int64 `min:"1" type:"integer"`
 
 	// The pagination token returned by a previous request.
 	NextToken *string `type:"string"`
@@ -7585,6 +7585,9 @@ func (s *DescribeEnvironmentManagedActionHistoryInput) Validate() error {
 	invalidParams := request.ErrInvalidParams{Context: "DescribeEnvironmentManagedActionHistoryInput"}
 	if s.EnvironmentName != nil && len(*s.EnvironmentName) < 4 {
 		invalidParams.Add(request.NewErrParamMinLen("EnvironmentName", 4))
+	}
+	if s.MaxItems != nil && *s.MaxItems < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("MaxItems", 1))
 	}
 
 	if invalidParams.Len() > 0 {
@@ -12767,11 +12770,20 @@ func EnvironmentInfoType_Values() []string {
 }
 
 const (
+	// EnvironmentStatusAborting is a EnvironmentStatus enum value
+	EnvironmentStatusAborting = "Aborting"
+
 	// EnvironmentStatusLaunching is a EnvironmentStatus enum value
 	EnvironmentStatusLaunching = "Launching"
 
 	// EnvironmentStatusUpdating is a EnvironmentStatus enum value
 	EnvironmentStatusUpdating = "Updating"
+
+	// EnvironmentStatusLinkingFrom is a EnvironmentStatus enum value
+	EnvironmentStatusLinkingFrom = "LinkingFrom"
+
+	// EnvironmentStatusLinkingTo is a EnvironmentStatus enum value
+	EnvironmentStatusLinkingTo = "LinkingTo"
 
 	// EnvironmentStatusReady is a EnvironmentStatus enum value
 	EnvironmentStatusReady = "Ready"
@@ -12786,8 +12798,11 @@ const (
 // EnvironmentStatus_Values returns all elements of the EnvironmentStatus enum
 func EnvironmentStatus_Values() []string {
 	return []string{
+		EnvironmentStatusAborting,
 		EnvironmentStatusLaunching,
 		EnvironmentStatusUpdating,
+		EnvironmentStatusLinkingFrom,
+		EnvironmentStatusLinkingTo,
 		EnvironmentStatusReady,
 		EnvironmentStatusTerminating,
 		EnvironmentStatusTerminated,

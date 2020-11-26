@@ -2390,7 +2390,8 @@
         "StartTimeBefore",
         "StartTimeAfter",
         "AutomationType",
-        "TagKey"
+        "TagKey",
+        "TargetResourceGroup"
       ]
     },
     "AutomationExecutionFilterList":{
@@ -7374,6 +7375,7 @@
       "type":"list",
       "member":{"shape":"PatchCVEId"}
     },
+    "PatchCVEIds":{"type":"string"},
     "PatchClassification":{"type":"string"},
     "PatchComplianceData":{
       "type":"structure",
@@ -7391,7 +7393,8 @@
         "Classification":{"shape":"PatchClassification"},
         "Severity":{"shape":"PatchSeverity"},
         "State":{"shape":"PatchComplianceDataState"},
-        "InstalledTime":{"shape":"DateTime"}
+        "InstalledTime":{"shape":"DateTime"},
+        "CVEIds":{"shape":"PatchCVEIds"}
       }
     },
     "PatchComplianceDataList":{
@@ -8419,13 +8422,14 @@
         "InvokedBefore",
         "Target",
         "Owner",
-        "Status"
+        "Status",
+        "SessionId"
       ]
     },
     "SessionFilterList":{
       "type":"list",
       "member":{"shape":"SessionFilter"},
-      "max":5,
+      "max":6,
       "min":1
     },
     "SessionFilterValue":{

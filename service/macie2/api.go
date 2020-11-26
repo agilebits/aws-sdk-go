@@ -1894,8 +1894,8 @@ func (c *Macie2) DisableOrganizationAdminAccountRequest(input *DisableOrganizati
 
 // DisableOrganizationAdminAccount API operation for Amazon Macie 2.
 //
-// Disables an account as a delegated administrator of Amazon Macie for an AWS
-// organization.
+// Disables an account as the delegated Amazon Macie administrator account for
+// an AWS organization.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -2316,8 +2316,8 @@ func (c *Macie2) EnableOrganizationAdminAccountRequest(input *EnableOrganization
 
 // EnableOrganizationAdminAccount API operation for Amazon Macie 2.
 //
-// Enables an account as a delegated administrator of Amazon Macie for an AWS
-// organization.
+// Designates an account as the delegated Amazon Macie administrator account
+// for an AWS organization.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -4712,8 +4712,8 @@ func (c *Macie2) ListOrganizationAdminAccountsRequest(input *ListOrganizationAdm
 
 // ListOrganizationAdminAccounts API operation for Amazon Macie 2.
 //
-// Retrieves information about the account that's designated as the delegated
-// administrator of Amazon Macie for an AWS organization.
+// Retrieves information about the delegated Amazon Macie administrator account
+// for an AWS organization.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -5727,7 +5727,7 @@ func (c *Macie2) UpdateOrganizationConfigurationRequest(input *UpdateOrganizatio
 
 // UpdateOrganizationConfiguration API operation for Amazon Macie 2.
 //
-// Updates Amazon Macie configuration settings for an AWS organization.
+// Updates the Amazon Macie configuration settings for an AWS organization.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -6018,15 +6018,15 @@ func (s *AccountLevelPermissions) SetBlockPublicAccess(v *BlockPublicAccess) *Ac
 	return s
 }
 
-// Provides information about an account that's designated as a delegated administrator
-// of Amazon Macie for an AWS organization.
+// Provides information about the delegated Amazon Macie administrator account
+// for an AWS organization.
 type AdminAccount struct {
 	_ struct{} `type:"structure"`
 
 	AccountId *string `locationName:"accountId" type:"string"`
 
-	// The current status of an account as a delegated administrator of Amazon Macie
-	// for an AWS organization.
+	// The current status of an account as the delegated Amazon Macie administrator
+	// account for an AWS organization.
 	Status *string `locationName:"status" type:"string" enum:"AdminStatus"`
 }
 
@@ -6658,6 +6658,11 @@ type BucketMetadata struct {
 
 	ClassifiableSizeInBytes *int64 `locationName:"classifiableSizeInBytes" type:"long"`
 
+	// Specifies whether any one-time or recurring classification jobs are configured
+	// to analyze data in an S3 bucket, and, if so, the details of the job that
+	// ran most recently.
+	JobDetails *JobDetails `locationName:"jobDetails" type:"structure"`
+
 	LastUpdated *time.Time `locationName:"lastUpdated" type:"timestamp" timestampFormat:"iso8601"`
 
 	ObjectCount *int64 `locationName:"objectCount" type:"long"`
@@ -6744,6 +6749,12 @@ func (s *BucketMetadata) SetClassifiableObjectCount(v int64) *BucketMetadata {
 // SetClassifiableSizeInBytes sets the ClassifiableSizeInBytes field's value.
 func (s *BucketMetadata) SetClassifiableSizeInBytes(v int64) *BucketMetadata {
 	s.ClassifiableSizeInBytes = &v
+	return s
+}
+
+// SetJobDetails sets the JobDetails field's value.
+func (s *BucketMetadata) SetJobDetails(v *JobDetails) *BucketMetadata {
+	s.JobDetails = v
 	return s
 }
 
@@ -7106,9 +7117,9 @@ type ClassificationResult struct {
 
 	AdditionalOccurrences *bool `locationName:"additionalOccurrences" type:"boolean"`
 
-	// Provides information about the number of occurrences of the data that produced
-	// a sensitive data finding, and the custom data identifiers that detected the
-	// data for the finding.
+	// Provides information about custom data identifiers that produced a sensitive
+	// data finding, and the number of occurrences of the data that they detected
+	// for the finding.
 	CustomDataIdentifiers *CustomDataIdentifiers `locationName:"customDataIdentifiers" type:"structure"`
 
 	MimeType *string `locationName:"mimeType" type:"string"`
@@ -7864,6 +7875,8 @@ type CriterionAdditionalProperties struct {
 
 	Eq []*string `locationName:"eq" type:"list"`
 
+	EqExactMatch []*string `locationName:"eqExactMatch" type:"list"`
+
 	Gt *int64 `locationName:"gt" type:"long"`
 
 	Gte *int64 `locationName:"gte" type:"long"`
@@ -7888,6 +7901,12 @@ func (s CriterionAdditionalProperties) GoString() string {
 // SetEq sets the Eq field's value.
 func (s *CriterionAdditionalProperties) SetEq(v []*string) *CriterionAdditionalProperties {
 	s.Eq = v
+	return s
+}
+
+// SetEqExactMatch sets the EqExactMatch field's value.
+func (s *CriterionAdditionalProperties) SetEqExactMatch(v []*string) *CriterionAdditionalProperties {
+	s.EqExactMatch = v
 	return s
 }
 
@@ -7976,9 +7995,9 @@ func (s *CustomDataIdentifierSummary) SetName(v string) *CustomDataIdentifierSum
 	return s
 }
 
-// Provides information about the number of occurrences of the data that produced
-// a sensitive data finding, and the custom data identifiers that detected the
-// data for the finding.
+// Provides information about custom data identifiers that produced a sensitive
+// data finding, and the number of occurrences of the data that they detected
+// for the finding.
 type CustomDataIdentifiers struct {
 	_ struct{} `type:"structure"`
 
@@ -8547,11 +8566,17 @@ type DescribeClassificationJobOutput struct {
 
 	JobId *string `locationName:"jobId" type:"string"`
 
-	// The current status of a classification job. Possible values are:
+	// The status of a classification job. Possible values are:
 	JobStatus *string `locationName:"jobStatus" type:"string" enum:"JobStatus"`
 
 	// The schedule for running a classification job. Valid values are:
 	JobType *string `locationName:"jobType" type:"string" enum:"JobType"`
+
+	// Specifies whether any account- or bucket-level access errors occurred when
+	// a classification job ran. For example, the job is configured to analyze data
+	// for a member account that was suspended, or the job is configured to analyze
+	// an S3 bucket that Amazon Macie isn't allowed to access.
+	LastRunErrorStatus *LastRunErrorStatus `locationName:"lastRunErrorStatus" type:"structure"`
 
 	LastRunTime *time.Time `locationName:"lastRunTime" type:"timestamp" timestampFormat:"iso8601"`
 
@@ -8575,8 +8600,10 @@ type DescribeClassificationJobOutput struct {
 	Tags map[string]*string `locationName:"tags" type:"map"`
 
 	// Provides information about when a classification job was paused and when
-	// it will expire and be cancelled if it isn’t resumed. This object is present
-	// only if a job’s current status (jobStatus) is USER_PAUSED.
+	// it will expire and be cancelled if it isn't resumed. This object is present
+	// only if a job's current status (jobStatus) is USER_PAUSED. The information
+	// in this object applies only to a job that was paused while it had a status
+	// of RUNNING.
 	UserPausedDetails *UserPausedDetails `locationName:"userPausedDetails" type:"structure"`
 }
 
@@ -8641,6 +8668,12 @@ func (s *DescribeClassificationJobOutput) SetJobStatus(v string) *DescribeClassi
 // SetJobType sets the JobType field's value.
 func (s *DescribeClassificationJobOutput) SetJobType(v string) *DescribeClassificationJobOutput {
 	s.JobType = &v
+	return s
+}
+
+// SetLastRunErrorStatus sets the LastRunErrorStatus field's value.
+func (s *DescribeClassificationJobOutput) SetLastRunErrorStatus(v *LastRunErrorStatus) *DescribeClassificationJobOutput {
+	s.LastRunErrorStatus = v
 	return s
 }
 
@@ -8980,9 +9013,9 @@ func (s EnableMacieOutput) GoString() string {
 	return s.String()
 }
 
-// Specifies an account to designate as a delegated administrator of Amazon
-// Macie for an AWS organization. To submit this request, you must be a user
-// of the master account for the AWS organization.
+// Specifies an account to designate as a delegated Amazon Macie administrator
+// account for an AWS organization. To submit this request, you must be a user
+// of the management account for the AWS organization.
 type EnableOrganizationAdminAccountInput struct {
 	_ struct{} `type:"structure"`
 
@@ -10873,6 +10906,55 @@ func (s *IpOwner) SetOrg(v string) *IpOwner {
 	return s
 }
 
+// Specifies whether any one-time or recurring classification jobs are configured
+// to analyze data in an S3 bucket, and, if so, the details of the job that
+// ran most recently.
+type JobDetails struct {
+	_ struct{} `type:"structure"`
+
+	IsDefinedInJob *string `locationName:"isDefinedInJob" type:"string" enum:"IsDefinedInJob"`
+
+	IsMonitoredByJob *string `locationName:"isMonitoredByJob" type:"string" enum:"IsMonitoredByJob"`
+
+	LastJobId *string `locationName:"lastJobId" type:"string"`
+
+	LastJobRunTime *time.Time `locationName:"lastJobRunTime" type:"timestamp" timestampFormat:"iso8601"`
+}
+
+// String returns the string representation
+func (s JobDetails) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s JobDetails) GoString() string {
+	return s.String()
+}
+
+// SetIsDefinedInJob sets the IsDefinedInJob field's value.
+func (s *JobDetails) SetIsDefinedInJob(v string) *JobDetails {
+	s.IsDefinedInJob = &v
+	return s
+}
+
+// SetIsMonitoredByJob sets the IsMonitoredByJob field's value.
+func (s *JobDetails) SetIsMonitoredByJob(v string) *JobDetails {
+	s.IsMonitoredByJob = &v
+	return s
+}
+
+// SetLastJobId sets the LastJobId field's value.
+func (s *JobDetails) SetLastJobId(v string) *JobDetails {
+	s.LastJobId = &v
+	return s
+}
+
+// SetLastJobRunTime sets the LastJobRunTime field's value.
+func (s *JobDetails) SetLastJobRunTime(v time.Time) *JobDetails {
+	s.LastJobRunTime = &v
+	return s
+}
+
 // Specifies the recurrence pattern for running a classification job.
 type JobScheduleFrequency struct {
 	_ struct{} `type:"structure"`
@@ -10988,17 +11070,25 @@ type JobSummary struct {
 
 	JobId *string `locationName:"jobId" type:"string"`
 
-	// The current status of a classification job. Possible values are:
+	// The status of a classification job. Possible values are:
 	JobStatus *string `locationName:"jobStatus" type:"string" enum:"JobStatus"`
 
 	// The schedule for running a classification job. Valid values are:
 	JobType *string `locationName:"jobType" type:"string" enum:"JobType"`
 
+	// Specifies whether any account- or bucket-level access errors occurred when
+	// a classification job ran. For example, the job is configured to analyze data
+	// for a member account that was suspended, or the job is configured to analyze
+	// an S3 bucket that Amazon Macie isn't allowed to access.
+	LastRunErrorStatus *LastRunErrorStatus `locationName:"lastRunErrorStatus" type:"structure"`
+
 	Name *string `locationName:"name" type:"string"`
 
 	// Provides information about when a classification job was paused and when
-	// it will expire and be cancelled if it isn’t resumed. This object is present
-	// only if a job’s current status (jobStatus) is USER_PAUSED.
+	// it will expire and be cancelled if it isn't resumed. This object is present
+	// only if a job's current status (jobStatus) is USER_PAUSED. The information
+	// in this object applies only to a job that was paused while it had a status
+	// of RUNNING.
 	UserPausedDetails *UserPausedDetails `locationName:"userPausedDetails" type:"structure"`
 }
 
@@ -11039,6 +11129,12 @@ func (s *JobSummary) SetJobStatus(v string) *JobSummary {
 // SetJobType sets the JobType field's value.
 func (s *JobSummary) SetJobType(v string) *JobSummary {
 	s.JobType = &v
+	return s
+}
+
+// SetLastRunErrorStatus sets the LastRunErrorStatus field's value.
+func (s *JobSummary) SetLastRunErrorStatus(v *LastRunErrorStatus) *JobSummary {
+	s.LastRunErrorStatus = v
 	return s
 }
 
@@ -11084,6 +11180,35 @@ func (s *KeyValuePair) SetKey(v string) *KeyValuePair {
 // SetValue sets the Value field's value.
 func (s *KeyValuePair) SetValue(v string) *KeyValuePair {
 	s.Value = &v
+	return s
+}
+
+// Specifies whether any account- or bucket-level access errors occurred when
+// a classification job ran. For example, the job is configured to analyze data
+// for a member account that was suspended, or the job is configured to analyze
+// an S3 bucket that Amazon Macie isn't allowed to access.
+type LastRunErrorStatus struct {
+	_ struct{} `type:"structure"`
+
+	// Specifies whether any account- or bucket-level access errors occurred during
+	// the run of a one-time classification job or the most recent run of a recurring
+	// classification job. Possible values are:
+	Code *string `locationName:"code" type:"string" enum:"LastRunErrorStatusCode"`
+}
+
+// String returns the string representation
+func (s LastRunErrorStatus) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s LastRunErrorStatus) GoString() string {
+	return s.String()
+}
+
+// SetCode sets the Code field's value.
+func (s *LastRunErrorStatus) SetCode(v string) *LastRunErrorStatus {
+	s.Code = &v
 	return s
 }
 
@@ -11699,8 +11824,8 @@ func (s *ListOrganizationAdminAccountsInput) SetNextToken(v string) *ListOrganiz
 	return s
 }
 
-// Provides information about the accounts that are designated as delegated
-// administrators of Amazon Macie for an AWS organization.
+// Provides information about the delegated Amazon Macie administrator accounts
+// for an AWS organization.
 type ListOrganizationAdminAccountsOutput struct {
 	_ struct{} `type:"structure"`
 
@@ -12008,13 +12133,13 @@ type Occurrences struct {
 	Cells []*Cell `locationName:"cells" type:"list"`
 
 	// Provides details about the location of occurrences of sensitive data in an
-	// Adobe Portable Document Format file, Apache Avro object container, Microsoft
-	// Word document, or non-binary text file.
+	// Adobe Portable Document Format file, Microsoft Word document, or non-binary
+	// text file.
 	LineRanges []*Range `locationName:"lineRanges" type:"list"`
 
 	// Provides details about the location of occurrences of sensitive data in an
-	// Adobe Portable Document Format file, Apache Avro object container, Microsoft
-	// Word document, or non-binary text file.
+	// Adobe Portable Document Format file, Microsoft Word document, or non-binary
+	// text file.
 	OffsetRanges []*Range `locationName:"offsetRanges" type:"list"`
 
 	// Specifies the location of occurrences of sensitive data in an Adobe Portable
@@ -12072,13 +12197,13 @@ type Page struct {
 	_ struct{} `type:"structure"`
 
 	// Provides details about the location of an occurrence of sensitive data in
-	// an Adobe Portable Document Format file, Apache Avro object container, Microsoft
-	// Word document, or non-binary text file.
+	// an Adobe Portable Document Format file, Microsoft Word document, or non-binary
+	// text file.
 	LineRange *Range `locationName:"lineRange" type:"structure"`
 
 	// Provides details about the location of an occurrence of sensitive data in
-	// an Adobe Portable Document Format file, Apache Avro object container, Microsoft
-	// Word document, or non-binary text file.
+	// an Adobe Portable Document Format file, Microsoft Word document, or non-binary
+	// text file.
 	OffsetRange *Range `locationName:"offsetRange" type:"structure"`
 
 	PageNumber *int64 `locationName:"pageNumber" type:"long"`
@@ -12223,8 +12348,8 @@ func (s *PutClassificationExportConfigurationOutput) SetConfiguration(v *Classif
 }
 
 // Provides details about the location of an occurrence of sensitive data in
-// an Adobe Portable Document Format file, Apache Avro object container, Microsoft
-// Word document, or non-binary text file.
+// an Adobe Portable Document Format file, Microsoft Word document, or non-binary
+// text file.
 type Range struct {
 	_ struct{} `type:"structure"`
 
@@ -12263,10 +12388,12 @@ func (s *Range) SetStartColumn(v int64) *Range {
 	return s
 }
 
-// Specifies the location of an occurrence of sensitive data in an Apache Parquet
-// file.
+// Specifies the location of an occurrence of sensitive data in an Apache Avro
+// object container or Apache Parquet file.
 type Record struct {
 	_ struct{} `type:"structure"`
+
+	JsonPath *string `locationName:"jsonPath" type:"string"`
 
 	RecordIndex *int64 `locationName:"recordIndex" type:"long"`
 }
@@ -12279,6 +12406,12 @@ func (s Record) String() string {
 // GoString returns the string representation
 func (s Record) GoString() string {
 	return s.String()
+}
+
+// SetJsonPath sets the JsonPath field's value.
+func (s *Record) SetJsonPath(v string) *Record {
+	s.JsonPath = &v
+	return s
 }
 
 // SetRecordIndex sets the RecordIndex field's value.
@@ -12497,8 +12630,8 @@ func (s *S3Bucket) SetTags(v []*KeyValuePair) *S3Bucket {
 	return s
 }
 
-// Specifies which S3 buckets contain the objects that a classification job
-// analyzes.
+// Specifies which AWS account owns the S3 buckets that a classification job
+// analyzes, and the buckets to analyze for the account.
 type S3BucketDefinitionForJob struct {
 	_ struct{} `type:"structure"`
 
@@ -13668,7 +13801,7 @@ type UpdateClassificationJobInput struct {
 	// JobId is a required field
 	JobId *string `location:"uri" locationName:"jobId" type:"string" required:"true"`
 
-	// The current status of a classification job. Possible values are:
+	// The status of a classification job. Possible values are:
 	//
 	// JobStatus is a required field
 	JobStatus *string `locationName:"jobStatus" type:"string" required:"true" enum:"JobStatus"`
@@ -14363,8 +14496,10 @@ func (s *UserIdentityRoot) SetPrincipalId(v string) *UserIdentityRoot {
 }
 
 // Provides information about when a classification job was paused and when
-// it will expire and be cancelled if it isn’t resumed. This object is present
-// only if a job’s current status (jobStatus) is USER_PAUSED.
+// it will expire and be cancelled if it isn't resumed. This object is present
+// only if a job's current status (jobStatus) is USER_PAUSED. The information
+// in this object applies only to a job that was paused while it had a status
+// of RUNNING.
 type UserPausedDetails struct {
 	_ struct{} `type:"structure"`
 
@@ -14483,8 +14618,8 @@ func (s *WeeklySchedule) SetDayOfWeek(v string) *WeeklySchedule {
 	return s
 }
 
-// The current status of an account as a delegated administrator of Amazon Macie
-// for an AWS organization.
+// The current status of an account as the delegated Amazon Macie administrator
+// account for an AWS organization.
 const (
 	// AdminStatusEnabled is a AdminStatus enum value
 	AdminStatusEnabled = "ENABLED"
@@ -14780,6 +14915,46 @@ func GroupBy_Values() []string {
 	}
 }
 
+const (
+	// IsDefinedInJobTrue is a IsDefinedInJob enum value
+	IsDefinedInJobTrue = "TRUE"
+
+	// IsDefinedInJobFalse is a IsDefinedInJob enum value
+	IsDefinedInJobFalse = "FALSE"
+
+	// IsDefinedInJobUnknown is a IsDefinedInJob enum value
+	IsDefinedInJobUnknown = "UNKNOWN"
+)
+
+// IsDefinedInJob_Values returns all elements of the IsDefinedInJob enum
+func IsDefinedInJob_Values() []string {
+	return []string{
+		IsDefinedInJobTrue,
+		IsDefinedInJobFalse,
+		IsDefinedInJobUnknown,
+	}
+}
+
+const (
+	// IsMonitoredByJobTrue is a IsMonitoredByJob enum value
+	IsMonitoredByJobTrue = "TRUE"
+
+	// IsMonitoredByJobFalse is a IsMonitoredByJob enum value
+	IsMonitoredByJobFalse = "FALSE"
+
+	// IsMonitoredByJobUnknown is a IsMonitoredByJob enum value
+	IsMonitoredByJobUnknown = "UNKNOWN"
+)
+
+// IsMonitoredByJob_Values returns all elements of the IsMonitoredByJob enum
+func IsMonitoredByJob_Values() []string {
+	return []string{
+		IsMonitoredByJobTrue,
+		IsMonitoredByJobFalse,
+		IsMonitoredByJobUnknown,
+	}
+}
+
 // The operator to use in a condition. Valid values are:
 const (
 	// JobComparatorEq is a JobComparator enum value
@@ -14817,7 +14992,7 @@ func JobComparator_Values() []string {
 	}
 }
 
-// The current status of a classification job. Possible values are:
+// The status of a classification job. Possible values are:
 const (
 	// JobStatusRunning is a JobStatus enum value
 	JobStatusRunning = "RUNNING"
@@ -14864,6 +15039,25 @@ func JobType_Values() []string {
 	return []string{
 		JobTypeOneTime,
 		JobTypeScheduled,
+	}
+}
+
+// Specifies whether any account- or bucket-level access errors occurred during
+// the run of a one-time classification job or the most recent run of a recurring
+// classification job. Possible values are:
+const (
+	// LastRunErrorStatusCodeNone is a LastRunErrorStatusCode enum value
+	LastRunErrorStatusCodeNone = "NONE"
+
+	// LastRunErrorStatusCodeError is a LastRunErrorStatusCode enum value
+	LastRunErrorStatusCodeError = "ERROR"
+)
+
+// LastRunErrorStatusCode_Values returns all elements of the LastRunErrorStatusCode enum
+func LastRunErrorStatusCode_Values() []string {
+	return []string{
+		LastRunErrorStatusCodeNone,
+		LastRunErrorStatusCodeError,
 	}
 }
 

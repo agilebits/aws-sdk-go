@@ -343,6 +343,9 @@ func (c *DatabaseMigrationService) CreateEndpointRequest(input *CreateEndpointIn
 //   AWS DMS was denied access to the endpoint. Check that the role is correctly
 //   configured.
 //
+//   * S3AccessDeniedFault
+//   Insufficient privileges are preventing access to an Amazon S3 object.
+//
 // See also, https://docs.aws.amazon.com/goto/WebAPI/dms-2016-01-01/CreateEndpoint
 func (c *DatabaseMigrationService) CreateEndpoint(input *CreateEndpointInput) (*CreateEndpointOutput, error) {
 	req, out := c.CreateEndpointRequest(input)
@@ -4899,6 +4902,96 @@ func (c *DatabaseMigrationService) ModifyReplicationTaskWithContext(ctx aws.Cont
 	return out, req.Send()
 }
 
+const opMoveReplicationTask = "MoveReplicationTask"
+
+// MoveReplicationTaskRequest generates a "aws/request.Request" representing the
+// client's request for the MoveReplicationTask operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See MoveReplicationTask for more information on using the MoveReplicationTask
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the MoveReplicationTaskRequest method.
+//    req, resp := client.MoveReplicationTaskRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/dms-2016-01-01/MoveReplicationTask
+func (c *DatabaseMigrationService) MoveReplicationTaskRequest(input *MoveReplicationTaskInput) (req *request.Request, output *MoveReplicationTaskOutput) {
+	op := &request.Operation{
+		Name:       opMoveReplicationTask,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &MoveReplicationTaskInput{}
+	}
+
+	output = &MoveReplicationTaskOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// MoveReplicationTask API operation for AWS Database Migration Service.
+//
+// Moves a replication task from its current replication instance to a different
+// target replication instance using the specified parameters. The target replication
+// instance must be created with the same or later AWS DMS version as the current
+// replication instance.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Database Migration Service's
+// API operation MoveReplicationTask for usage and error information.
+//
+// Returned Error Types:
+//   * AccessDeniedFault
+//   AWS DMS was denied access to the endpoint. Check that the role is correctly
+//   configured.
+//
+//   * InvalidResourceStateFault
+//   The resource is in a state that prevents it from being used for database
+//   migration.
+//
+//   * ResourceNotFoundFault
+//   The resource could not be found.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/dms-2016-01-01/MoveReplicationTask
+func (c *DatabaseMigrationService) MoveReplicationTask(input *MoveReplicationTaskInput) (*MoveReplicationTaskOutput, error) {
+	req, out := c.MoveReplicationTaskRequest(input)
+	return out, req.Send()
+}
+
+// MoveReplicationTaskWithContext is the same as MoveReplicationTask with the addition of
+// the ability to pass a context and additional request options.
+//
+// See MoveReplicationTask for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *DatabaseMigrationService) MoveReplicationTaskWithContext(ctx aws.Context, input *MoveReplicationTaskInput, opts ...request.Option) (*MoveReplicationTaskOutput, error) {
+	req, out := c.MoveReplicationTaskRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opRebootReplicationInstance = "RebootReplicationInstance"
 
 // RebootReplicationInstanceRequest generates a "aws/request.Request" representing the
@@ -6291,6 +6384,9 @@ type CreateEndpointInput struct {
 	// "BucketName": "string", "CompressionType": "none"|"gzip" }
 	DmsTransferSettings *DmsTransferSettings `type:"structure"`
 
+	// Provides information that defines a DocumentDB endpoint.
+	DocDbSettings *DocDbSettings `type:"structure"`
+
 	// Settings in JSON format for the target Amazon DynamoDB endpoint. For information
 	// about other available settings, see Using Object Mapping to Migrate Data
 	// to DynamoDB (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.DynamoDB.html)
@@ -6516,6 +6612,12 @@ func (s *CreateEndpointInput) SetDatabaseName(v string) *CreateEndpointInput {
 // SetDmsTransferSettings sets the DmsTransferSettings field's value.
 func (s *CreateEndpointInput) SetDmsTransferSettings(v *DmsTransferSettings) *CreateEndpointInput {
 	s.DmsTransferSettings = v
+	return s
+}
+
+// SetDocDbSettings sets the DocDbSettings field's value.
+func (s *CreateEndpointInput) SetDocDbSettings(v *DocDbSettings) *CreateEndpointInput {
+	s.DocDbSettings = v
 	return s
 }
 
@@ -10129,6 +10231,115 @@ func (s *DmsTransferSettings) SetServiceAccessRoleArn(v string) *DmsTransferSett
 	return s
 }
 
+// Provides information that defines a DocumentDB endpoint.
+type DocDbSettings struct {
+	_ struct{} `type:"structure"`
+
+	// The database name on the DocumentDB source endpoint.
+	DatabaseName *string `type:"string"`
+
+	// Indicates the number of documents to preview to determine the document organization.
+	// Use this setting when NestingLevel is set to "one".
+	//
+	// Must be a positive value greater than 0. Default value is 1000.
+	DocsToInvestigate *int64 `type:"integer"`
+
+	// Specifies the document ID. Use this setting when NestingLevel is set to "none".
+	//
+	// Default value is "false".
+	ExtractDocId *bool `type:"boolean"`
+
+	// The AWS KMS key identifier that is used to encrypt the content on the replication
+	// instance. If you don't specify a value for the KmsKeyId parameter, then AWS
+	// DMS uses your default encryption key. AWS KMS creates the default encryption
+	// key for your AWS account. Your AWS account has a different default encryption
+	// key for each AWS Region.
+	KmsKeyId *string `type:"string"`
+
+	// Specifies either document or table mode.
+	//
+	// Default value is "none". Specify "none" to use document mode. Specify "one"
+	// to use table mode.
+	NestingLevel *string `type:"string" enum:"NestingLevelValue"`
+
+	// The password for the user account you use to access the DocumentDB source
+	// endpoint.
+	Password *string `type:"string" sensitive:"true"`
+
+	// The port value for the DocumentDB source endpoint.
+	Port *int64 `type:"integer"`
+
+	// The name of the server on the DocumentDB source endpoint.
+	ServerName *string `type:"string"`
+
+	// The user name you use to access the DocumentDB source endpoint.
+	Username *string `type:"string"`
+}
+
+// String returns the string representation
+func (s DocDbSettings) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DocDbSettings) GoString() string {
+	return s.String()
+}
+
+// SetDatabaseName sets the DatabaseName field's value.
+func (s *DocDbSettings) SetDatabaseName(v string) *DocDbSettings {
+	s.DatabaseName = &v
+	return s
+}
+
+// SetDocsToInvestigate sets the DocsToInvestigate field's value.
+func (s *DocDbSettings) SetDocsToInvestigate(v int64) *DocDbSettings {
+	s.DocsToInvestigate = &v
+	return s
+}
+
+// SetExtractDocId sets the ExtractDocId field's value.
+func (s *DocDbSettings) SetExtractDocId(v bool) *DocDbSettings {
+	s.ExtractDocId = &v
+	return s
+}
+
+// SetKmsKeyId sets the KmsKeyId field's value.
+func (s *DocDbSettings) SetKmsKeyId(v string) *DocDbSettings {
+	s.KmsKeyId = &v
+	return s
+}
+
+// SetNestingLevel sets the NestingLevel field's value.
+func (s *DocDbSettings) SetNestingLevel(v string) *DocDbSettings {
+	s.NestingLevel = &v
+	return s
+}
+
+// SetPassword sets the Password field's value.
+func (s *DocDbSettings) SetPassword(v string) *DocDbSettings {
+	s.Password = &v
+	return s
+}
+
+// SetPort sets the Port field's value.
+func (s *DocDbSettings) SetPort(v int64) *DocDbSettings {
+	s.Port = &v
+	return s
+}
+
+// SetServerName sets the ServerName field's value.
+func (s *DocDbSettings) SetServerName(v string) *DocDbSettings {
+	s.ServerName = &v
+	return s
+}
+
+// SetUsername sets the Username field's value.
+func (s *DocDbSettings) SetUsername(v string) *DocDbSettings {
+	s.Username = &v
+	return s
+}
+
 // Provides the Amazon Resource Name (ARN) of the AWS Identity and Access Management
 // (IAM) role used to define an Amazon DynamoDB target endpoint.
 type DynamoDbSettings struct {
@@ -10286,6 +10497,9 @@ type Endpoint struct {
 	// "BucketName": "string", "CompressionType": "none"|"gzip" }
 	DmsTransferSettings *DmsTransferSettings `type:"structure"`
 
+	// Provides information that defines a DocumentDB endpoint.
+	DocDbSettings *DocDbSettings `type:"structure"`
+
 	// The settings for the DynamoDB target endpoint. For more information, see
 	// the DynamoDBSettings structure.
 	DynamoDbSettings *DynamoDbSettings `type:"structure"`
@@ -10427,6 +10641,12 @@ func (s *Endpoint) SetDatabaseName(v string) *Endpoint {
 // SetDmsTransferSettings sets the DmsTransferSettings field's value.
 func (s *Endpoint) SetDmsTransferSettings(v *DmsTransferSettings) *Endpoint {
 	s.DmsTransferSettings = v
+	return s
+}
+
+// SetDocDbSettings sets the DocDbSettings field's value.
+func (s *Endpoint) SetDocDbSettings(v *DocDbSettings) *Endpoint {
+	s.DocDbSettings = v
 	return s
 }
 
@@ -12131,6 +12351,12 @@ type ModifyEndpointInput struct {
 	// "BucketName": "string", "CompressionType": "none"|"gzip" }
 	DmsTransferSettings *DmsTransferSettings `type:"structure"`
 
+	// Settings in JSON format for the source DocumentDB endpoint. For more information
+	// about the available settings, see the configuration properties section in
+	// Using DocumentDB as a Target for AWS Database Migration Service (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.DocumentDB.html)
+	// in the AWS Database Migration Service User Guide.
+	DocDbSettings *DocDbSettings `type:"structure"`
+
 	// Settings in JSON format for the target Amazon DynamoDB endpoint. For information
 	// about other available settings, see Using Object Mapping to Migrate Data
 	// to DynamoDB (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.DynamoDB.html)
@@ -12321,6 +12547,12 @@ func (s *ModifyEndpointInput) SetDatabaseName(v string) *ModifyEndpointInput {
 // SetDmsTransferSettings sets the DmsTransferSettings field's value.
 func (s *ModifyEndpointInput) SetDmsTransferSettings(v *DmsTransferSettings) *ModifyEndpointInput {
 	s.DmsTransferSettings = v
+	return s
+}
+
+// SetDocDbSettings sets the DocDbSettings field's value.
+func (s *ModifyEndpointInput) SetDocDbSettings(v *DocDbSettings) *ModifyEndpointInput {
+	s.DocDbSettings = v
 	return s
 }
 
@@ -13202,6 +13434,81 @@ func (s *MongoDbSettings) SetServerName(v string) *MongoDbSettings {
 // SetUsername sets the Username field's value.
 func (s *MongoDbSettings) SetUsername(v string) *MongoDbSettings {
 	s.Username = &v
+	return s
+}
+
+type MoveReplicationTaskInput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource Name (ARN) of the task that you want to move.
+	//
+	// ReplicationTaskArn is a required field
+	ReplicationTaskArn *string `type:"string" required:"true"`
+
+	// The ARN of the replication instance where you want to move the task to.
+	//
+	// TargetReplicationInstanceArn is a required field
+	TargetReplicationInstanceArn *string `type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s MoveReplicationTaskInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s MoveReplicationTaskInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *MoveReplicationTaskInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "MoveReplicationTaskInput"}
+	if s.ReplicationTaskArn == nil {
+		invalidParams.Add(request.NewErrParamRequired("ReplicationTaskArn"))
+	}
+	if s.TargetReplicationInstanceArn == nil {
+		invalidParams.Add(request.NewErrParamRequired("TargetReplicationInstanceArn"))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetReplicationTaskArn sets the ReplicationTaskArn field's value.
+func (s *MoveReplicationTaskInput) SetReplicationTaskArn(v string) *MoveReplicationTaskInput {
+	s.ReplicationTaskArn = &v
+	return s
+}
+
+// SetTargetReplicationInstanceArn sets the TargetReplicationInstanceArn field's value.
+func (s *MoveReplicationTaskInput) SetTargetReplicationInstanceArn(v string) *MoveReplicationTaskInput {
+	s.TargetReplicationInstanceArn = &v
+	return s
+}
+
+type MoveReplicationTaskOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The replication task that was moved.
+	ReplicationTask *ReplicationTask `type:"structure"`
+}
+
+// String returns the string representation
+func (s MoveReplicationTaskOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s MoveReplicationTaskOutput) GoString() string {
+	return s.String()
+}
+
+// SetReplicationTask sets the ReplicationTask field's value.
+func (s *MoveReplicationTaskOutput) SetReplicationTask(v *ReplicationTask) *MoveReplicationTaskOutput {
+	s.ReplicationTask = v
 	return s
 }
 
@@ -15434,7 +15741,7 @@ type ReplicationTask struct {
 	// to start a CDC operation that begins at that checkpoint.
 	RecoveryCheckpoint *string `type:"string"`
 
-	// The Amazon Resource Name (ARN) of the replication instance.
+	// The ARN of the replication instance.
 	ReplicationInstanceArn *string `type:"string"`
 
 	// The Amazon Resource Name (ARN) of the replication task.
@@ -15464,10 +15771,70 @@ type ReplicationTask struct {
 	// errors.
 	ReplicationTaskStats *ReplicationTaskStats `type:"structure"`
 
-	// The Amazon Resource Name (ARN) string that uniquely identifies the endpoint.
+	// The Amazon Resource Name (ARN) that uniquely identifies the endpoint.
 	SourceEndpointArn *string `type:"string"`
 
-	// The status of the replication task.
+	// The status of the replication task. This response parameter can return one
+	// of the following values:
+	//
+	//    * "moving" – The task is being moved in response to running the MoveReplicationTask
+	//    (https://docs.aws.amazon.com/dms/latest/APIReference/API_MoveReplicationTask.html)
+	//    operation.
+	//
+	//    * "creating" – The task is being created in response to running the
+	//    CreateReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_CreateReplicationTask.html)
+	//    operation.
+	//
+	//    * "deleting" – The task is being deleted in response to running the
+	//    DeleteReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_DeleteReplicationTask.html)
+	//    operation.
+	//
+	//    * "failed" – The task failed to successfully complete the database migration
+	//    in response to running the StartReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_StartReplicationTask.html)
+	//    operation.
+	//
+	//    * "failed-move" – The task failed to move in response to running the
+	//    MoveReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_MoveReplicationTask.html)
+	//    operation.
+	//
+	//    * "modifying" – The task definition is being modified in response to
+	//    running the ModifyReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_ModifyReplicationTask.html)
+	//    operation.
+	//
+	//    * "ready" – The task is in a ready state where it can respond to other
+	//    task operations, such as StartReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_StartReplicationTask.html)
+	//    or DeleteReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_DeleteReplicationTask.html).
+	//
+	//    * "running" – The task is performing a database migration in response
+	//    to running the StartReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_StartReplicationTask.html)
+	//    operation.
+	//
+	//    * "starting" – The task is preparing to perform a database migration
+	//    in response to running the StartReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_StartReplicationTask.html)
+	//    operation.
+	//
+	//    * "stopped" – The task has stopped in response to running the StopReplicationTask
+	//    (https://docs.aws.amazon.com/dms/latest/APIReference/API_StopReplicationTask.html)
+	//    operation.
+	//
+	//    * "stopping" – The task is preparing to stop in response to running
+	//    the StopReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_StopReplicationTask.html)
+	//    operation.
+	//
+	//    * "testing" – The database migration specified for this task is being
+	//    tested in response to running either the StartReplicationTaskAssessmentRun
+	//    (https://docs.aws.amazon.com/dms/latest/APIReference/API_StartReplicationTaskAssessmentRun.html)
+	//    or the StartReplicationTaskAssessment (https://docs.aws.amazon.com/dms/latest/APIReference/API_StartReplicationTaskAssessment.html)
+	//    operation. StartReplicationTaskAssessmentRun (https://docs.aws.amazon.com/dms/latest/APIReference/API_StartReplicationTaskAssessmentRun.html)
+	//    is an improved premigration task assessment operation. The StartReplicationTaskAssessment
+	//    (https://docs.aws.amazon.com/dms/latest/APIReference/API_StartReplicationTaskAssessment.html)
+	//    operation assesses data type compatibility only between the source and
+	//    target database of a given migration task. In contrast, StartReplicationTaskAssessmentRun
+	//    (https://docs.aws.amazon.com/dms/latest/APIReference/API_StartReplicationTaskAssessmentRun.html)
+	//    enables you to specify a variety of premigration task assessments in addition
+	//    to data type compatibility. These assessments include ones for the validity
+	//    of primary key definitions and likely issues with database migration performance,
+	//    among others.
 	Status *string `type:"string"`
 
 	// The reason the replication task was stopped. This response parameter can
@@ -15479,7 +15846,7 @@ type ReplicationTask struct {
 	//    completed.
 	//
 	//    * "STOP_REASON_CACHED_CHANGES_NOT_APPLIED" – In a full-load and CDC
-	//    migration, the full-load stopped as specified before starting the CDC
+	//    migration, the full load stopped as specified before starting the CDC
 	//    migration.
 	//
 	//    * "STOP_REASON_SERVER_TIME" – The migration stopped at the specified
@@ -15489,8 +15856,14 @@ type ReplicationTask struct {
 	// Table mappings specified in the task.
 	TableMappings *string `type:"string"`
 
-	// The Amazon Resource Name (ARN) string that uniquely identifies the endpoint.
+	// The ARN that uniquely identifies the endpoint.
 	TargetEndpointArn *string `type:"string"`
+
+	// The ARN of the replication instance to which this task is moved in response
+	// to running the MoveReplicationTask (https://docs.aws.amazon.com/dms/latest/APIReference/API_MoveReplicationTask.html)
+	// operation. Otherwise, this response parameter isn't a member of the ReplicationTask
+	// object.
+	TargetReplicationInstanceArn *string `type:"string"`
 
 	// Supplemental information that the task requires to migrate the data for certain
 	// source and target endpoints. For more information, see Specifying Supplemental
@@ -15608,6 +15981,12 @@ func (s *ReplicationTask) SetTableMappings(v string) *ReplicationTask {
 // SetTargetEndpointArn sets the TargetEndpointArn field's value.
 func (s *ReplicationTask) SetTargetEndpointArn(v string) *ReplicationTask {
 	s.TargetEndpointArn = &v
+	return s
+}
+
+// SetTargetReplicationInstanceArn sets the TargetReplicationInstanceArn field's value.
+func (s *ReplicationTask) SetTargetReplicationInstanceArn(v string) *ReplicationTask {
+	s.TargetReplicationInstanceArn = &v
 	return s
 }
 
@@ -16498,7 +16877,7 @@ type S3Settings struct {
 
 	// When set to true, this parameter partitions S3 bucket folders based on transaction
 	// commit dates. The default value is false. For more information about date-based
-	// folder partitoning, see Using date-based folder partitioning (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.PostgreSQL.html#CHAP_Source.PostgreSQL.ConnectionAttrib)
+	// folder partitoning, see Using date-based folder partitioning (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html#CHAP_Target.S3.DatePartitioning).
 	DatePartitionEnabled *bool `type:"boolean"`
 
 	// Identifies the sequence of the date format to use during folder partitioning.

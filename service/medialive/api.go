@@ -4853,6 +4853,102 @@ func (c *MediaLive) TransferInputDeviceWithContext(ctx aws.Context, input *Trans
 	return out, req.Send()
 }
 
+const opTransferInputDevice = "TransferInputDevice"
+
+// TransferInputDeviceRequest generates a "aws/request.Request" representing the
+// client's request for the TransferInputDevice operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See TransferInputDevice for more information on using the TransferInputDevice
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the TransferInputDeviceRequest method.
+//    req, resp := client.TransferInputDeviceRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/medialive-2017-10-14/TransferInputDevice
+func (c *MediaLive) TransferInputDeviceRequest(input *TransferInputDeviceInput) (req *request.Request, output *TransferInputDeviceOutput) {
+	op := &request.Operation{
+		Name:       opTransferInputDevice,
+		HTTPMethod: "POST",
+		HTTPPath:   "/prod/inputDevices/{inputDeviceId}/transfer",
+	}
+
+	if input == nil {
+		input = &TransferInputDeviceInput{}
+	}
+
+	output = &TransferInputDeviceOutput{}
+	req = c.newRequest(op, input, output)
+	req.Handlers.Unmarshal.Swap(restjson.UnmarshalHandler.Name, protocol.UnmarshalDiscardBodyHandler)
+	return
+}
+
+// TransferInputDevice API operation for AWS Elemental MediaLive.
+//
+// Start an input device transfer to another AWS account. After you make the
+// request, the other account must accept or reject the transfer.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Elemental MediaLive's
+// API operation TransferInputDevice for usage and error information.
+//
+// Returned Error Types:
+//   * BadRequestException
+//
+//   * UnprocessableEntityException
+//
+//   * InternalServerErrorException
+//
+//   * ForbiddenException
+//
+//   * BadGatewayException
+//
+//   * NotFoundException
+//
+//   * GatewayTimeoutException
+//
+//   * TooManyRequestsException
+//
+//   * ConflictException
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/medialive-2017-10-14/TransferInputDevice
+func (c *MediaLive) TransferInputDevice(input *TransferInputDeviceInput) (*TransferInputDeviceOutput, error) {
+	req, out := c.TransferInputDeviceRequest(input)
+	return out, req.Send()
+}
+
+// TransferInputDeviceWithContext is the same as TransferInputDevice with the addition of
+// the ability to pass a context and additional request options.
+//
+// See TransferInputDevice for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *MediaLive) TransferInputDeviceWithContext(ctx aws.Context, input *TransferInputDeviceInput, opts ...request.Option) (*TransferInputDeviceOutput, error) {
+	req, out := c.TransferInputDeviceRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opUpdateChannel = "UpdateChannel"
 
 // UpdateChannelRequest generates a "aws/request.Request" representing the
@@ -5788,6 +5884,59 @@ func (s *Ac3Settings) SetLfeFilter(v string) *Ac3Settings {
 func (s *Ac3Settings) SetMetadataControl(v string) *Ac3Settings {
 	s.MetadataControl = &v
 	return s
+}
+
+type AcceptInputDeviceTransferInput struct {
+	_ struct{} `type:"structure"`
+
+	// InputDeviceId is a required field
+	InputDeviceId *string `location:"uri" locationName:"inputDeviceId" type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s AcceptInputDeviceTransferInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s AcceptInputDeviceTransferInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *AcceptInputDeviceTransferInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "AcceptInputDeviceTransferInput"}
+	if s.InputDeviceId == nil {
+		invalidParams.Add(request.NewErrParamRequired("InputDeviceId"))
+	}
+	if s.InputDeviceId != nil && len(*s.InputDeviceId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("InputDeviceId", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetInputDeviceId sets the InputDeviceId field's value.
+func (s *AcceptInputDeviceTransferInput) SetInputDeviceId(v string) *AcceptInputDeviceTransferInput {
+	s.InputDeviceId = &v
+	return s
+}
+
+type AcceptInputDeviceTransferOutput struct {
+	_ struct{} `type:"structure"`
+}
+
+// String returns the string representation
+func (s AcceptInputDeviceTransferOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s AcceptInputDeviceTransferOutput) GoString() string {
+	return s.String()
 }
 
 type AcceptInputDeviceTransferInput struct {
@@ -6823,6 +6972,17 @@ func (s *AudioTrackSelection) SetTracks(v []*AudioTrack) *AudioTrackSelection {
 type AutomaticInputFailoverSettings struct {
 	_ struct{} `type:"structure"`
 
+	// This clear time defines the requirement a recovered input must meet to be
+	// considered healthy. The input must have no failover conditions for this length
+	// of time. Enter a time in milliseconds. This value is particularly important
+	// if the input_preference for the failover pair is set to PRIMARY_INPUT_PREFERRED,
+	// because after this time, MediaLive will switch back to the primary input.
+	ErrorClearTimeMsec *int64 `locationName:"errorClearTimeMsec" min:"1" type:"integer"`
+
+	// A list of failover conditions. If any of these conditions occur, MediaLive
+	// will perform a failover to the other input.
+	FailoverConditions []*FailoverCondition `locationName:"failoverConditions" type:"list"`
+
 	// Input preference when deciding which input to make active when a previously
 	// failed input has recovered.
 	InputPreference *string `locationName:"inputPreference" type:"string" enum:"InputPreference"`
@@ -6846,14 +7006,39 @@ func (s AutomaticInputFailoverSettings) GoString() string {
 // Validate inspects the fields of the type to determine if they are valid.
 func (s *AutomaticInputFailoverSettings) Validate() error {
 	invalidParams := request.ErrInvalidParams{Context: "AutomaticInputFailoverSettings"}
+	if s.ErrorClearTimeMsec != nil && *s.ErrorClearTimeMsec < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("ErrorClearTimeMsec", 1))
+	}
 	if s.SecondaryInputId == nil {
 		invalidParams.Add(request.NewErrParamRequired("SecondaryInputId"))
+	}
+	if s.FailoverConditions != nil {
+		for i, v := range s.FailoverConditions {
+			if v == nil {
+				continue
+			}
+			if err := v.Validate(); err != nil {
+				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "FailoverConditions", i), err.(request.ErrInvalidParams))
+			}
+		}
 	}
 
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetErrorClearTimeMsec sets the ErrorClearTimeMsec field's value.
+func (s *AutomaticInputFailoverSettings) SetErrorClearTimeMsec(v int64) *AutomaticInputFailoverSettings {
+	s.ErrorClearTimeMsec = &v
+	return s
+}
+
+// SetFailoverConditions sets the FailoverConditions field's value.
+func (s *AutomaticInputFailoverSettings) SetFailoverConditions(v []*FailoverCondition) *AutomaticInputFailoverSettings {
+	s.FailoverConditions = v
+	return s
 }
 
 // SetInputPreference sets the InputPreference field's value.
@@ -10671,6 +10856,9 @@ type DescribeInputDeviceOutput struct {
 	// means that it has not updated its configuration.
 	DeviceSettingsSyncState *string `locationName:"deviceSettingsSyncState" type:"string" enum:"DeviceSettingsSyncState"`
 
+	// The status of software on the input device.
+	DeviceUpdateStatus *string `locationName:"deviceUpdateStatus" type:"string" enum:"DeviceUpdateStatus"`
+
 	// Settings that describe the active source from the input device, and the video
 	// characteristics of that source.
 	HdDeviceSettings *InputDeviceHdSettings `locationName:"hdDeviceSettings" type:"structure"`
@@ -10716,6 +10904,12 @@ func (s *DescribeInputDeviceOutput) SetConnectionState(v string) *DescribeInputD
 // SetDeviceSettingsSyncState sets the DeviceSettingsSyncState field's value.
 func (s *DescribeInputDeviceOutput) SetDeviceSettingsSyncState(v string) *DescribeInputDeviceOutput {
 	s.DeviceSettingsSyncState = &v
+	return s
+}
+
+// SetDeviceUpdateStatus sets the DeviceUpdateStatus field's value.
+func (s *DescribeInputDeviceOutput) SetDeviceUpdateStatus(v string) *DescribeInputDeviceOutput {
+	s.DeviceUpdateStatus = &v
 	return s
 }
 
@@ -12867,6 +13061,86 @@ func (s *EncoderSettings) SetVideoDescriptions(v []*VideoDescription) *EncoderSe
 	return s
 }
 
+// Failover Condition settings. There can be multiple failover conditions inside
+// AutomaticInputFailoverSettings.
+type FailoverCondition struct {
+	_ struct{} `type:"structure"`
+
+	// Failover condition type-specific settings.
+	FailoverConditionSettings *FailoverConditionSettings `locationName:"failoverConditionSettings" type:"structure"`
+}
+
+// String returns the string representation
+func (s FailoverCondition) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s FailoverCondition) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *FailoverCondition) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "FailoverCondition"}
+	if s.FailoverConditionSettings != nil {
+		if err := s.FailoverConditionSettings.Validate(); err != nil {
+			invalidParams.AddNested("FailoverConditionSettings", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetFailoverConditionSettings sets the FailoverConditionSettings field's value.
+func (s *FailoverCondition) SetFailoverConditionSettings(v *FailoverConditionSettings) *FailoverCondition {
+	s.FailoverConditionSettings = v
+	return s
+}
+
+// Settings for one failover condition.
+type FailoverConditionSettings struct {
+	_ struct{} `type:"structure"`
+
+	// MediaLive will perform a failover if content is not detected in this input
+	// for the specified period.
+	InputLossSettings *InputLossFailoverSettings `locationName:"inputLossSettings" type:"structure"`
+}
+
+// String returns the string representation
+func (s FailoverConditionSettings) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s FailoverConditionSettings) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *FailoverConditionSettings) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "FailoverConditionSettings"}
+	if s.InputLossSettings != nil {
+		if err := s.InputLossSettings.Validate(); err != nil {
+			invalidParams.AddNested("InputLossSettings", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetInputLossSettings sets the InputLossSettings field's value.
+func (s *FailoverConditionSettings) SetInputLossSettings(v *InputLossFailoverSettings) *FailoverConditionSettings {
+	s.InputLossSettings = v
+	return s
+}
+
 // Feature Activations
 type FeatureActivations struct {
 	_ struct{} `type:"structure"`
@@ -14721,6 +14995,14 @@ type HlsGroupSettings struct {
 	// Place segments in subdirectories.
 	DirectoryStructure *string `locationName:"directoryStructure" type:"string" enum:"HlsDirectoryStructure"`
 
+	// Specifies whether to insert EXT-X-DISCONTINUITY tags in the HLS child manifests
+	// for this output group.Typically, choose Insert because these tags are required
+	// in the manifest (according to the HLS specification) and serve an important
+	// purpose.Choose Never Insert only if the downstream system is doing real-time
+	// failover (without using the MediaLive automatic failover feature) and only
+	// if that downstream system has advised you to exclude the tags.
+	DiscontinuityTags *string `locationName:"discontinuityTags" type:"string" enum:"HlsDiscontinuityTags"`
+
 	// Encrypts the segments with the given encryption scheme. Exclude this parameter
 	// if no encryption is desired.
 	EncryptionType *string `locationName:"encryptionType" type:"string" enum:"HlsEncryptionType"`
@@ -14739,6 +15021,14 @@ type HlsGroupSettings struct {
 	// and one or more #EXT-X-BYTERANGE entries identifying the I-frame position.
 	// For example, #EXT-X-BYTERANGE:160364@1461888"
 	IFrameOnlyPlaylists *string `locationName:"iFrameOnlyPlaylists" type:"string" enum:"IFrameOnlyPlaylistType"`
+
+	// Specifies whether to include the final (incomplete) segment in the media
+	// output when the pipeline stops producing output because of a channel stop,
+	// a channel pause or a loss of input to the pipeline.Auto means that MediaLive
+	// decides whether to include the final segment, depending on the channel class
+	// and the types of output groups.Suppress means to never include the incomplete
+	// segment. We recommend you choose Auto and let MediaLive control the behavior.
+	IncompleteSegmentBehavior *string `locationName:"incompleteSegmentBehavior" type:"string" enum:"HlsIncompleteSegmentBehavior"`
 
 	// Applies only if Mode field is LIVE.Specifies the maximum number of segments
 	// in the media manifest file. After this maximum, older segments are removed
@@ -14992,6 +15282,12 @@ func (s *HlsGroupSettings) SetDirectoryStructure(v string) *HlsGroupSettings {
 	return s
 }
 
+// SetDiscontinuityTags sets the DiscontinuityTags field's value.
+func (s *HlsGroupSettings) SetDiscontinuityTags(v string) *HlsGroupSettings {
+	s.DiscontinuityTags = &v
+	return s
+}
+
 // SetEncryptionType sets the EncryptionType field's value.
 func (s *HlsGroupSettings) SetEncryptionType(v string) *HlsGroupSettings {
 	s.EncryptionType = &v
@@ -15013,6 +15309,12 @@ func (s *HlsGroupSettings) SetHlsId3SegmentTagging(v string) *HlsGroupSettings {
 // SetIFrameOnlyPlaylists sets the IFrameOnlyPlaylists field's value.
 func (s *HlsGroupSettings) SetIFrameOnlyPlaylists(v string) *HlsGroupSettings {
 	s.IFrameOnlyPlaylists = &v
+	return s
+}
+
+// SetIncompleteSegmentBehavior sets the IncompleteSegmentBehavior field's value.
+func (s *HlsGroupSettings) SetIncompleteSegmentBehavior(v string) *HlsGroupSettings {
+	s.IncompleteSegmentBehavior = &v
 	return s
 }
 
@@ -16286,6 +16588,9 @@ type InputDeviceSummary struct {
 	// means that it has not updated its configuration.
 	DeviceSettingsSyncState *string `locationName:"deviceSettingsSyncState" type:"string" enum:"DeviceSettingsSyncState"`
 
+	// The status of software on the input device.
+	DeviceUpdateStatus *string `locationName:"deviceUpdateStatus" type:"string" enum:"DeviceUpdateStatus"`
+
 	// Settings that describe an input device that is type HD.
 	HdDeviceSettings *InputDeviceHdSettings `locationName:"hdDeviceSettings" type:"structure"`
 
@@ -16333,6 +16638,12 @@ func (s *InputDeviceSummary) SetConnectionState(v string) *InputDeviceSummary {
 // SetDeviceSettingsSyncState sets the DeviceSettingsSyncState field's value.
 func (s *InputDeviceSummary) SetDeviceSettingsSyncState(v string) *InputDeviceSummary {
 	s.DeviceSettingsSyncState = &v
+	return s
+}
+
+// SetDeviceUpdateStatus sets the DeviceUpdateStatus field's value.
+func (s *InputDeviceSummary) SetDeviceUpdateStatus(v string) *InputDeviceSummary {
+	s.DeviceUpdateStatus = &v
 	return s
 }
 
@@ -16523,6 +16834,45 @@ func (s *InputLossBehavior) SetInputLossImageType(v string) *InputLossBehavior {
 // SetRepeatFrameMsec sets the RepeatFrameMsec field's value.
 func (s *InputLossBehavior) SetRepeatFrameMsec(v int64) *InputLossBehavior {
 	s.RepeatFrameMsec = &v
+	return s
+}
+
+// MediaLive will perform a failover if content is not detected in this input
+// for the specified period.
+type InputLossFailoverSettings struct {
+	_ struct{} `type:"structure"`
+
+	// The amount of time (in milliseconds) that no input is detected. After that
+	// time, an input failover will occur.
+	InputLossThresholdMsec *int64 `locationName:"inputLossThresholdMsec" min:"100" type:"integer"`
+}
+
+// String returns the string representation
+func (s InputLossFailoverSettings) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s InputLossFailoverSettings) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *InputLossFailoverSettings) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "InputLossFailoverSettings"}
+	if s.InputLossThresholdMsec != nil && *s.InputLossThresholdMsec < 100 {
+		invalidParams.Add(request.NewErrParamMinValue("InputLossThresholdMsec", 100))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetInputLossThresholdMsec sets the InputLossThresholdMsec field's value.
+func (s *InputLossFailoverSettings) SetInputLossThresholdMsec(v int64) *InputLossFailoverSettings {
+	s.InputLossThresholdMsec = &v
 	return s
 }
 
@@ -21978,6 +22328,11 @@ func (s RtmpCaptionInfoDestinationSettings) GoString() string {
 type RtmpGroupSettings struct {
 	_ struct{} `type:"structure"`
 
+	// Choose the ad marker type for this output group. MediaLive will create a
+	// message based on the content of each SCTE-35 message, format it for that
+	// marker type, and insert it in the datastream.
+	AdMarkers []*string `locationName:"adMarkers" type:"list"`
+
 	// Authentication scheme to use when connecting with CDN
 	AuthenticationScheme *string `locationName:"authenticationScheme" type:"string" enum:"AuthenticationScheme"`
 
@@ -22031,6 +22386,12 @@ func (s *RtmpGroupSettings) Validate() error {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetAdMarkers sets the AdMarkers field's value.
+func (s *RtmpGroupSettings) SetAdMarkers(v []*string) *RtmpGroupSettings {
+	s.AdMarkers = v
+	return s
 }
 
 // SetAuthenticationScheme sets the AuthenticationScheme field's value.
@@ -25049,6 +25410,9 @@ type UpdateInputDeviceOutput struct {
 	// means that it has not updated its configuration.
 	DeviceSettingsSyncState *string `locationName:"deviceSettingsSyncState" type:"string" enum:"DeviceSettingsSyncState"`
 
+	// The status of software on the input device.
+	DeviceUpdateStatus *string `locationName:"deviceUpdateStatus" type:"string" enum:"DeviceUpdateStatus"`
+
 	// Settings that describe the active source from the input device, and the video
 	// characteristics of that source.
 	HdDeviceSettings *InputDeviceHdSettings `locationName:"hdDeviceSettings" type:"structure"`
@@ -25094,6 +25458,12 @@ func (s *UpdateInputDeviceOutput) SetConnectionState(v string) *UpdateInputDevic
 // SetDeviceSettingsSyncState sets the DeviceSettingsSyncState field's value.
 func (s *UpdateInputDeviceOutput) SetDeviceSettingsSyncState(v string) *UpdateInputDeviceOutput {
 	s.DeviceSettingsSyncState = &v
+	return s
+}
+
+// SetDeviceUpdateStatus sets the DeviceUpdateStatus field's value.
+func (s *UpdateInputDeviceOutput) SetDeviceUpdateStatus(v string) *UpdateInputDeviceOutput {
+	s.DeviceUpdateStatus = &v
 	return s
 }
 
@@ -26790,6 +27160,23 @@ func DeviceSettingsSyncState_Values() []string {
 	}
 }
 
+// The status of software on the input device.
+const (
+	// DeviceUpdateStatusUpToDate is a DeviceUpdateStatus enum value
+	DeviceUpdateStatusUpToDate = "UP_TO_DATE"
+
+	// DeviceUpdateStatusNotUpToDate is a DeviceUpdateStatus enum value
+	DeviceUpdateStatusNotUpToDate = "NOT_UP_TO_DATE"
+)
+
+// DeviceUpdateStatus_Values returns all elements of the DeviceUpdateStatus enum
+func DeviceUpdateStatus_Values() []string {
+	return []string{
+		DeviceUpdateStatusUpToDate,
+		DeviceUpdateStatusNotUpToDate,
+	}
+}
+
 // Dvb Sdt Output Sdt
 const (
 	// DvbSdtOutputSdtSdtFollow is a DvbSdtOutputSdt enum value
@@ -28418,6 +28805,23 @@ func HlsDirectoryStructure_Values() []string {
 	}
 }
 
+// Hls Discontinuity Tags
+const (
+	// HlsDiscontinuityTagsInsert is a HlsDiscontinuityTags enum value
+	HlsDiscontinuityTagsInsert = "INSERT"
+
+	// HlsDiscontinuityTagsNeverInsert is a HlsDiscontinuityTags enum value
+	HlsDiscontinuityTagsNeverInsert = "NEVER_INSERT"
+)
+
+// HlsDiscontinuityTags_Values returns all elements of the HlsDiscontinuityTags enum
+func HlsDiscontinuityTags_Values() []string {
+	return []string{
+		HlsDiscontinuityTagsInsert,
+		HlsDiscontinuityTagsNeverInsert,
+	}
+}
+
 // Hls Encryption Type
 const (
 	// HlsEncryptionTypeAes128 is a HlsEncryptionType enum value
@@ -28466,6 +28870,23 @@ func HlsId3SegmentTaggingState_Values() []string {
 	return []string{
 		HlsId3SegmentTaggingStateDisabled,
 		HlsId3SegmentTaggingStateEnabled,
+	}
+}
+
+// Hls Incomplete Segment Behavior
+const (
+	// HlsIncompleteSegmentBehaviorAuto is a HlsIncompleteSegmentBehavior enum value
+	HlsIncompleteSegmentBehaviorAuto = "AUTO"
+
+	// HlsIncompleteSegmentBehaviorSuppress is a HlsIncompleteSegmentBehavior enum value
+	HlsIncompleteSegmentBehaviorSuppress = "SUPPRESS"
+)
+
+// HlsIncompleteSegmentBehavior_Values returns all elements of the HlsIncompleteSegmentBehavior enum
+func HlsIncompleteSegmentBehavior_Values() []string {
+	return []string{
+		HlsIncompleteSegmentBehaviorAuto,
+		HlsIncompleteSegmentBehaviorSuppress,
 	}
 }
 
@@ -30235,6 +30656,19 @@ func ReservationVideoQuality_Values() []string {
 		ReservationVideoQualityStandard,
 		ReservationVideoQualityEnhanced,
 		ReservationVideoQualityPremium,
+	}
+}
+
+// Rtmp Ad Markers
+const (
+	// RtmpAdMarkersOnCuePointScte35 is a RtmpAdMarkers enum value
+	RtmpAdMarkersOnCuePointScte35 = "ON_CUE_POINT_SCTE35"
+)
+
+// RtmpAdMarkers_Values returns all elements of the RtmpAdMarkers enum
+func RtmpAdMarkers_Values() []string {
+	return []string{
+		RtmpAdMarkersOnCuePointScte35,
 	}
 }
 

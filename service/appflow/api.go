@@ -2425,6 +2425,9 @@ type ConnectorMetadata struct {
 	// The connector metadata specific to Trend Micro.
 	Trendmicro *TrendmicroMetadata `type:"structure"`
 
+	// The connector metadata specific to Upsolver.
+	Upsolver *UpsolverMetadata `type:"structure"`
+
 	// The connector metadata specific to Veeva.
 	Veeva *VeevaMetadata `type:"structure"`
 
@@ -2529,6 +2532,12 @@ func (s *ConnectorMetadata) SetSnowflake(v *SnowflakeMetadata) *ConnectorMetadat
 // SetTrendmicro sets the Trendmicro field's value.
 func (s *ConnectorMetadata) SetTrendmicro(v *TrendmicroMetadata) *ConnectorMetadata {
 	s.Trendmicro = v
+	return s
+}
+
+// SetUpsolver sets the Upsolver field's value.
+func (s *ConnectorMetadata) SetUpsolver(v *UpsolverMetadata) *ConnectorMetadata {
+	s.Upsolver = v
 	return s
 }
 
@@ -2973,6 +2982,11 @@ func (s *ConnectorProfileCredentials) Validate() error {
 	if s.Redshift != nil {
 		if err := s.Redshift.Validate(); err != nil {
 			invalidParams.AddNested("Redshift", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.Salesforce != nil {
+		if err := s.Salesforce.Validate(); err != nil {
+			invalidParams.AddNested("Salesforce", err.(request.ErrInvalidParams))
 		}
 	}
 	if s.ServiceNow != nil {
@@ -4530,6 +4544,9 @@ type DestinationConnectorProperties struct {
 
 	// The properties required to query Snowflake.
 	Snowflake *SnowflakeDestinationProperties `type:"structure"`
+
+	// The properties required to query Upsolver.
+	Upsolver *UpsolverDestinationProperties `type:"structure"`
 }
 
 // String returns the string representation
@@ -4570,6 +4587,11 @@ func (s *DestinationConnectorProperties) Validate() error {
 			invalidParams.AddNested("Snowflake", err.(request.ErrInvalidParams))
 		}
 	}
+	if s.Upsolver != nil {
+		if err := s.Upsolver.Validate(); err != nil {
+			invalidParams.AddNested("Upsolver", err.(request.ErrInvalidParams))
+		}
+	}
 
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -4607,6 +4629,12 @@ func (s *DestinationConnectorProperties) SetSnowflake(v *SnowflakeDestinationPro
 	return s
 }
 
+// SetUpsolver sets the Upsolver field's value.
+func (s *DestinationConnectorProperties) SetUpsolver(v *UpsolverDestinationProperties) *DestinationConnectorProperties {
+	s.Upsolver = v
+	return s
+}
+
 // The properties that can be applied to a field when connector is being used
 // as a destination.
 type DestinationFieldProperties struct {
@@ -4618,9 +4646,18 @@ type DestinationFieldProperties struct {
 	// Specifies if the destination field can have a null value.
 	IsNullable *bool `locationName:"isNullable" type:"boolean"`
 
+	// Specifies whether the field can be updated during an UPDATE or UPSERT write
+	// operation.
+	IsUpdatable *bool `locationName:"isUpdatable" type:"boolean"`
+
 	// Specifies if the flow run can either insert new rows in the destination field
 	// if they do not already exist, or update them if they do.
 	IsUpsertable *bool `locationName:"isUpsertable" type:"boolean"`
+
+	// A list of supported write operations. For each write operation listed, this
+	// field can be used in idFieldNames when that write operation is present as
+	// a destination option.
+	SupportedWriteOperations []*string `locationName:"supportedWriteOperations" type:"list"`
 }
 
 // String returns the string representation
@@ -4645,9 +4682,21 @@ func (s *DestinationFieldProperties) SetIsNullable(v bool) *DestinationFieldProp
 	return s
 }
 
+// SetIsUpdatable sets the IsUpdatable field's value.
+func (s *DestinationFieldProperties) SetIsUpdatable(v bool) *DestinationFieldProperties {
+	s.IsUpdatable = &v
+	return s
+}
+
 // SetIsUpsertable sets the IsUpsertable field's value.
 func (s *DestinationFieldProperties) SetIsUpsertable(v bool) *DestinationFieldProperties {
 	s.IsUpsertable = &v
+	return s
+}
+
+// SetSupportedWriteOperations sets the SupportedWriteOperations field's value.
+func (s *DestinationFieldProperties) SetSupportedWriteOperations(v []*string) *DestinationFieldProperties {
+	s.SupportedWriteOperations = v
 	return s
 }
 
@@ -5370,13 +5419,13 @@ type GoogleAnalyticsConnectorProfileCredentials struct {
 	// ClientId is a required field
 	ClientId *string `locationName:"clientId" type:"string" required:"true"`
 
-	// The client secret used by the oauth client to authenticate to the authorization
+	// The client secret used by the OAuth client to authenticate to the authorization
 	// server.
 	//
 	// ClientSecret is a required field
 	ClientSecret *string `locationName:"clientSecret" type:"string" required:"true" sensitive:"true"`
 
-	// The oauth requirement needed to request security tokens from the connector
+	// The OAuth requirement needed to request security tokens from the connector
 	// endpoint.
 	OAuthRequest *ConnectorOAuthRequest `locationName:"oAuthRequest" type:"structure"`
 
@@ -5517,6 +5566,32 @@ func (s *GoogleAnalyticsSourceProperties) Validate() error {
 // SetObject sets the Object field's value.
 func (s *GoogleAnalyticsSourceProperties) SetObject(v string) *GoogleAnalyticsSourceProperties {
 	s.Object = &v
+	return s
+}
+
+// Specifies the configuration used when importing incremental records from
+// the source.
+type IncrementalPullConfig struct {
+	_ struct{} `type:"structure"`
+
+	// A field that specifies the date time or timestamp field as the criteria to
+	// use when importing incremental records from the source.
+	DatetimeTypeFieldName *string `locationName:"datetimeTypeFieldName" type:"string"`
+}
+
+// String returns the string representation
+func (s IncrementalPullConfig) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s IncrementalPullConfig) GoString() string {
+	return s.String()
+}
+
+// SetDatetimeTypeFieldName sets the DatetimeTypeFieldName field's value.
+func (s *IncrementalPullConfig) SetDatetimeTypeFieldName(v string) *IncrementalPullConfig {
+	s.DatetimeTypeFieldName = &v
 	return s
 }
 
@@ -5979,13 +6054,13 @@ type MarketoConnectorProfileCredentials struct {
 	// ClientId is a required field
 	ClientId *string `locationName:"clientId" type:"string" required:"true"`
 
-	// The client secret used by the oauth client to authenticate to the authorization
+	// The client secret used by the OAuth client to authenticate to the authorization
 	// server.
 	//
 	// ClientSecret is a required field
 	ClientSecret *string `locationName:"clientSecret" type:"string" required:"true" sensitive:"true"`
 
-	// The oauth requirement needed to request security tokens from the connector
+	// The OAuth requirement needed to request security tokens from the connector
 	// endpoint.
 	OAuthRequest *ConnectorOAuthRequest `locationName:"oAuthRequest" type:"structure"`
 }
@@ -6642,7 +6717,11 @@ type SalesforceConnectorProfileCredentials struct {
 	// The credentials used to access protected Salesforce resources.
 	AccessToken *string `locationName:"accessToken" type:"string" sensitive:"true"`
 
-	// The oauth requirement needed to request security tokens from the connector
+	// The secret manager ARN, which contains the client ID and client secret of
+	// the connected app.
+	ClientCredentialsArn *string `locationName:"clientCredentialsArn" min:"20" type:"string" sensitive:"true"`
+
+	// The OAuth requirement needed to request security tokens from the connector
 	// endpoint.
 	OAuthRequest *ConnectorOAuthRequest `locationName:"oAuthRequest" type:"structure"`
 
@@ -6660,9 +6739,28 @@ func (s SalesforceConnectorProfileCredentials) GoString() string {
 	return s.String()
 }
 
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *SalesforceConnectorProfileCredentials) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "SalesforceConnectorProfileCredentials"}
+	if s.ClientCredentialsArn != nil && len(*s.ClientCredentialsArn) < 20 {
+		invalidParams.Add(request.NewErrParamMinLen("ClientCredentialsArn", 20))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
 // SetAccessToken sets the AccessToken field's value.
 func (s *SalesforceConnectorProfileCredentials) SetAccessToken(v string) *SalesforceConnectorProfileCredentials {
 	s.AccessToken = &v
+	return s
+}
+
+// SetClientCredentialsArn sets the ClientCredentialsArn field's value.
+func (s *SalesforceConnectorProfileCredentials) SetClientCredentialsArn(v string) *SalesforceConnectorProfileCredentials {
+	s.ClientCredentialsArn = &v
 	return s
 }
 
@@ -6723,10 +6821,18 @@ type SalesforceDestinationProperties struct {
 	// is a part of the destination connector details.
 	ErrorHandlingConfig *ErrorHandlingConfig `locationName:"errorHandlingConfig" type:"structure"`
 
+	// The name of the field that Amazon AppFlow uses as an ID when performing a
+	// write operation such as update or delete.
+	IdFieldNames []*string `locationName:"idFieldNames" type:"list"`
+
 	// The object specified in the Salesforce flow destination.
 	//
 	// Object is a required field
 	Object *string `locationName:"object" type:"string" required:"true"`
+
+	// This specifies the type of write operation to be performed in Salesforce.
+	// When the value is UPSERT, then idFieldNames is required.
+	WriteOperationType *string `locationName:"writeOperationType" type:"string" enum:"WriteOperationType"`
 }
 
 // String returns the string representation
@@ -6763,9 +6869,21 @@ func (s *SalesforceDestinationProperties) SetErrorHandlingConfig(v *ErrorHandlin
 	return s
 }
 
+// SetIdFieldNames sets the IdFieldNames field's value.
+func (s *SalesforceDestinationProperties) SetIdFieldNames(v []*string) *SalesforceDestinationProperties {
+	s.IdFieldNames = v
+	return s
+}
+
 // SetObject sets the Object field's value.
 func (s *SalesforceDestinationProperties) SetObject(v string) *SalesforceDestinationProperties {
 	s.Object = &v
+	return s
+}
+
+// SetWriteOperationType sets the WriteOperationType field's value.
+func (s *SalesforceDestinationProperties) SetWriteOperationType(v string) *SalesforceDestinationProperties {
+	s.WriteOperationType = &v
 	return s
 }
 
@@ -6864,7 +6982,8 @@ type ScheduledTriggerProperties struct {
 	// Specifies the scheduled end time for a schedule-triggered flow.
 	ScheduleEndTime *time.Time `locationName:"scheduleEndTime" type:"timestamp"`
 
-	// The scheduling expression that determines when and how often the rule runs.
+	// The scheduling expression that determines the rate at which the schedule
+	// will run, for example rate(5minutes).
 	//
 	// ScheduleExpression is a required field
 	ScheduleExpression *string `locationName:"scheduleExpression" type:"string" required:"true"`
@@ -7254,13 +7373,13 @@ type SlackConnectorProfileCredentials struct {
 	// ClientId is a required field
 	ClientId *string `locationName:"clientId" type:"string" required:"true"`
 
-	// The client secret used by the oauth client to authenticate to the authorization
+	// The client secret used by the OAuth client to authenticate to the authorization
 	// server.
 	//
 	// ClientSecret is a required field
 	ClientSecret *string `locationName:"clientSecret" type:"string" required:"true" sensitive:"true"`
 
-	// The oauth requirement needed to request security tokens from the connector
+	// The OAuth requirement needed to request security tokens from the connector
 	// endpoint.
 	OAuthRequest *ConnectorOAuthRequest `locationName:"oAuthRequest" type:"structure"`
 }
@@ -7955,6 +8074,11 @@ type SourceFlowConfig struct {
 	// ConnectorType is a required field
 	ConnectorType *string `locationName:"connectorType" type:"string" required:"true" enum:"ConnectorType"`
 
+	// Defines the configuration for a scheduled incremental data pull. If a valid
+	// configuration is provided, the fields specified in the configuration are
+	// used when querying for the incremental data pull.
+	IncrementalPullConfig *IncrementalPullConfig `locationName:"incrementalPullConfig" type:"structure"`
+
 	// Specifies the information that is required to query a particular source connector.
 	//
 	// SourceConnectorProperties is a required field
@@ -8001,6 +8125,12 @@ func (s *SourceFlowConfig) SetConnectorProfileName(v string) *SourceFlowConfig {
 // SetConnectorType sets the ConnectorType field's value.
 func (s *SourceFlowConfig) SetConnectorType(v string) *SourceFlowConfig {
 	s.ConnectorType = &v
+	return s
+}
+
+// SetIncrementalPullConfig sets the IncrementalPullConfig field's value.
+func (s *SourceFlowConfig) SetIncrementalPullConfig(v *IncrementalPullConfig) *SourceFlowConfig {
+	s.IncrementalPullConfig = v
 	return s
 }
 
@@ -8052,6 +8182,10 @@ func (s *StartFlowInput) SetFlowName(v string) *StartFlowInput {
 type StartFlowOutput struct {
 	_ struct{} `type:"structure"`
 
+	// Returns the internal execution ID of an on-demand flow when the flow is started.
+	// For scheduled or event-triggered flows, this value is null.
+	ExecutionId *string `locationName:"executionId" type:"string"`
+
 	// The flow's Amazon Resource Name (ARN).
 	FlowArn *string `locationName:"flowArn" type:"string"`
 
@@ -8067,6 +8201,12 @@ func (s StartFlowOutput) String() string {
 // GoString returns the string representation
 func (s StartFlowOutput) GoString() string {
 	return s.String()
+}
+
+// SetExecutionId sets the ExecutionId field's value.
+func (s *StartFlowOutput) SetExecutionId(v string) *StartFlowOutput {
+	s.ExecutionId = &v
+	return s
 }
 
 // SetFlowArn sets the FlowArn field's value.
@@ -8912,6 +9052,156 @@ func (s *UpdateFlowOutput) SetFlowStatus(v string) *UpdateFlowOutput {
 	return s
 }
 
+// The properties that are applied when Upsolver is used as a destination.
+type UpsolverDestinationProperties struct {
+	_ struct{} `type:"structure"`
+
+	// The Upsolver Amazon S3 bucket name in which Amazon AppFlow places the transferred
+	// data.
+	//
+	// BucketName is a required field
+	BucketName *string `locationName:"bucketName" min:"16" type:"string" required:"true"`
+
+	// The object key for the destination Upsolver Amazon S3 bucket in which Amazon
+	// AppFlow places the files.
+	BucketPrefix *string `locationName:"bucketPrefix" type:"string"`
+
+	// The configuration that determines how data is formatted when Upsolver is
+	// used as the flow destination.
+	//
+	// S3OutputFormatConfig is a required field
+	S3OutputFormatConfig *UpsolverS3OutputFormatConfig `locationName:"s3OutputFormatConfig" type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s UpsolverDestinationProperties) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpsolverDestinationProperties) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *UpsolverDestinationProperties) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "UpsolverDestinationProperties"}
+	if s.BucketName == nil {
+		invalidParams.Add(request.NewErrParamRequired("BucketName"))
+	}
+	if s.BucketName != nil && len(*s.BucketName) < 16 {
+		invalidParams.Add(request.NewErrParamMinLen("BucketName", 16))
+	}
+	if s.S3OutputFormatConfig == nil {
+		invalidParams.Add(request.NewErrParamRequired("S3OutputFormatConfig"))
+	}
+	if s.S3OutputFormatConfig != nil {
+		if err := s.S3OutputFormatConfig.Validate(); err != nil {
+			invalidParams.AddNested("S3OutputFormatConfig", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetBucketName sets the BucketName field's value.
+func (s *UpsolverDestinationProperties) SetBucketName(v string) *UpsolverDestinationProperties {
+	s.BucketName = &v
+	return s
+}
+
+// SetBucketPrefix sets the BucketPrefix field's value.
+func (s *UpsolverDestinationProperties) SetBucketPrefix(v string) *UpsolverDestinationProperties {
+	s.BucketPrefix = &v
+	return s
+}
+
+// SetS3OutputFormatConfig sets the S3OutputFormatConfig field's value.
+func (s *UpsolverDestinationProperties) SetS3OutputFormatConfig(v *UpsolverS3OutputFormatConfig) *UpsolverDestinationProperties {
+	s.S3OutputFormatConfig = v
+	return s
+}
+
+// The connector metadata specific to Upsolver.
+type UpsolverMetadata struct {
+	_ struct{} `type:"structure"`
+}
+
+// String returns the string representation
+func (s UpsolverMetadata) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpsolverMetadata) GoString() string {
+	return s.String()
+}
+
+// The configuration that determines how Amazon AppFlow formats the flow output
+// data when Upsolver is used as the destination.
+type UpsolverS3OutputFormatConfig struct {
+	_ struct{} `type:"structure"`
+
+	// The aggregation settings that you can use to customize the output format
+	// of your flow data.
+	AggregationConfig *AggregationConfig `locationName:"aggregationConfig" type:"structure"`
+
+	// Indicates the file type that Amazon AppFlow places in the Upsolver Amazon
+	// S3 bucket.
+	FileType *string `locationName:"fileType" type:"string" enum:"FileType"`
+
+	// Determines the prefix that Amazon AppFlow applies to the destination folder
+	// name. You can name your destination folders according to the flow frequency
+	// and date.
+	//
+	// PrefixConfig is a required field
+	PrefixConfig *PrefixConfig `locationName:"prefixConfig" type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s UpsolverS3OutputFormatConfig) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpsolverS3OutputFormatConfig) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *UpsolverS3OutputFormatConfig) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "UpsolverS3OutputFormatConfig"}
+	if s.PrefixConfig == nil {
+		invalidParams.Add(request.NewErrParamRequired("PrefixConfig"))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetAggregationConfig sets the AggregationConfig field's value.
+func (s *UpsolverS3OutputFormatConfig) SetAggregationConfig(v *AggregationConfig) *UpsolverS3OutputFormatConfig {
+	s.AggregationConfig = v
+	return s
+}
+
+// SetFileType sets the FileType field's value.
+func (s *UpsolverS3OutputFormatConfig) SetFileType(v string) *UpsolverS3OutputFormatConfig {
+	s.FileType = &v
+	return s
+}
+
+// SetPrefixConfig sets the PrefixConfig field's value.
+func (s *UpsolverS3OutputFormatConfig) SetPrefixConfig(v *PrefixConfig) *UpsolverS3OutputFormatConfig {
+	s.PrefixConfig = v
+	return s
+}
+
 // The request has invalid or missing parameters.
 type ValidationException struct {
 	_            struct{}                  `type:"structure"`
@@ -9126,13 +9416,13 @@ type ZendeskConnectorProfileCredentials struct {
 	// ClientId is a required field
 	ClientId *string `locationName:"clientId" type:"string" required:"true"`
 
-	// The client secret used by the oauth client to authenticate to the authorization
+	// The client secret used by the OAuth client to authenticate to the authorization
 	// server.
 	//
 	// ClientSecret is a required field
 	ClientSecret *string `locationName:"clientSecret" type:"string" required:"true" sensitive:"true"`
 
-	// The oauth requirement needed to request security tokens from the connector
+	// The OAuth requirement needed to request security tokens from the connector
 	// endpoint.
 	OAuthRequest *ConnectorOAuthRequest `locationName:"oAuthRequest" type:"structure"`
 }
@@ -9384,6 +9674,9 @@ const (
 
 	// ConnectorTypeEventBridge is a ConnectorType enum value
 	ConnectorTypeEventBridge = "EventBridge"
+
+	// ConnectorTypeUpsolver is a ConnectorType enum value
+	ConnectorTypeUpsolver = "Upsolver"
 )
 
 // ConnectorType_Values returns all elements of the ConnectorType enum
@@ -9406,6 +9699,7 @@ func ConnectorType_Values() []string {
 		ConnectorTypeAmplitude,
 		ConnectorTypeVeeva,
 		ConnectorTypeEventBridge,
+		ConnectorTypeUpsolver,
 	}
 }
 
@@ -10654,6 +10948,28 @@ func VeevaConnectorOperator_Values() []string {
 		VeevaConnectorOperatorValidateNonNegative,
 		VeevaConnectorOperatorValidateNumeric,
 		VeevaConnectorOperatorNoOp,
+	}
+}
+
+// The possible write operations in the destination connector. When this value
+// is not provided, this defaults to the INSERT operation.
+const (
+	// WriteOperationTypeInsert is a WriteOperationType enum value
+	WriteOperationTypeInsert = "INSERT"
+
+	// WriteOperationTypeUpsert is a WriteOperationType enum value
+	WriteOperationTypeUpsert = "UPSERT"
+
+	// WriteOperationTypeUpdate is a WriteOperationType enum value
+	WriteOperationTypeUpdate = "UPDATE"
+)
+
+// WriteOperationType_Values returns all elements of the WriteOperationType enum
+func WriteOperationType_Values() []string {
+	return []string{
+		WriteOperationTypeInsert,
+		WriteOperationTypeUpsert,
+		WriteOperationTypeUpdate,
 	}
 }
 

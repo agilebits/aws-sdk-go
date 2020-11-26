@@ -439,7 +439,11 @@
         "maxvCpus":{"shape":"Integer"},
         "desiredvCpus":{"shape":"Integer"},
         "instanceTypes":{"shape":"StringList"},
-        "imageId":{"shape":"String"},
+        "imageId":{
+          "shape":"String",
+          "deprecated":true,
+          "deprecatedMessage":"This field is deprecated, use ec2Configuration[].imageIdOverride instead."
+        },
         "subnets":{"shape":"StringList"},
         "securityGroupIds":{"shape":"StringList"},
         "ec2KeyPair":{"shape":"String"},
@@ -448,7 +452,8 @@
         "placementGroup":{"shape":"String"},
         "bidPercentage":{"shape":"Integer"},
         "spotIamFleetRole":{"shape":"String"},
-        "launchTemplate":{"shape":"LaunchTemplateSpecification"}
+        "launchTemplate":{"shape":"LaunchTemplateSpecification"},
+        "ec2Configuration":{"shape":"Ec2ConfigurationList"}
       }
     },
     "ComputeResourceUpdate":{
@@ -699,15 +704,51 @@
       "type":"list",
       "member":{"shape":"Device"}
     },
+    "Ec2Configuration":{
+      "type":"structure",
+      "required":["imageType"],
+      "members":{
+        "imageType":{"shape":"ImageType"},
+        "imageIdOverride":{"shape":"ImageIdOverride"}
+      }
+    },
+    "Ec2ConfigurationList":{
+      "type":"list",
+      "member":{"shape":"Ec2Configuration"}
+    },
     "EnvironmentVariables":{
       "type":"list",
       "member":{"shape":"KeyValuePair"}
+    },
+    "EvaluateOnExit":{
+      "type":"structure",
+      "required":["action"],
+      "members":{
+        "onStatusReason":{"shape":"String"},
+        "onReason":{"shape":"String"},
+        "onExitCode":{"shape":"String"},
+        "action":{"shape":"RetryAction"}
+      }
+    },
+    "EvaluateOnExitList":{
+      "type":"list",
+      "member":{"shape":"EvaluateOnExit"}
     },
     "Host":{
       "type":"structure",
       "members":{
         "sourcePath":{"shape":"String"}
       }
+    },
+    "ImageIdOverride":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ImageType":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "Integer":{"type":"integer"},
     "JQState":{
@@ -1101,10 +1142,18 @@
       "type":"string",
       "enum":["GPU"]
     },
+    "RetryAction":{
+      "type":"string",
+      "enum":[
+        "RETRY",
+        "EXIT"
+      ]
+    },
     "RetryStrategy":{
       "type":"structure",
       "members":{
-        "attempts":{"shape":"Integer"}
+        "attempts":{"shape":"Integer"},
+        "evaluateOnExit":{"shape":"EvaluateOnExitList"}
       }
     },
     "Secret":{

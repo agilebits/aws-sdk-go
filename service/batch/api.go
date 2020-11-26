@@ -2507,13 +2507,20 @@ type ComputeResource struct {
 	// The desired number of Amazon EC2 vCPUS in the compute environment.
 	DesiredvCpus *int64 `locationName:"desiredvCpus" type:"integer"`
 
+	// Provides additional details used to selecting the AMI to use for instances
+	// in a compute environment.
+	Ec2Configuration []*Ec2Configuration `locationName:"ec2Configuration" type:"list"`
+
 	// The Amazon EC2 key pair that is used for instances launched in the compute
 	// environment.
 	Ec2KeyPair *string `locationName:"ec2KeyPair" type:"string"`
 
 	// The Amazon Machine Image (AMI) ID used for instances launched in the compute
-	// environment.
-	ImageId *string `locationName:"imageId" type:"string"`
+	// environment. This parameter is overridden by the imageIdOverride member of
+	// the Ec2Configuration structure.
+	//
+	// Deprecated: This field is deprecated, use ec2Configuration[].imageIdOverride instead.
+	ImageId *string `locationName:"imageId" deprecated:"true" type:"string"`
 
 	// The Amazon ECS instance profile applied to Amazon EC2 instances in a compute
 	// environment. You can specify the short name or full Amazon Resource Name
@@ -2629,6 +2636,16 @@ func (s *ComputeResource) Validate() error {
 	if s.Type == nil {
 		invalidParams.Add(request.NewErrParamRequired("Type"))
 	}
+	if s.Ec2Configuration != nil {
+		for i, v := range s.Ec2Configuration {
+			if v == nil {
+				continue
+			}
+			if err := v.Validate(); err != nil {
+				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "Ec2Configuration", i), err.(request.ErrInvalidParams))
+			}
+		}
+	}
 
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2651,6 +2668,12 @@ func (s *ComputeResource) SetBidPercentage(v int64) *ComputeResource {
 // SetDesiredvCpus sets the DesiredvCpus field's value.
 func (s *ComputeResource) SetDesiredvCpus(v int64) *ComputeResource {
 	s.DesiredvCpus = &v
+	return s
+}
+
+// SetEc2Configuration sets the Ec2Configuration field's value.
+func (s *ComputeResource) SetEc2Configuration(v []*Ec2Configuration) *ComputeResource {
+	s.Ec2Configuration = v
 	return s
 }
 
@@ -4387,6 +4410,164 @@ func (s *Device) SetPermissions(v []*string) *Device {
 	return s
 }
 
+// Provides information used to select Amazon Machine Images (AMIs) for instances
+// in the compute environment. If the Ec2Configuration is not specified, the
+// default is ECS_AL1.
+type Ec2Configuration struct {
+	_ struct{} `type:"structure"`
+
+	// The AMI ID used for instances launched in the compute environment that match
+	// the image type. This setting overrides the imageId set in the computeResource
+	// object.
+	ImageIdOverride *string `locationName:"imageIdOverride" min:"1" type:"string"`
+
+	// The image type to match with the instance type to pick an AMI. If the imageIdOverride
+	// parameter is not specified, then a recent Amazon ECS-optimized AMI (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html)
+	// will be used.
+	//
+	// ECS_AL2
+	//
+	// Amazon Linux 2 (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami)−
+	// Default for all AWS Graviton-based instance families (for example, C6g, M6g,
+	// R6g, and T4g) and can be used for all non-GPU instance types.
+	//
+	// ECS_AL2_NVIDIA
+	//
+	// Amazon Linux 2 (GPU) (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#gpuami)−Default
+	// for all GPU instance families (for example P4 and G4) and can be used for
+	// all non-AWS Graviton-based instance types.
+	//
+	// ECS_AL1
+	//
+	// Amazon Linux (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#alami)−Default
+	// for all non-GPU, non-AWS-Graviton instance families. Amazon Linux is reaching
+	// the end-of-life of standard support. For more information, see Amazon Linux
+	// AMI (https://aws.amazon.com/amazon-linux-ami/).
+	//
+	// ImageType is a required field
+	ImageType *string `locationName:"imageType" min:"1" type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s Ec2Configuration) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s Ec2Configuration) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *Ec2Configuration) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "Ec2Configuration"}
+	if s.ImageIdOverride != nil && len(*s.ImageIdOverride) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("ImageIdOverride", 1))
+	}
+	if s.ImageType == nil {
+		invalidParams.Add(request.NewErrParamRequired("ImageType"))
+	}
+	if s.ImageType != nil && len(*s.ImageType) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("ImageType", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetImageIdOverride sets the ImageIdOverride field's value.
+func (s *Ec2Configuration) SetImageIdOverride(v string) *Ec2Configuration {
+	s.ImageIdOverride = &v
+	return s
+}
+
+// SetImageType sets the ImageType field's value.
+func (s *Ec2Configuration) SetImageType(v string) *Ec2Configuration {
+	s.ImageType = &v
+	return s
+}
+
+// Specifies a set of conditions to be met, and an action to take (RETRY or
+// EXIT) if all conditions are met.
+type EvaluateOnExit struct {
+	_ struct{} `type:"structure"`
+
+	// Specifies the action to take if all of the specified conditions (onStatusReason,
+	// onReason, and onExitCode) are met.
+	//
+	// Action is a required field
+	Action *string `locationName:"action" type:"string" required:"true" enum:"RetryAction"`
+
+	// Contains a glob pattern to match against the decimal representation of the
+	// ExitCode returned for a job. The patten can be up to 512 characters long,
+	// can contain only numbers, and can optionally end with an asterisk (*) so
+	// that only the start of the string needs to be an exact match.
+	OnExitCode *string `locationName:"onExitCode" type:"string"`
+
+	// Contains a glob pattern to match against the Reason returned for a job. The
+	// patten can be up to 512 characters long, can contain letters, numbers, periods
+	// (.), colons (:), and whitespace (spaces, tabs), and can optionally end with
+	// an asterisk (*) so that only the start of the string needs to be an exact
+	// match.
+	OnReason *string `locationName:"onReason" type:"string"`
+
+	// Contains a glob pattern to match against the StatusReason returned for a
+	// job. The patten can be up to 512 characters long, can contain letters, numbers,
+	// periods (.), colons (:), and whitespace (spaces, tabs). and can optionally
+	// end with an asterisk (*) so that only the start of the string needs to be
+	// an exact match.
+	OnStatusReason *string `locationName:"onStatusReason" type:"string"`
+}
+
+// String returns the string representation
+func (s EvaluateOnExit) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s EvaluateOnExit) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *EvaluateOnExit) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "EvaluateOnExit"}
+	if s.Action == nil {
+		invalidParams.Add(request.NewErrParamRequired("Action"))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetAction sets the Action field's value.
+func (s *EvaluateOnExit) SetAction(v string) *EvaluateOnExit {
+	s.Action = &v
+	return s
+}
+
+// SetOnExitCode sets the OnExitCode field's value.
+func (s *EvaluateOnExit) SetOnExitCode(v string) *EvaluateOnExit {
+	s.OnExitCode = &v
+	return s
+}
+
+// SetOnReason sets the OnReason field's value.
+func (s *EvaluateOnExit) SetOnReason(v string) *EvaluateOnExit {
+	s.OnReason = &v
+	return s
+}
+
+// SetOnStatusReason sets the OnStatusReason field's value.
+func (s *EvaluateOnExit) SetOnStatusReason(v string) *EvaluateOnExit {
+	s.OnStatusReason = &v
+	return s
+}
+
 // Determine whether your data volume persists on the host container instance
 // and where it is stored. If this parameter is empty, then the Docker daemon
 // assigns a host path for your data volume, but the data is not guaranteed
@@ -5165,7 +5346,8 @@ type LinuxParameters struct {
 	// The total amount of swap memory (in MiB) a container can use. This parameter
 	// will be translated to the --memory-swap option to docker run (https://docs.docker.com/engine/reference/run/)
 	// where the value would be the sum of the container memory plus the maxSwap
-	// value.
+	// value. For more information, see --memory-swap details (https://docs.docker.com/config/containers/resource_constraints/#--memory-swap-details)
+	// in the Docker documentation.
 	//
 	// If a maxSwap value of 0 is specified, the container will not use swap. Accepted
 	// values are 0 or any positive integer. If the maxSwap parameter is omitted,
@@ -6107,6 +6289,11 @@ func (s *RegisterJobDefinitionInput) Validate() error {
 			invalidParams.AddNested("NodeProperties", err.(request.ErrInvalidParams))
 		}
 	}
+	if s.RetryStrategy != nil {
+		if err := s.RetryStrategy.Validate(); err != nil {
+			invalidParams.AddNested("RetryStrategy", err.(request.ErrInvalidParams))
+		}
+	}
 
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -6274,6 +6461,11 @@ type RetryStrategy struct {
 	// between 1 and 10 attempts. If the value of attempts is greater than one,
 	// the job is retried on failure the same number of attempts as the value.
 	Attempts *int64 `locationName:"attempts" type:"integer"`
+
+	// Array of up to 5 objects that specify conditions under which the job should
+	// be retried or failed. If this parameter is specified, then the attempts parameter
+	// must also be specified.
+	EvaluateOnExit []*EvaluateOnExit `locationName:"evaluateOnExit" type:"list"`
 }
 
 // String returns the string representation
@@ -6286,9 +6478,35 @@ func (s RetryStrategy) GoString() string {
 	return s.String()
 }
 
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *RetryStrategy) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "RetryStrategy"}
+	if s.EvaluateOnExit != nil {
+		for i, v := range s.EvaluateOnExit {
+			if v == nil {
+				continue
+			}
+			if err := v.Validate(); err != nil {
+				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "EvaluateOnExit", i), err.(request.ErrInvalidParams))
+			}
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
 // SetAttempts sets the Attempts field's value.
 func (s *RetryStrategy) SetAttempts(v int64) *RetryStrategy {
 	s.Attempts = &v
+	return s
+}
+
+// SetEvaluateOnExit sets the EvaluateOnExit field's value.
+func (s *RetryStrategy) SetEvaluateOnExit(v []*EvaluateOnExit) *RetryStrategy {
+	s.EvaluateOnExit = v
 	return s
 }
 
@@ -6531,6 +6749,11 @@ func (s *SubmitJobInput) Validate() error {
 	if s.NodeOverrides != nil {
 		if err := s.NodeOverrides.Validate(); err != nil {
 			invalidParams.AddNested("NodeOverrides", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.RetryStrategy != nil {
+		if err := s.RetryStrategy.Validate(); err != nil {
+			invalidParams.AddNested("RetryStrategy", err.(request.ErrInvalidParams))
 		}
 	}
 
@@ -7556,5 +7779,21 @@ const (
 func ResourceType_Values() []string {
 	return []string{
 		ResourceTypeGpu,
+	}
+}
+
+const (
+	// RetryActionRetry is a RetryAction enum value
+	RetryActionRetry = "RETRY"
+
+	// RetryActionExit is a RetryAction enum value
+	RetryActionExit = "EXIT"
+)
+
+// RetryAction_Values returns all elements of the RetryAction enum
+func RetryAction_Values() []string {
+	return []string{
+		RetryActionRetry,
+		RetryActionExit,
 	}
 }

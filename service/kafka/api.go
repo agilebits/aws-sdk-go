@@ -3776,9 +3776,9 @@ type ClusterInfo struct {
 	EncryptionInfo *EncryptionInfo `locationName:"encryptionInfo" type:"structure"`
 
 	// Specifies which metrics are gathered for the MSK cluster. This property has
-	// three possible values: DEFAULT, PER_BROKER, and PER_TOPIC_PER_BROKER. For
-	// a list of the metrics associated with each of these three levels of monitoring,
-	// see Monitoring (https://docs.aws.amazon.com/msk/latest/developerguide/monitoring.html).
+	// the following possible values: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER,
+	// and PER_TOPIC_PER_PARTITION. For a list of the metrics associated with each
+	// of these levels of monitoring, see Monitoring (https://docs.aws.amazon.com/msk/latest/developerguide/monitoring.html).
 	EnhancedMonitoring *string `locationName:"enhancedMonitoring" type:"string" enum:"EnhancedMonitoring"`
 
 	// You can configure your MSK cluster to send broker logs to different destination
@@ -3792,7 +3792,8 @@ type ClusterInfo struct {
 	// Settings for open monitoring using Prometheus.
 	OpenMonitoring *OpenMonitoring `locationName:"openMonitoring" type:"structure"`
 
-	// The state of the cluster. The possible states are CREATING, ACTIVE, and FAILED.
+	// The state of the cluster. The possible states are ACTIVE, CREATING, DELETING,
+	// FAILED, MAINTENANCE, REBOOTING_BROKER, and UPDATING.
 	State *string `locationName:"state" type:"string" enum:"ClusterState"`
 
 	// Tags attached to the cluster.
@@ -4393,7 +4394,7 @@ type CreateClusterInput struct {
 	EncryptionInfo *EncryptionInfo `locationName:"encryptionInfo" type:"structure"`
 
 	// Specifies the level of monitoring for the MSK cluster. The possible values
-	// are DEFAULT, PER_BROKER, and PER_TOPIC_PER_BROKER.
+	// are DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION.
 	EnhancedMonitoring *string `locationName:"enhancedMonitoring" type:"string" enum:"EnhancedMonitoring"`
 
 	// The version of Apache Kafka.
@@ -4558,7 +4559,8 @@ type CreateClusterOutput struct {
 	// The name of the MSK cluster.
 	ClusterName *string `locationName:"clusterName" type:"string"`
 
-	// The state of the cluster. The possible states are CREATING, ACTIVE, and FAILED.
+	// The state of the cluster. The possible states are ACTIVE, CREATING, DELETING,
+	// FAILED, MAINTENANCE, REBOOTING_BROKER, and UPDATING.
 	State *string `locationName:"state" type:"string" enum:"ClusterState"`
 }
 
@@ -4778,7 +4780,8 @@ type DeleteClusterOutput struct {
 	// The Amazon Resource Name (ARN) of the cluster.
 	ClusterArn *string `locationName:"clusterArn" type:"string"`
 
-	// The state of the cluster. The possible states are CREATING, ACTIVE, and FAILED.
+	// The state of the cluster. The possible states are ACTIVE, CREATING, DELETING,
+	// FAILED, MAINTENANCE, REBOOTING_BROKER, and UPDATING.
 	State *string `locationName:"state" type:"string" enum:"ClusterState"`
 }
 
@@ -8356,14 +8359,20 @@ const (
 	// ClusterStateCreating is a ClusterState enum value
 	ClusterStateCreating = "CREATING"
 
-	// ClusterStateUpdating is a ClusterState enum value
-	ClusterStateUpdating = "UPDATING"
-
 	// ClusterStateDeleting is a ClusterState enum value
 	ClusterStateDeleting = "DELETING"
 
 	// ClusterStateFailed is a ClusterState enum value
 	ClusterStateFailed = "FAILED"
+
+	// ClusterStateMaintenance is a ClusterState enum value
+	ClusterStateMaintenance = "MAINTENANCE"
+
+	// ClusterStateRebootingBroker is a ClusterState enum value
+	ClusterStateRebootingBroker = "REBOOTING_BROKER"
+
+	// ClusterStateUpdating is a ClusterState enum value
+	ClusterStateUpdating = "UPDATING"
 )
 
 // ClusterState_Values returns all elements of the ClusterState enum
@@ -8371,9 +8380,11 @@ func ClusterState_Values() []string {
 	return []string{
 		ClusterStateActive,
 		ClusterStateCreating,
-		ClusterStateUpdating,
 		ClusterStateDeleting,
 		ClusterStateFailed,
+		ClusterStateMaintenance,
+		ClusterStateRebootingBroker,
+		ClusterStateUpdating,
 	}
 }
 
@@ -8399,9 +8410,9 @@ func ConfigurationState_Values() []string {
 }
 
 // Specifies which metrics are gathered for the MSK cluster. This property has
-// three possible values: DEFAULT, PER_BROKER, and PER_TOPIC_PER_BROKER. For
-// a list of the metrics associated with each of these three levels of monitoring,
-// see Monitoring (https://docs.aws.amazon.com/msk/latest/developerguide/monitoring.html).
+// the following possible values: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER,
+// and PER_TOPIC_PER_PARTITION. For a list of the metrics associated with each
+// of these levels of monitoring, see Monitoring (https://docs.aws.amazon.com/msk/latest/developerguide/monitoring.html).
 const (
 	// EnhancedMonitoringDefault is a EnhancedMonitoring enum value
 	EnhancedMonitoringDefault = "DEFAULT"
@@ -8411,6 +8422,9 @@ const (
 
 	// EnhancedMonitoringPerTopicPerBroker is a EnhancedMonitoring enum value
 	EnhancedMonitoringPerTopicPerBroker = "PER_TOPIC_PER_BROKER"
+
+	// EnhancedMonitoringPerTopicPerPartition is a EnhancedMonitoring enum value
+	EnhancedMonitoringPerTopicPerPartition = "PER_TOPIC_PER_PARTITION"
 )
 
 // EnhancedMonitoring_Values returns all elements of the EnhancedMonitoring enum
@@ -8419,6 +8433,7 @@ func EnhancedMonitoring_Values() []string {
 		EnhancedMonitoringDefault,
 		EnhancedMonitoringPerBroker,
 		EnhancedMonitoringPerTopicPerBroker,
+		EnhancedMonitoringPerTopicPerPartition,
 	}
 }
 

@@ -15990,6 +15990,9 @@ func (c *IoT) ListThingGroupsRequest(input *ListThingGroupsInput) (req *request.
 //   * ResourceNotFoundException
 //   The specified resource does not exist.
 //
+//   * ThrottlingException
+//   The rate exceeds the limit.
+//
 func (c *IoT) ListThingGroups(input *ListThingGroupsInput) (*ListThingGroupsOutput, error) {
 	req, out := c.ListThingGroupsRequest(input)
 	return out, req.Send()
@@ -16130,6 +16133,9 @@ func (c *IoT) ListThingGroupsForThingRequest(input *ListThingGroupsForThingInput
 //   * ResourceNotFoundException
 //   The specified resource does not exist.
 //
+//   * ThrottlingException
+//   The rate exceeds the limit.
+//
 func (c *IoT) ListThingGroupsForThing(input *ListThingGroupsForThingInput) (*ListThingGroupsForThingOutput, error) {
 	req, out := c.ListThingGroupsForThingRequest(input)
 	return out, req.Send()
@@ -16232,6 +16238,12 @@ func (c *IoT) ListThingPrincipalsRequest(input *ListThingPrincipalsInput) (req *
 		Name:       opListThingPrincipals,
 		HTTPMethod: "GET",
 		HTTPPath:   "/things/{thingName}/principals",
+		Paginator: &request.Paginator{
+			InputTokens:     []string{"nextToken"},
+			OutputTokens:    []string{"nextToken"},
+			LimitToken:      "maxResults",
+			TruncationToken: "",
+		},
 	}
 
 	if input == nil {
@@ -16294,6 +16306,58 @@ func (c *IoT) ListThingPrincipalsWithContext(ctx aws.Context, input *ListThingPr
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
+}
+
+// ListThingPrincipalsPages iterates over the pages of a ListThingPrincipals operation,
+// calling the "fn" function with the response data for each page. To stop
+// iterating, return false from the fn function.
+//
+// See ListThingPrincipals method for more information on how to use this operation.
+//
+// Note: This operation can generate multiple requests to a service.
+//
+//    // Example iterating over at most 3 pages of a ListThingPrincipals operation.
+//    pageNum := 0
+//    err := client.ListThingPrincipalsPages(params,
+//        func(page *iot.ListThingPrincipalsOutput, lastPage bool) bool {
+//            pageNum++
+//            fmt.Println(page)
+//            return pageNum <= 3
+//        })
+//
+func (c *IoT) ListThingPrincipalsPages(input *ListThingPrincipalsInput, fn func(*ListThingPrincipalsOutput, bool) bool) error {
+	return c.ListThingPrincipalsPagesWithContext(aws.BackgroundContext(), input, fn)
+}
+
+// ListThingPrincipalsPagesWithContext same as ListThingPrincipalsPages except
+// it takes a Context and allows setting request options on the pages.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *IoT) ListThingPrincipalsPagesWithContext(ctx aws.Context, input *ListThingPrincipalsInput, fn func(*ListThingPrincipalsOutput, bool) bool, opts ...request.Option) error {
+	p := request.Pagination{
+		NewRequest: func() (*request.Request, error) {
+			var inCpy *ListThingPrincipalsInput
+			if input != nil {
+				tmp := *input
+				inCpy = &tmp
+			}
+			req, _ := c.ListThingPrincipalsRequest(inCpy)
+			req.SetContext(ctx)
+			req.ApplyOptions(opts...)
+			return req, nil
+		},
+	}
+
+	for p.Next() {
+		if !fn(p.Page().(*ListThingPrincipalsOutput), !p.HasNextPage()) {
+			break
+		}
+	}
+
+	return p.Err()
 }
 
 const opListThingRegistrationTaskReports = "ListThingRegistrationTaskReports"
@@ -17090,6 +17154,9 @@ func (c *IoT) ListThingsInThingGroupRequest(input *ListThingsInThingGroupInput) 
 //
 //   * ResourceNotFoundException
 //   The specified resource does not exist.
+//
+//   * ThrottlingException
+//   The rate exceeds the limit.
 //
 func (c *IoT) ListThingsInThingGroup(input *ListThingsInThingGroupInput) (*ListThingsInThingGroupOutput, error) {
 	req, out := c.ListThingsInThingGroupRequest(input)
@@ -23041,6 +23108,16 @@ type AssociateTargetsWithJobInput struct {
 	// JobId is a required field
 	JobId *string `location:"uri" locationName:"jobId" min:"1" type:"string" required:"true"`
 
+	// The namespace used to indicate that a job is a customer-managed job.
+	//
+	// When you specify a value for this parameter, AWS IoT Core sends jobs notifications
+	// to MQTT topics that contain the value in the following format.
+	//
+	// $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/
+	//
+	// The namespaceId feature is in public preview.
+	NamespaceId *string `location:"querystring" locationName:"namespaceId" min:"1" type:"string"`
+
 	// A list of thing group ARNs that define the targets of the job.
 	//
 	// Targets is a required field
@@ -23066,6 +23143,9 @@ func (s *AssociateTargetsWithJobInput) Validate() error {
 	if s.JobId != nil && len(*s.JobId) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("JobId", 1))
 	}
+	if s.NamespaceId != nil && len(*s.NamespaceId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("NamespaceId", 1))
+	}
 	if s.Targets == nil {
 		invalidParams.Add(request.NewErrParamRequired("Targets"))
 	}
@@ -23088,6 +23168,12 @@ func (s *AssociateTargetsWithJobInput) SetComment(v string) *AssociateTargetsWit
 // SetJobId sets the JobId field's value.
 func (s *AssociateTargetsWithJobInput) SetJobId(v string) *AssociateTargetsWithJobInput {
 	s.JobId = &v
+	return s
+}
+
+// SetNamespaceId sets the NamespaceId field's value.
+func (s *AssociateTargetsWithJobInput) SetNamespaceId(v string) *AssociateTargetsWithJobInput {
+	s.NamespaceId = &v
 	return s
 }
 
@@ -27436,6 +27522,16 @@ type CreateJobInput struct {
 	// JobId is a required field
 	JobId *string `location:"uri" locationName:"jobId" min:"1" type:"string" required:"true"`
 
+	// The namespace used to indicate that a job is a customer-managed job.
+	//
+	// When you specify a value for this parameter, AWS IoT Core sends jobs notifications
+	// to MQTT topics that contain the value in the following format.
+	//
+	// $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/
+	//
+	// The namespaceId feature is in public preview.
+	NamespaceId *string `locationName:"namespaceId" min:"1" type:"string"`
+
 	// Configuration information for pre-signed S3 URLs.
 	PresignedUrlConfig *PresignedUrlConfig `locationName:"presignedUrlConfig" type:"structure"`
 
@@ -27483,6 +27579,9 @@ func (s *CreateJobInput) Validate() error {
 	}
 	if s.JobId != nil && len(*s.JobId) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("JobId", 1))
+	}
+	if s.NamespaceId != nil && len(*s.NamespaceId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("NamespaceId", 1))
 	}
 	if s.Targets == nil {
 		invalidParams.Add(request.NewErrParamRequired("Targets"))
@@ -27555,6 +27654,12 @@ func (s *CreateJobInput) SetJobExecutionsRolloutConfig(v *JobExecutionsRolloutCo
 // SetJobId sets the JobId field's value.
 func (s *CreateJobInput) SetJobId(v string) *CreateJobInput {
 	s.JobId = &v
+	return s
+}
+
+// SetNamespaceId sets the NamespaceId field's value.
+func (s *CreateJobInput) SetNamespaceId(v string) *CreateJobInput {
+	s.NamespaceId = &v
 	return s
 }
 
@@ -30528,6 +30633,16 @@ type DeleteJobExecutionInput struct {
 	// JobId is a required field
 	JobId *string `location:"uri" locationName:"jobId" min:"1" type:"string" required:"true"`
 
+	// The namespace used to indicate that a job is a customer-managed job.
+	//
+	// When you specify a value for this parameter, AWS IoT Core sends jobs notifications
+	// to MQTT topics that contain the value in the following format.
+	//
+	// $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/
+	//
+	// The namespaceId feature is in public preview.
+	NamespaceId *string `location:"querystring" locationName:"namespaceId" min:"1" type:"string"`
+
 	// The name of the thing whose job execution will be deleted.
 	//
 	// ThingName is a required field
@@ -30555,6 +30670,9 @@ func (s *DeleteJobExecutionInput) Validate() error {
 	}
 	if s.JobId != nil && len(*s.JobId) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("JobId", 1))
+	}
+	if s.NamespaceId != nil && len(*s.NamespaceId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("NamespaceId", 1))
 	}
 	if s.ThingName == nil {
 		invalidParams.Add(request.NewErrParamRequired("ThingName"))
@@ -30584,6 +30702,12 @@ func (s *DeleteJobExecutionInput) SetForce(v bool) *DeleteJobExecutionInput {
 // SetJobId sets the JobId field's value.
 func (s *DeleteJobExecutionInput) SetJobId(v string) *DeleteJobExecutionInput {
 	s.JobId = &v
+	return s
+}
+
+// SetNamespaceId sets the NamespaceId field's value.
+func (s *DeleteJobExecutionInput) SetNamespaceId(v string) *DeleteJobExecutionInput {
+	s.NamespaceId = &v
 	return s
 }
 
@@ -30628,6 +30752,16 @@ type DeleteJobInput struct {
 	//
 	// JobId is a required field
 	JobId *string `location:"uri" locationName:"jobId" min:"1" type:"string" required:"true"`
+
+	// The namespace used to indicate that a job is a customer-managed job.
+	//
+	// When you specify a value for this parameter, AWS IoT Core sends jobs notifications
+	// to MQTT topics that contain the value in the following format.
+	//
+	// $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/
+	//
+	// The namespaceId feature is in public preview.
+	NamespaceId *string `location:"querystring" locationName:"namespaceId" min:"1" type:"string"`
 }
 
 // String returns the string representation
@@ -30649,6 +30783,9 @@ func (s *DeleteJobInput) Validate() error {
 	if s.JobId != nil && len(*s.JobId) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("JobId", 1))
 	}
+	if s.NamespaceId != nil && len(*s.NamespaceId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("NamespaceId", 1))
+	}
 
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -30665,6 +30802,12 @@ func (s *DeleteJobInput) SetForce(v bool) *DeleteJobInput {
 // SetJobId sets the JobId field's value.
 func (s *DeleteJobInput) SetJobId(v string) *DeleteJobInput {
 	s.JobId = &v
+	return s
+}
+
+// SetNamespaceId sets the NamespaceId field's value.
+func (s *DeleteJobInput) SetNamespaceId(v string) *DeleteJobInput {
+	s.NamespaceId = &v
 	return s
 }
 
@@ -35709,6 +35852,15 @@ func (s *FileLocation) SetStream(v *Stream) *FileLocation {
 type FirehoseAction struct {
 	_ struct{} `type:"structure"`
 
+	// Whether to deliver the Kinesis Data Firehose stream as a batch by using PutRecordBatch
+	// (https://docs.aws.amazon.com/firehose/latest/APIReference/API_PutRecordBatch.html).
+	// The default value is false.
+	//
+	// When batchMode is true and the rule's SQL statement evaluates to an Array,
+	// each Array element forms one record in the PutRecordBatch (https://docs.aws.amazon.com/firehose/latest/APIReference/API_PutRecordBatch.html)
+	// request. The resulting array can't have more than 500 records.
+	BatchMode *bool `locationName:"batchMode" type:"boolean"`
+
 	// The delivery stream name.
 	//
 	// DeliveryStreamName is a required field
@@ -35749,6 +35901,12 @@ func (s *FirehoseAction) Validate() error {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetBatchMode sets the BatchMode field's value.
+func (s *FirehoseAction) SetBatchMode(v bool) *FirehoseAction {
+	s.BatchMode = &v
+	return s
 }
 
 // SetDeliveryStreamName sets the DeliveryStreamName field's value.
@@ -37710,6 +37868,15 @@ func (s *InvalidStateTransitionException) RequestID() string {
 type IotAnalyticsAction struct {
 	_ struct{} `type:"structure"`
 
+	// Whether to process the action as a batch. The default value is false.
+	//
+	// When batchMode is true and the rule SQL statement evaluates to an Array,
+	// each Array element is delivered as a separate message when passed by BatchPutMessage
+	// (https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_BatchPutMessage.html)
+	// to the AWS IoT Analytics channel. The resulting array can't have more than
+	// 100 messages.
+	BatchMode *bool `locationName:"batchMode" type:"boolean"`
+
 	// (deprecated) The ARN of the IoT Analytics channel to which message data will
 	// be sent.
 	ChannelArn *string `locationName:"channelArn" type:"string"`
@@ -37730,6 +37897,12 @@ func (s IotAnalyticsAction) String() string {
 // GoString returns the string representation
 func (s IotAnalyticsAction) GoString() string {
 	return s.String()
+}
+
+// SetBatchMode sets the BatchMode field's value.
+func (s *IotAnalyticsAction) SetBatchMode(v bool) *IotAnalyticsAction {
+	s.BatchMode = &v
+	return s
 }
 
 // SetChannelArn sets the ChannelArn field's value.
@@ -37754,13 +37927,28 @@ func (s *IotAnalyticsAction) SetRoleArn(v string) *IotAnalyticsAction {
 type IotEventsAction struct {
 	_ struct{} `type:"structure"`
 
+	// Whether to process the event actions as a batch. The default value is false.
+	//
+	// When batchMode is true, you can't specify a messageId.
+	//
+	// When batchMode is true and the rule SQL statement evaluates to an Array,
+	// each Array element is treated as a separate message when it's sent to AWS
+	// IoT Events by calling BatchPutMessage (https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchPutMessage.html).
+	// The resulting array can't have more than 10 messages.
+	BatchMode *bool `locationName:"batchMode" type:"boolean"`
+
 	// The name of the AWS IoT Events input.
 	//
 	// InputName is a required field
 	InputName *string `locationName:"inputName" min:"1" type:"string" required:"true"`
 
-	// [Optional] Use this to ensure that only one input (message) with a given
-	// messageId will be processed by an AWS IoT Events detector.
+	// The ID of the message. The default messageId is a new UUID value.
+	//
+	// When batchMode is true, you can't specify a messageId--a new UUID value will
+	// be assigned.
+	//
+	// Assign a value to this property to ensure that only one input (message) with
+	// a given messageId will be processed by an AWS IoT Events detector.
 	MessageId *string `locationName:"messageId" type:"string"`
 
 	// The ARN of the role that grants AWS IoT permission to send an input to an
@@ -37797,6 +37985,12 @@ func (s *IotEventsAction) Validate() error {
 		return invalidParams
 	}
 	return nil
+}
+
+// SetBatchMode sets the BatchMode field's value.
+func (s *IotEventsAction) SetBatchMode(v bool) *IotEventsAction {
+	s.BatchMode = &v
+	return s
 }
 
 // SetInputName sets the InputName field's value.
@@ -37924,6 +38118,16 @@ type Job struct {
 	// The time, in seconds since the epoch, when the job was last updated.
 	LastUpdatedAt *time.Time `locationName:"lastUpdatedAt" type:"timestamp"`
 
+	// The namespace used to indicate that a job is a customer-managed job.
+	//
+	// When you specify a value for this parameter, AWS IoT Core sends jobs notifications
+	// to MQTT topics that contain the value in the following format.
+	//
+	// $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/
+	//
+	// The namespaceId feature is in public preview.
+	NamespaceId *string `locationName:"namespaceId" min:"1" type:"string"`
+
 	// Configuration for pre-signed S3 URLs.
 	PresignedUrlConfig *PresignedUrlConfig `locationName:"presignedUrlConfig" type:"structure"`
 
@@ -38025,6 +38229,12 @@ func (s *Job) SetJobProcessDetails(v *JobProcessDetails) *Job {
 // SetLastUpdatedAt sets the LastUpdatedAt field's value.
 func (s *Job) SetLastUpdatedAt(v time.Time) *Job {
 	s.LastUpdatedAt = &v
+	return s
+}
+
+// SetNamespaceId sets the NamespaceId field's value.
+func (s *Job) SetNamespaceId(v string) *Job {
+	s.NamespaceId = &v
 	return s
 }
 
@@ -39740,7 +39950,8 @@ type ListBillingGroupsInput struct {
 	// Limit the results to billing groups whose names have the given prefix.
 	NamePrefixFilter *string `location:"querystring" locationName:"namePrefixFilter" min:"1" type:"string"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 }
 
@@ -39794,8 +40005,8 @@ type ListBillingGroupsOutput struct {
 	// The list of billing groups.
 	BillingGroups []*GroupNameAndArn `locationName:"billingGroups" type:"list"`
 
-	// The token used to get the next set of results, or null if there are no additional
-	// results.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 }
 
@@ -40462,6 +40673,16 @@ type ListJobExecutionsForThingInput struct {
 	// The maximum number of results to be returned per request.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
+	// The namespace used to indicate that a job is a customer-managed job.
+	//
+	// When you specify a value for this parameter, AWS IoT Core sends jobs notifications
+	// to MQTT topics that contain the value in the following format.
+	//
+	// $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/
+	//
+	// The namespaceId feature is in public preview.
+	NamespaceId *string `location:"querystring" locationName:"namespaceId" min:"1" type:"string"`
+
 	// The token to retrieve the next set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
@@ -40491,6 +40712,9 @@ func (s *ListJobExecutionsForThingInput) Validate() error {
 	if s.MaxResults != nil && *s.MaxResults < 1 {
 		invalidParams.Add(request.NewErrParamMinValue("MaxResults", 1))
 	}
+	if s.NamespaceId != nil && len(*s.NamespaceId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("NamespaceId", 1))
+	}
 	if s.ThingName == nil {
 		invalidParams.Add(request.NewErrParamRequired("ThingName"))
 	}
@@ -40507,6 +40731,12 @@ func (s *ListJobExecutionsForThingInput) Validate() error {
 // SetMaxResults sets the MaxResults field's value.
 func (s *ListJobExecutionsForThingInput) SetMaxResults(v int64) *ListJobExecutionsForThingInput {
 	s.MaxResults = &v
+	return s
+}
+
+// SetNamespaceId sets the NamespaceId field's value.
+func (s *ListJobExecutionsForThingInput) SetNamespaceId(v string) *ListJobExecutionsForThingInput {
+	s.NamespaceId = &v
 	return s
 }
 
@@ -40567,6 +40797,16 @@ type ListJobsInput struct {
 	// The maximum number of results to return per request.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
+	// The namespace used to indicate that a job is a customer-managed job.
+	//
+	// When you specify a value for this parameter, AWS IoT Core sends jobs notifications
+	// to MQTT topics that contain the value in the following format.
+	//
+	// $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/
+	//
+	// The namespaceId feature is in public preview.
+	NamespaceId *string `location:"querystring" locationName:"namespaceId" min:"1" type:"string"`
+
 	// The token to retrieve the next set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
@@ -40605,6 +40845,9 @@ func (s *ListJobsInput) Validate() error {
 	if s.MaxResults != nil && *s.MaxResults < 1 {
 		invalidParams.Add(request.NewErrParamMinValue("MaxResults", 1))
 	}
+	if s.NamespaceId != nil && len(*s.NamespaceId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("NamespaceId", 1))
+	}
 	if s.ThingGroupId != nil && len(*s.ThingGroupId) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("ThingGroupId", 1))
 	}
@@ -40621,6 +40864,12 @@ func (s *ListJobsInput) Validate() error {
 // SetMaxResults sets the MaxResults field's value.
 func (s *ListJobsInput) SetMaxResults(v int64) *ListJobsInput {
 	s.MaxResults = &v
+	return s
+}
+
+// SetNamespaceId sets the NamespaceId field's value.
+func (s *ListJobsInput) SetNamespaceId(v string) *ListJobsInput {
+	s.NamespaceId = &v
 	return s
 }
 
@@ -41325,7 +41574,8 @@ type ListPrincipalThingsInput struct {
 	// The maximum number of results to return in this operation.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// The principal.
@@ -41382,8 +41632,8 @@ func (s *ListPrincipalThingsInput) SetPrincipal(v string) *ListPrincipalThingsIn
 type ListPrincipalThingsOutput struct {
 	_ struct{} `type:"structure"`
 
-	// The token used to get the next set of results, or null if there are no additional
-	// results.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// The things.
@@ -42028,7 +42278,8 @@ func (s *ListStreamsOutput) SetStreams(v []*StreamSummary) *ListStreamsOutput {
 type ListTagsForResourceInput struct {
 	_ struct{} `type:"structure"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// The ARN of the resource.
@@ -42075,8 +42326,8 @@ func (s *ListTagsForResourceInput) SetResourceArn(v string) *ListTagsForResource
 type ListTagsForResourceOutput struct {
 	_ struct{} `type:"structure"`
 
-	// The token used to get the next set of results, or null if there are no additional
-	// results.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// The list of tags assigned to the resource.
@@ -42300,7 +42551,8 @@ type ListThingGroupsForThingInput struct {
 	// The maximum number of results to return at one time.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// The thing name.
@@ -42359,8 +42611,8 @@ func (s *ListThingGroupsForThingInput) SetThingName(v string) *ListThingGroupsFo
 type ListThingGroupsForThingOutput struct {
 	_ struct{} `type:"structure"`
 
-	// The token used to get the next set of results, or null if there are no additional
-	// results.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// The thing groups.
@@ -42398,7 +42650,8 @@ type ListThingGroupsInput struct {
 	// A filter that limits the results to those with the specified name prefix.
 	NamePrefixFilter *string `location:"querystring" locationName:"namePrefixFilter" min:"1" type:"string"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// A filter that limits the results to those with the specified parent group.
@@ -42470,8 +42723,8 @@ func (s *ListThingGroupsInput) SetRecursive(v bool) *ListThingGroupsInput {
 type ListThingGroupsOutput struct {
 	_ struct{} `type:"structure"`
 
-	// The token used to get the next set of results. Will not be returned if operation
-	// has returned all results.
+	// The token to use to get the next set of results. Will not be returned if
+	// operation has returned all results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// The thing groups.
@@ -42504,6 +42757,13 @@ func (s *ListThingGroupsOutput) SetThingGroups(v []*GroupNameAndArn) *ListThingG
 type ListThingPrincipalsInput struct {
 	_ struct{} `type:"structure"`
 
+	// The maximum number of results to return in this operation.
+	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
+
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
+	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
+
 	// The name of the thing.
 	//
 	// ThingName is a required field
@@ -42523,6 +42783,9 @@ func (s ListThingPrincipalsInput) GoString() string {
 // Validate inspects the fields of the type to determine if they are valid.
 func (s *ListThingPrincipalsInput) Validate() error {
 	invalidParams := request.ErrInvalidParams{Context: "ListThingPrincipalsInput"}
+	if s.MaxResults != nil && *s.MaxResults < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("MaxResults", 1))
+	}
 	if s.ThingName == nil {
 		invalidParams.Add(request.NewErrParamRequired("ThingName"))
 	}
@@ -42536,6 +42799,18 @@ func (s *ListThingPrincipalsInput) Validate() error {
 	return nil
 }
 
+// SetMaxResults sets the MaxResults field's value.
+func (s *ListThingPrincipalsInput) SetMaxResults(v int64) *ListThingPrincipalsInput {
+	s.MaxResults = &v
+	return s
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *ListThingPrincipalsInput) SetNextToken(v string) *ListThingPrincipalsInput {
+	s.NextToken = &v
+	return s
+}
+
 // SetThingName sets the ThingName field's value.
 func (s *ListThingPrincipalsInput) SetThingName(v string) *ListThingPrincipalsInput {
 	s.ThingName = &v
@@ -42545,6 +42820,10 @@ func (s *ListThingPrincipalsInput) SetThingName(v string) *ListThingPrincipalsIn
 // The output from the ListThingPrincipals operation.
 type ListThingPrincipalsOutput struct {
 	_ struct{} `type:"structure"`
+
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
+	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// The principals associated with the thing.
 	Principals []*string `locationName:"principals" type:"list"`
@@ -42560,6 +42839,12 @@ func (s ListThingPrincipalsOutput) GoString() string {
 	return s.String()
 }
 
+// SetNextToken sets the NextToken field's value.
+func (s *ListThingPrincipalsOutput) SetNextToken(v string) *ListThingPrincipalsOutput {
+	s.NextToken = &v
+	return s
+}
+
 // SetPrincipals sets the Principals field's value.
 func (s *ListThingPrincipalsOutput) SetPrincipals(v []*string) *ListThingPrincipalsOutput {
 	s.Principals = v
@@ -42572,7 +42857,8 @@ type ListThingRegistrationTaskReportsInput struct {
 	// The maximum number of results to return per request.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// The type of task report.
@@ -42645,8 +42931,8 @@ func (s *ListThingRegistrationTaskReportsInput) SetTaskId(v string) *ListThingRe
 type ListThingRegistrationTaskReportsOutput struct {
 	_ struct{} `type:"structure"`
 
-	// The token used to get the next set of results, or null if there are no additional
-	// results.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// The type of task report.
@@ -42690,7 +42976,8 @@ type ListThingRegistrationTasksInput struct {
 	// The maximum number of results to return at one time.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// The status of the bulk thing provisioning task.
@@ -42741,8 +43028,8 @@ func (s *ListThingRegistrationTasksInput) SetStatus(v string) *ListThingRegistra
 type ListThingRegistrationTasksOutput struct {
 	_ struct{} `type:"structure"`
 
-	// The token used to get the next set of results, or null if there are no additional
-	// results.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// A list of bulk thing provisioning task IDs.
@@ -42778,7 +43065,8 @@ type ListThingTypesInput struct {
 	// The maximum number of results to return in this operation.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// The name of the thing type.
@@ -42874,7 +43162,8 @@ type ListThingsInBillingGroupInput struct {
 	// The maximum number of results to return per request.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 }
 
@@ -42928,8 +43217,8 @@ func (s *ListThingsInBillingGroupInput) SetNextToken(v string) *ListThingsInBill
 type ListThingsInBillingGroupOutput struct {
 	_ struct{} `type:"structure"`
 
-	// The token used to get the next set of results. Will not be returned if operation
-	// has returned all results.
+	// The token to use to get the next set of results. Will not be returned if
+	// operation has returned all results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// A list of things in the billing group.
@@ -42964,7 +43253,8 @@ type ListThingsInThingGroupInput struct {
 	// The maximum number of results to return at one time.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// When true, list things in this thing group and in all child groups as well.
@@ -43032,8 +43322,8 @@ func (s *ListThingsInThingGroupInput) SetThingGroupName(v string) *ListThingsInT
 type ListThingsInThingGroupOutput struct {
 	_ struct{} `type:"structure"`
 
-	// The token used to get the next set of results, or null if there are no additional
-	// results.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// The things in the specified thing group.
@@ -43075,7 +43365,8 @@ type ListThingsInput struct {
 	// The maximum number of results to return in this operation.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// The name of the thing type used to search for things.
@@ -43142,8 +43433,8 @@ func (s *ListThingsInput) SetThingTypeName(v string) *ListThingsInput {
 type ListThingsOutput struct {
 	_ struct{} `type:"structure"`
 
-	// The token used to get the next set of results. Will not be returned if operation
-	// has returned all results.
+	// The token to use to get the next set of results. Will not be returned if
+	// operation has returned all results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// The things.
@@ -43178,7 +43469,8 @@ type ListTopicRuleDestinationsInput struct {
 	// The maximum number of results to return at one time.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token to retrieve the next set of results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 }
 
@@ -43223,7 +43515,8 @@ type ListTopicRuleDestinationsOutput struct {
 	// Information about a topic rule destination.
 	DestinationSummaries []*TopicRuleDestinationSummary `locationName:"destinationSummaries" type:"list"`
 
-	// The token to retrieve the next set of results.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 }
 
@@ -43256,7 +43549,8 @@ type ListTopicRulesInput struct {
 	// The maximum number of results to return.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// A token used to retrieve the next value.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// Specifies whether the rule is disabled.
@@ -43317,7 +43611,8 @@ func (s *ListTopicRulesInput) SetTopic(v string) *ListTopicRulesInput {
 type ListTopicRulesOutput struct {
 	_ struct{} `type:"structure"`
 
-	// A token used to retrieve the next value.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 
 	// The rules.
@@ -43352,8 +43647,8 @@ type ListV2LoggingLevelsInput struct {
 	// The maximum number of results to return at one time.
 	MaxResults *int64 `location:"querystring" locationName:"maxResults" min:"1" type:"integer"`
 
-	// The token used to get the next set of results, or null if there are no additional
-	// results.
+	// To retrieve the next set of results, the nextToken value from a previous
+	// response; otherwise null to receive the first set of results.
 	NextToken *string `location:"querystring" locationName:"nextToken" type:"string"`
 
 	// The type of resource for which you are configuring logging. Must be THING_Group.
@@ -43407,8 +43702,8 @@ type ListV2LoggingLevelsOutput struct {
 	// The logging configuration for a target.
 	LogTargetConfigurations []*LogTargetConfiguration `locationName:"logTargetConfigurations" type:"list"`
 
-	// The token used to get the next set of results, or null if there are no additional
-	// results.
+	// The token to use to get the next set of results, or null if there are no
+	// additional results.
 	NextToken *string `locationName:"nextToken" type:"string"`
 }
 
@@ -44298,6 +44593,10 @@ type OTAUpdateFile struct {
 	// The name of the file.
 	FileName *string `locationName:"fileName" type:"string"`
 
+	// An integer value you can include in the job document to allow your devices
+	// to identify the type of file received from the cloud.
+	FileType *int64 `locationName:"fileType" type:"integer"`
+
 	// The file version.
 	FileVersion *string `locationName:"fileVersion" type:"string"`
 }
@@ -44353,6 +44652,12 @@ func (s *OTAUpdateFile) SetFileLocation(v *FileLocation) *OTAUpdateFile {
 // SetFileName sets the FileName field's value.
 func (s *OTAUpdateFile) SetFileName(v string) *OTAUpdateFile {
 	s.FileName = &v
+	return s
+}
+
+// SetFileType sets the FileType field's value.
+func (s *OTAUpdateFile) SetFileType(v int64) *OTAUpdateFile {
+	s.FileType = &v
 	return s
 }
 
@@ -46600,7 +46905,8 @@ type S3Action struct {
 	// the object key. For more information, see S3 canned ACLs (https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl).
 	CannedAcl *string `locationName:"cannedAcl" type:"string" enum:"CannedAccessControlList"`
 
-	// The object key.
+	// The object key. For more information, see Actions, resources, and condition
+	// keys for Amazon S3 (https://docs.aws.amazon.com/AmazonS3/latest/dev/list_amazons3.html).
 	//
 	// Key is a required field
 	Key *string `locationName:"key" type:"string" required:"true"`
@@ -47541,7 +47847,7 @@ func (s SetV2LoggingOptionsOutput) GoString() string {
 	return s.String()
 }
 
-// Use Sig V4 authorization.
+// For more information, see Signature Version 4 signing process (https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html).
 type SigV4Authorization struct {
 	_ struct{} `type:"structure"`
 
@@ -52202,6 +52508,16 @@ type UpdateJobInput struct {
 	// JobId is a required field
 	JobId *string `location:"uri" locationName:"jobId" min:"1" type:"string" required:"true"`
 
+	// The namespace used to indicate that a job is a customer-managed job.
+	//
+	// When you specify a value for this parameter, AWS IoT Core sends jobs notifications
+	// to MQTT topics that contain the value in the following format.
+	//
+	// $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/
+	//
+	// The namespaceId feature is in public preview.
+	NamespaceId *string `location:"querystring" locationName:"namespaceId" min:"1" type:"string"`
+
 	// Configuration information for pre-signed S3 URLs.
 	PresignedUrlConfig *PresignedUrlConfig `locationName:"presignedUrlConfig" type:"structure"`
 
@@ -52230,6 +52546,9 @@ func (s *UpdateJobInput) Validate() error {
 	}
 	if s.JobId != nil && len(*s.JobId) < 1 {
 		invalidParams.Add(request.NewErrParamMinLen("JobId", 1))
+	}
+	if s.NamespaceId != nil && len(*s.NamespaceId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("NamespaceId", 1))
 	}
 	if s.AbortConfig != nil {
 		if err := s.AbortConfig.Validate(); err != nil {
@@ -52274,6 +52593,12 @@ func (s *UpdateJobInput) SetJobExecutionsRolloutConfig(v *JobExecutionsRolloutCo
 // SetJobId sets the JobId field's value.
 func (s *UpdateJobInput) SetJobId(v string) *UpdateJobInput {
 	s.JobId = &v
+	return s
+}
+
+// SetNamespaceId sets the NamespaceId field's value.
+func (s *UpdateJobInput) SetNamespaceId(v string) *UpdateJobInput {
+	s.NamespaceId = &v
 	return s
 }
 

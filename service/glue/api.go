@@ -1263,6 +1263,93 @@ func (c *Glue) CancelMLTaskRunWithContext(ctx aws.Context, input *CancelMLTaskRu
 	return out, req.Send()
 }
 
+const opCheckSchemaVersionValidity = "CheckSchemaVersionValidity"
+
+// CheckSchemaVersionValidityRequest generates a "aws/request.Request" representing the
+// client's request for the CheckSchemaVersionValidity operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See CheckSchemaVersionValidity for more information on using the CheckSchemaVersionValidity
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the CheckSchemaVersionValidityRequest method.
+//    req, resp := client.CheckSchemaVersionValidityRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/CheckSchemaVersionValidity
+func (c *Glue) CheckSchemaVersionValidityRequest(input *CheckSchemaVersionValidityInput) (req *request.Request, output *CheckSchemaVersionValidityOutput) {
+	op := &request.Operation{
+		Name:       opCheckSchemaVersionValidity,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &CheckSchemaVersionValidityInput{}
+	}
+
+	output = &CheckSchemaVersionValidityOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// CheckSchemaVersionValidity API operation for AWS Glue.
+//
+// Validates the supplied schema. This call has no side effects, it simply validates
+// using the supplied schema using DataFormat as the format. Since it does not
+// take a schema set name, no compatibility checks are performed.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation CheckSchemaVersionValidity for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/CheckSchemaVersionValidity
+func (c *Glue) CheckSchemaVersionValidity(input *CheckSchemaVersionValidityInput) (*CheckSchemaVersionValidityOutput, error) {
+	req, out := c.CheckSchemaVersionValidityRequest(input)
+	return out, req.Send()
+}
+
+// CheckSchemaVersionValidityWithContext is the same as CheckSchemaVersionValidity with the addition of
+// the ability to pass a context and additional request options.
+//
+// See CheckSchemaVersionValidity for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) CheckSchemaVersionValidityWithContext(ctx aws.Context, input *CheckSchemaVersionValidityInput, opts ...request.Option) (*CheckSchemaVersionValidityOutput, error) {
+	req, out := c.CheckSchemaVersionValidityRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opCreateClassifier = "CreateClassifier"
 
 // CreateClassifierRequest generates a "aws/request.Request" representing the
@@ -2033,6 +2120,300 @@ func (c *Glue) CreatePartitionWithContext(ctx aws.Context, input *CreatePartitio
 	return out, req.Send()
 }
 
+const opCreatePartitionIndex = "CreatePartitionIndex"
+
+// CreatePartitionIndexRequest generates a "aws/request.Request" representing the
+// client's request for the CreatePartitionIndex operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See CreatePartitionIndex for more information on using the CreatePartitionIndex
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the CreatePartitionIndexRequest method.
+//    req, resp := client.CreatePartitionIndexRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/CreatePartitionIndex
+func (c *Glue) CreatePartitionIndexRequest(input *CreatePartitionIndexInput) (req *request.Request, output *CreatePartitionIndexOutput) {
+	op := &request.Operation{
+		Name:       opCreatePartitionIndex,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &CreatePartitionIndexInput{}
+	}
+
+	output = &CreatePartitionIndexOutput{}
+	req = c.newRequest(op, input, output)
+	req.Handlers.Unmarshal.Swap(jsonrpc.UnmarshalHandler.Name, protocol.UnmarshalDiscardBodyHandler)
+	return
+}
+
+// CreatePartitionIndex API operation for AWS Glue.
+//
+// Creates a specified partition index in an existing table.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation CreatePartitionIndex for usage and error information.
+//
+// Returned Error Types:
+//   * AlreadyExistsException
+//   A resource to be created or added already exists.
+//
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * ResourceNumberLimitExceededException
+//   A resource numerical limit was exceeded.
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+//   * OperationTimeoutException
+//   The operation timed out.
+//
+//   * EncryptionException
+//   An encryption operation failed.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/CreatePartitionIndex
+func (c *Glue) CreatePartitionIndex(input *CreatePartitionIndexInput) (*CreatePartitionIndexOutput, error) {
+	req, out := c.CreatePartitionIndexRequest(input)
+	return out, req.Send()
+}
+
+// CreatePartitionIndexWithContext is the same as CreatePartitionIndex with the addition of
+// the ability to pass a context and additional request options.
+//
+// See CreatePartitionIndex for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) CreatePartitionIndexWithContext(ctx aws.Context, input *CreatePartitionIndexInput, opts ...request.Option) (*CreatePartitionIndexOutput, error) {
+	req, out := c.CreatePartitionIndexRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opCreateRegistry = "CreateRegistry"
+
+// CreateRegistryRequest generates a "aws/request.Request" representing the
+// client's request for the CreateRegistry operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See CreateRegistry for more information on using the CreateRegistry
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the CreateRegistryRequest method.
+//    req, resp := client.CreateRegistryRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/CreateRegistry
+func (c *Glue) CreateRegistryRequest(input *CreateRegistryInput) (req *request.Request, output *CreateRegistryOutput) {
+	op := &request.Operation{
+		Name:       opCreateRegistry,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &CreateRegistryInput{}
+	}
+
+	output = &CreateRegistryOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// CreateRegistry API operation for AWS Glue.
+//
+// Creates a new registry which may be used to hold a collection of schemas.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation CreateRegistry for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * AlreadyExistsException
+//   A resource to be created or added already exists.
+//
+//   * ResourceNumberLimitExceededException
+//   A resource numerical limit was exceeded.
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/CreateRegistry
+func (c *Glue) CreateRegistry(input *CreateRegistryInput) (*CreateRegistryOutput, error) {
+	req, out := c.CreateRegistryRequest(input)
+	return out, req.Send()
+}
+
+// CreateRegistryWithContext is the same as CreateRegistry with the addition of
+// the ability to pass a context and additional request options.
+//
+// See CreateRegistry for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) CreateRegistryWithContext(ctx aws.Context, input *CreateRegistryInput, opts ...request.Option) (*CreateRegistryOutput, error) {
+	req, out := c.CreateRegistryRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opCreateSchema = "CreateSchema"
+
+// CreateSchemaRequest generates a "aws/request.Request" representing the
+// client's request for the CreateSchema operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See CreateSchema for more information on using the CreateSchema
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the CreateSchemaRequest method.
+//    req, resp := client.CreateSchemaRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/CreateSchema
+func (c *Glue) CreateSchemaRequest(input *CreateSchemaInput) (req *request.Request, output *CreateSchemaOutput) {
+	op := &request.Operation{
+		Name:       opCreateSchema,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &CreateSchemaInput{}
+	}
+
+	output = &CreateSchemaOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// CreateSchema API operation for AWS Glue.
+//
+// Creates a new schema set and registers the schema definition. Returns an
+// error if the schema set already exists without actually registering the version.
+//
+// When the schema set is created, a version checkpoint will be set to the first
+// version. Compatibility mode "DISABLED" restricts any additional schema versions
+// from being added after the first schema version. For all other compatibility
+// modes, validation of compatibility settings will be applied only from the
+// second version onwards when the RegisterSchemaVersion API is used.
+//
+// When this API is called without a RegistryId, this will create an entry for
+// a "default-registry" in the registry database tables, if it is not already
+// present.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation CreateSchema for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * AlreadyExistsException
+//   A resource to be created or added already exists.
+//
+//   * ResourceNumberLimitExceededException
+//   A resource numerical limit was exceeded.
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/CreateSchema
+func (c *Glue) CreateSchema(input *CreateSchemaInput) (*CreateSchemaOutput, error) {
+	req, out := c.CreateSchemaRequest(input)
+	return out, req.Send()
+}
+
+// CreateSchemaWithContext is the same as CreateSchema with the addition of
+// the ability to pass a context and additional request options.
+//
+// See CreateSchema for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) CreateSchemaWithContext(ctx aws.Context, input *CreateSchemaInput, opts ...request.Option) (*CreateSchemaOutput, error) {
+	req, out := c.CreateSchemaRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opCreateScript = "CreateScript"
 
 // CreateScriptRequest generates a "aws/request.Request" representing the
@@ -2733,6 +3114,9 @@ func (c *Glue) DeleteColumnStatisticsForPartitionRequest(input *DeleteColumnStat
 //
 // Delete the partition column statistics of a column.
 //
+// The Identity and Access Management (IAM) permission required for this operation
+// is DeletePartition.
+//
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
 // the error.
@@ -2824,6 +3208,9 @@ func (c *Glue) DeleteColumnStatisticsForTableRequest(input *DeleteColumnStatisti
 // DeleteColumnStatisticsForTable API operation for AWS Glue.
 //
 // Retrieves table statistics of columns.
+//
+// The Identity and Access Management (IAM) permission required for this operation
+// is DeleteTable.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -3501,6 +3888,193 @@ func (c *Glue) DeletePartitionWithContext(ctx aws.Context, input *DeletePartitio
 	return out, req.Send()
 }
 
+const opDeletePartitionIndex = "DeletePartitionIndex"
+
+// DeletePartitionIndexRequest generates a "aws/request.Request" representing the
+// client's request for the DeletePartitionIndex operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See DeletePartitionIndex for more information on using the DeletePartitionIndex
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the DeletePartitionIndexRequest method.
+//    req, resp := client.DeletePartitionIndexRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/DeletePartitionIndex
+func (c *Glue) DeletePartitionIndexRequest(input *DeletePartitionIndexInput) (req *request.Request, output *DeletePartitionIndexOutput) {
+	op := &request.Operation{
+		Name:       opDeletePartitionIndex,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &DeletePartitionIndexInput{}
+	}
+
+	output = &DeletePartitionIndexOutput{}
+	req = c.newRequest(op, input, output)
+	req.Handlers.Unmarshal.Swap(jsonrpc.UnmarshalHandler.Name, protocol.UnmarshalDiscardBodyHandler)
+	return
+}
+
+// DeletePartitionIndex API operation for AWS Glue.
+//
+// Deletes a specified partition index from an existing table.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation DeletePartitionIndex for usage and error information.
+//
+// Returned Error Types:
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+//   * OperationTimeoutException
+//   The operation timed out.
+//
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * ConflictException
+//   The CreatePartitions API was called on a table that has indexes enabled.
+//
+//   * EncryptionException
+//   An encryption operation failed.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/DeletePartitionIndex
+func (c *Glue) DeletePartitionIndex(input *DeletePartitionIndexInput) (*DeletePartitionIndexOutput, error) {
+	req, out := c.DeletePartitionIndexRequest(input)
+	return out, req.Send()
+}
+
+// DeletePartitionIndexWithContext is the same as DeletePartitionIndex with the addition of
+// the ability to pass a context and additional request options.
+//
+// See DeletePartitionIndex for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) DeletePartitionIndexWithContext(ctx aws.Context, input *DeletePartitionIndexInput, opts ...request.Option) (*DeletePartitionIndexOutput, error) {
+	req, out := c.DeletePartitionIndexRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opDeleteRegistry = "DeleteRegistry"
+
+// DeleteRegistryRequest generates a "aws/request.Request" representing the
+// client's request for the DeleteRegistry operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See DeleteRegistry for more information on using the DeleteRegistry
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the DeleteRegistryRequest method.
+//    req, resp := client.DeleteRegistryRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/DeleteRegistry
+func (c *Glue) DeleteRegistryRequest(input *DeleteRegistryInput) (req *request.Request, output *DeleteRegistryOutput) {
+	op := &request.Operation{
+		Name:       opDeleteRegistry,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &DeleteRegistryInput{}
+	}
+
+	output = &DeleteRegistryOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// DeleteRegistry API operation for AWS Glue.
+//
+// Delete the entire registry including schema and all of its versions. To get
+// the status of the delete operation, you can call the GetRegistry API after
+// the asynchronous call. Deleting a registry will disable all online operations
+// for the registry such as the UpdateRegistry, CreateSchema, UpdateSchema,
+// and RegisterSchemaVersion APIs.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation DeleteRegistry for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * ConcurrentModificationException
+//   Two processes are trying to modify a resource simultaneously.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/DeleteRegistry
+func (c *Glue) DeleteRegistry(input *DeleteRegistryInput) (*DeleteRegistryOutput, error) {
+	req, out := c.DeleteRegistryRequest(input)
+	return out, req.Send()
+}
+
+// DeleteRegistryWithContext is the same as DeleteRegistry with the addition of
+// the ability to pass a context and additional request options.
+//
+// See DeleteRegistry for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) DeleteRegistryWithContext(ctx aws.Context, input *DeleteRegistryInput, opts ...request.Option) (*DeleteRegistryOutput, error) {
+	req, out := c.DeleteRegistryRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opDeleteResourcePolicy = "DeleteResourcePolicy"
 
 // DeleteResourcePolicyRequest generates a "aws/request.Request" representing the
@@ -3588,6 +4162,202 @@ func (c *Glue) DeleteResourcePolicy(input *DeleteResourcePolicyInput) (*DeleteRe
 // for more information on using Contexts.
 func (c *Glue) DeleteResourcePolicyWithContext(ctx aws.Context, input *DeleteResourcePolicyInput, opts ...request.Option) (*DeleteResourcePolicyOutput, error) {
 	req, out := c.DeleteResourcePolicyRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opDeleteSchema = "DeleteSchema"
+
+// DeleteSchemaRequest generates a "aws/request.Request" representing the
+// client's request for the DeleteSchema operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See DeleteSchema for more information on using the DeleteSchema
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the DeleteSchemaRequest method.
+//    req, resp := client.DeleteSchemaRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/DeleteSchema
+func (c *Glue) DeleteSchemaRequest(input *DeleteSchemaInput) (req *request.Request, output *DeleteSchemaOutput) {
+	op := &request.Operation{
+		Name:       opDeleteSchema,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &DeleteSchemaInput{}
+	}
+
+	output = &DeleteSchemaOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// DeleteSchema API operation for AWS Glue.
+//
+// Deletes the entire schema set, including the schema set and all of its versions.
+// To get the status of the delete operation, you can call GetSchema API after
+// the asynchronous call. Deleting a registry will disable all online operations
+// for the schema, such as the GetSchemaByDefinition, and RegisterSchemaVersion
+// APIs.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation DeleteSchema for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * ConcurrentModificationException
+//   Two processes are trying to modify a resource simultaneously.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/DeleteSchema
+func (c *Glue) DeleteSchema(input *DeleteSchemaInput) (*DeleteSchemaOutput, error) {
+	req, out := c.DeleteSchemaRequest(input)
+	return out, req.Send()
+}
+
+// DeleteSchemaWithContext is the same as DeleteSchema with the addition of
+// the ability to pass a context and additional request options.
+//
+// See DeleteSchema for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) DeleteSchemaWithContext(ctx aws.Context, input *DeleteSchemaInput, opts ...request.Option) (*DeleteSchemaOutput, error) {
+	req, out := c.DeleteSchemaRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opDeleteSchemaVersions = "DeleteSchemaVersions"
+
+// DeleteSchemaVersionsRequest generates a "aws/request.Request" representing the
+// client's request for the DeleteSchemaVersions operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See DeleteSchemaVersions for more information on using the DeleteSchemaVersions
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the DeleteSchemaVersionsRequest method.
+//    req, resp := client.DeleteSchemaVersionsRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/DeleteSchemaVersions
+func (c *Glue) DeleteSchemaVersionsRequest(input *DeleteSchemaVersionsInput) (req *request.Request, output *DeleteSchemaVersionsOutput) {
+	op := &request.Operation{
+		Name:       opDeleteSchemaVersions,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &DeleteSchemaVersionsInput{}
+	}
+
+	output = &DeleteSchemaVersionsOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// DeleteSchemaVersions API operation for AWS Glue.
+//
+// Remove versions from the specified schema. A version number or range may
+// be supplied. If the compatibility mode forbids deleting of a version that
+// is necessary, such as BACKWARDS_FULL, an error is returned. Calling the GetSchemaVersions
+// API after this call will list the status of the deleted versions.
+//
+// When the range of version numbers contain check pointed version, the API
+// will return a 409 conflict and will not proceed with the deletion. You have
+// to remove the checkpoint first using the DeleteSchemaCheckpoint API before
+// using this API.
+//
+// You cannot use the DeleteSchemaVersions API to delete the first schema version
+// in the schema set. The first schema version can only be deleted by the DeleteSchema
+// API. This operation will also delete the attached SchemaVersionMetadata under
+// the schema versions. Hard deletes will be enforced on the database.
+//
+// If the compatibility mode forbids deleting of a version that is necessary,
+// such as BACKWARDS_FULL, an error is returned.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation DeleteSchemaVersions for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * ConcurrentModificationException
+//   Two processes are trying to modify a resource simultaneously.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/DeleteSchemaVersions
+func (c *Glue) DeleteSchemaVersions(input *DeleteSchemaVersionsInput) (*DeleteSchemaVersionsOutput, error) {
+	req, out := c.DeleteSchemaVersionsRequest(input)
+	return out, req.Send()
+}
+
+// DeleteSchemaVersionsWithContext is the same as DeleteSchemaVersions with the addition of
+// the ability to pass a context and additional request options.
+//
+// See DeleteSchemaVersions for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) DeleteSchemaVersionsWithContext(ctx aws.Context, input *DeleteSchemaVersionsInput, opts ...request.Option) (*DeleteSchemaVersionsOutput, error) {
+	req, out := c.DeleteSchemaVersionsRequest(input)
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
@@ -4481,6 +5251,9 @@ func (c *Glue) GetColumnStatisticsForPartitionRequest(input *GetColumnStatistics
 //
 // Retrieves partition statistics of columns.
 //
+// The Identity and Access Management (IAM) permission required for this operation
+// is GetPartition.
+//
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
 // the error.
@@ -4571,6 +5344,9 @@ func (c *Glue) GetColumnStatisticsForTableRequest(input *GetColumnStatisticsForT
 // GetColumnStatisticsForTable API operation for AWS Glue.
 //
 // Retrieves table statistics of columns.
+//
+// The Identity and Access Management (IAM) permission required for this operation
+// is GetTable.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -7466,6 +8242,94 @@ func (c *Glue) GetPlanWithContext(ctx aws.Context, input *GetPlanInput, opts ...
 	return out, req.Send()
 }
 
+const opGetRegistry = "GetRegistry"
+
+// GetRegistryRequest generates a "aws/request.Request" representing the
+// client's request for the GetRegistry operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See GetRegistry for more information on using the GetRegistry
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the GetRegistryRequest method.
+//    req, resp := client.GetRegistryRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetRegistry
+func (c *Glue) GetRegistryRequest(input *GetRegistryInput) (req *request.Request, output *GetRegistryOutput) {
+	op := &request.Operation{
+		Name:       opGetRegistry,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &GetRegistryInput{}
+	}
+
+	output = &GetRegistryOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// GetRegistry API operation for AWS Glue.
+//
+// Describes the specified registry in detail.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation GetRegistry for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetRegistry
+func (c *Glue) GetRegistry(input *GetRegistryInput) (*GetRegistryOutput, error) {
+	req, out := c.GetRegistryRequest(input)
+	return out, req.Send()
+}
+
+// GetRegistryWithContext is the same as GetRegistry with the addition of
+// the ability to pass a context and additional request options.
+//
+// See GetRegistry for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) GetRegistryWithContext(ctx aws.Context, input *GetRegistryInput, opts ...request.Option) (*GetRegistryOutput, error) {
+	req, out := c.GetRegistryRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opGetResourcePolicies = "GetResourcePolicies"
 
 // GetResourcePoliciesRequest generates a "aws/request.Request" representing the
@@ -7497,6 +8361,12 @@ func (c *Glue) GetResourcePoliciesRequest(input *GetResourcePoliciesInput) (req 
 		Name:       opGetResourcePolicies,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
+		Paginator: &request.Paginator{
+			InputTokens:     []string{"NextToken"},
+			OutputTokens:    []string{"NextToken"},
+			LimitToken:      "MaxResults",
+			TruncationToken: "",
+		},
 	}
 
 	if input == nil {
@@ -7558,6 +8428,58 @@ func (c *Glue) GetResourcePoliciesWithContext(ctx aws.Context, input *GetResourc
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
+}
+
+// GetResourcePoliciesPages iterates over the pages of a GetResourcePolicies operation,
+// calling the "fn" function with the response data for each page. To stop
+// iterating, return false from the fn function.
+//
+// See GetResourcePolicies method for more information on how to use this operation.
+//
+// Note: This operation can generate multiple requests to a service.
+//
+//    // Example iterating over at most 3 pages of a GetResourcePolicies operation.
+//    pageNum := 0
+//    err := client.GetResourcePoliciesPages(params,
+//        func(page *glue.GetResourcePoliciesOutput, lastPage bool) bool {
+//            pageNum++
+//            fmt.Println(page)
+//            return pageNum <= 3
+//        })
+//
+func (c *Glue) GetResourcePoliciesPages(input *GetResourcePoliciesInput, fn func(*GetResourcePoliciesOutput, bool) bool) error {
+	return c.GetResourcePoliciesPagesWithContext(aws.BackgroundContext(), input, fn)
+}
+
+// GetResourcePoliciesPagesWithContext same as GetResourcePoliciesPages except
+// it takes a Context and allows setting request options on the pages.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) GetResourcePoliciesPagesWithContext(ctx aws.Context, input *GetResourcePoliciesInput, fn func(*GetResourcePoliciesOutput, bool) bool, opts ...request.Option) error {
+	p := request.Pagination{
+		NewRequest: func() (*request.Request, error) {
+			var inCpy *GetResourcePoliciesInput
+			if input != nil {
+				tmp := *input
+				inCpy = &tmp
+			}
+			req, _ := c.GetResourcePoliciesRequest(inCpy)
+			req.SetContext(ctx)
+			req.ApplyOptions(opts...)
+			return req, nil
+		},
+	}
+
+	for p.Next() {
+		if !fn(p.Page().(*GetResourcePoliciesOutput), !p.HasNextPage()) {
+			break
+		}
+	}
+
+	return p.Err()
 }
 
 const opGetResourcePolicy = "GetResourcePolicy"
@@ -7643,6 +8565,369 @@ func (c *Glue) GetResourcePolicy(input *GetResourcePolicyInput) (*GetResourcePol
 // for more information on using Contexts.
 func (c *Glue) GetResourcePolicyWithContext(ctx aws.Context, input *GetResourcePolicyInput, opts ...request.Option) (*GetResourcePolicyOutput, error) {
 	req, out := c.GetResourcePolicyRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opGetSchema = "GetSchema"
+
+// GetSchemaRequest generates a "aws/request.Request" representing the
+// client's request for the GetSchema operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See GetSchema for more information on using the GetSchema
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the GetSchemaRequest method.
+//    req, resp := client.GetSchemaRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetSchema
+func (c *Glue) GetSchemaRequest(input *GetSchemaInput) (req *request.Request, output *GetSchemaOutput) {
+	op := &request.Operation{
+		Name:       opGetSchema,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &GetSchemaInput{}
+	}
+
+	output = &GetSchemaOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// GetSchema API operation for AWS Glue.
+//
+// Describes the specified schema in detail.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation GetSchema for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetSchema
+func (c *Glue) GetSchema(input *GetSchemaInput) (*GetSchemaOutput, error) {
+	req, out := c.GetSchemaRequest(input)
+	return out, req.Send()
+}
+
+// GetSchemaWithContext is the same as GetSchema with the addition of
+// the ability to pass a context and additional request options.
+//
+// See GetSchema for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) GetSchemaWithContext(ctx aws.Context, input *GetSchemaInput, opts ...request.Option) (*GetSchemaOutput, error) {
+	req, out := c.GetSchemaRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opGetSchemaByDefinition = "GetSchemaByDefinition"
+
+// GetSchemaByDefinitionRequest generates a "aws/request.Request" representing the
+// client's request for the GetSchemaByDefinition operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See GetSchemaByDefinition for more information on using the GetSchemaByDefinition
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the GetSchemaByDefinitionRequest method.
+//    req, resp := client.GetSchemaByDefinitionRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetSchemaByDefinition
+func (c *Glue) GetSchemaByDefinitionRequest(input *GetSchemaByDefinitionInput) (req *request.Request, output *GetSchemaByDefinitionOutput) {
+	op := &request.Operation{
+		Name:       opGetSchemaByDefinition,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &GetSchemaByDefinitionInput{}
+	}
+
+	output = &GetSchemaByDefinitionOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// GetSchemaByDefinition API operation for AWS Glue.
+//
+// Retrieves a schema by the SchemaDefinition. The schema definition is sent
+// to the Schema Registry, canonicalized, and hashed. If the hash is matched
+// within the scope of the SchemaName or ARN (or the default registry, if none
+// is supplied), that schema’s metadata is returned. Otherwise, a 404 or NotFound
+// error is returned. Schema versions in Deleted statuses will not be included
+// in the results.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation GetSchemaByDefinition for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetSchemaByDefinition
+func (c *Glue) GetSchemaByDefinition(input *GetSchemaByDefinitionInput) (*GetSchemaByDefinitionOutput, error) {
+	req, out := c.GetSchemaByDefinitionRequest(input)
+	return out, req.Send()
+}
+
+// GetSchemaByDefinitionWithContext is the same as GetSchemaByDefinition with the addition of
+// the ability to pass a context and additional request options.
+//
+// See GetSchemaByDefinition for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) GetSchemaByDefinitionWithContext(ctx aws.Context, input *GetSchemaByDefinitionInput, opts ...request.Option) (*GetSchemaByDefinitionOutput, error) {
+	req, out := c.GetSchemaByDefinitionRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opGetSchemaVersion = "GetSchemaVersion"
+
+// GetSchemaVersionRequest generates a "aws/request.Request" representing the
+// client's request for the GetSchemaVersion operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See GetSchemaVersion for more information on using the GetSchemaVersion
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the GetSchemaVersionRequest method.
+//    req, resp := client.GetSchemaVersionRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetSchemaVersion
+func (c *Glue) GetSchemaVersionRequest(input *GetSchemaVersionInput) (req *request.Request, output *GetSchemaVersionOutput) {
+	op := &request.Operation{
+		Name:       opGetSchemaVersion,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &GetSchemaVersionInput{}
+	}
+
+	output = &GetSchemaVersionOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// GetSchemaVersion API operation for AWS Glue.
+//
+// Get the specified schema by its unique ID assigned when a version of the
+// schema is created or registered. Schema versions in Deleted status will not
+// be included in the results.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation GetSchemaVersion for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetSchemaVersion
+func (c *Glue) GetSchemaVersion(input *GetSchemaVersionInput) (*GetSchemaVersionOutput, error) {
+	req, out := c.GetSchemaVersionRequest(input)
+	return out, req.Send()
+}
+
+// GetSchemaVersionWithContext is the same as GetSchemaVersion with the addition of
+// the ability to pass a context and additional request options.
+//
+// See GetSchemaVersion for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) GetSchemaVersionWithContext(ctx aws.Context, input *GetSchemaVersionInput, opts ...request.Option) (*GetSchemaVersionOutput, error) {
+	req, out := c.GetSchemaVersionRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opGetSchemaVersionsDiff = "GetSchemaVersionsDiff"
+
+// GetSchemaVersionsDiffRequest generates a "aws/request.Request" representing the
+// client's request for the GetSchemaVersionsDiff operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See GetSchemaVersionsDiff for more information on using the GetSchemaVersionsDiff
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the GetSchemaVersionsDiffRequest method.
+//    req, resp := client.GetSchemaVersionsDiffRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetSchemaVersionsDiff
+func (c *Glue) GetSchemaVersionsDiffRequest(input *GetSchemaVersionsDiffInput) (req *request.Request, output *GetSchemaVersionsDiffOutput) {
+	op := &request.Operation{
+		Name:       opGetSchemaVersionsDiff,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &GetSchemaVersionsDiffInput{}
+	}
+
+	output = &GetSchemaVersionsDiffOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// GetSchemaVersionsDiff API operation for AWS Glue.
+//
+// Fetches the schema version difference in the specified difference type between
+// two stored schema versions in the Schema Registry.
+//
+// This API allows you to compare two schema versions between two schema definitions
+// under the same schema.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation GetSchemaVersionsDiff for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/GetSchemaVersionsDiff
+func (c *Glue) GetSchemaVersionsDiff(input *GetSchemaVersionsDiffInput) (*GetSchemaVersionsDiffOutput, error) {
+	req, out := c.GetSchemaVersionsDiffRequest(input)
+	return out, req.Send()
+}
+
+// GetSchemaVersionsDiffWithContext is the same as GetSchemaVersionsDiff with the addition of
+// the ability to pass a context and additional request options.
+//
+// See GetSchemaVersionsDiff for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) GetSchemaVersionsDiffWithContext(ctx aws.Context, input *GetSchemaVersionsDiffInput, opts ...request.Option) (*GetSchemaVersionsDiffOutput, error) {
+	req, out := c.GetSchemaVersionsDiffRequest(input)
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
@@ -10015,6 +11300,450 @@ func (c *Glue) ListMLTransformsPagesWithContext(ctx aws.Context, input *ListMLTr
 	return p.Err()
 }
 
+const opListRegistries = "ListRegistries"
+
+// ListRegistriesRequest generates a "aws/request.Request" representing the
+// client's request for the ListRegistries operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See ListRegistries for more information on using the ListRegistries
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the ListRegistriesRequest method.
+//    req, resp := client.ListRegistriesRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/ListRegistries
+func (c *Glue) ListRegistriesRequest(input *ListRegistriesInput) (req *request.Request, output *ListRegistriesOutput) {
+	op := &request.Operation{
+		Name:       opListRegistries,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+		Paginator: &request.Paginator{
+			InputTokens:     []string{"NextToken"},
+			OutputTokens:    []string{"NextToken"},
+			LimitToken:      "MaxResults",
+			TruncationToken: "",
+		},
+	}
+
+	if input == nil {
+		input = &ListRegistriesInput{}
+	}
+
+	output = &ListRegistriesOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// ListRegistries API operation for AWS Glue.
+//
+// Returns a list of registries that you have created, with minimal registry
+// information. Registries in the Deleting status will not be included in the
+// results. Empty results will be returned if there are no registries available.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation ListRegistries for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/ListRegistries
+func (c *Glue) ListRegistries(input *ListRegistriesInput) (*ListRegistriesOutput, error) {
+	req, out := c.ListRegistriesRequest(input)
+	return out, req.Send()
+}
+
+// ListRegistriesWithContext is the same as ListRegistries with the addition of
+// the ability to pass a context and additional request options.
+//
+// See ListRegistries for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) ListRegistriesWithContext(ctx aws.Context, input *ListRegistriesInput, opts ...request.Option) (*ListRegistriesOutput, error) {
+	req, out := c.ListRegistriesRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+// ListRegistriesPages iterates over the pages of a ListRegistries operation,
+// calling the "fn" function with the response data for each page. To stop
+// iterating, return false from the fn function.
+//
+// See ListRegistries method for more information on how to use this operation.
+//
+// Note: This operation can generate multiple requests to a service.
+//
+//    // Example iterating over at most 3 pages of a ListRegistries operation.
+//    pageNum := 0
+//    err := client.ListRegistriesPages(params,
+//        func(page *glue.ListRegistriesOutput, lastPage bool) bool {
+//            pageNum++
+//            fmt.Println(page)
+//            return pageNum <= 3
+//        })
+//
+func (c *Glue) ListRegistriesPages(input *ListRegistriesInput, fn func(*ListRegistriesOutput, bool) bool) error {
+	return c.ListRegistriesPagesWithContext(aws.BackgroundContext(), input, fn)
+}
+
+// ListRegistriesPagesWithContext same as ListRegistriesPages except
+// it takes a Context and allows setting request options on the pages.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) ListRegistriesPagesWithContext(ctx aws.Context, input *ListRegistriesInput, fn func(*ListRegistriesOutput, bool) bool, opts ...request.Option) error {
+	p := request.Pagination{
+		NewRequest: func() (*request.Request, error) {
+			var inCpy *ListRegistriesInput
+			if input != nil {
+				tmp := *input
+				inCpy = &tmp
+			}
+			req, _ := c.ListRegistriesRequest(inCpy)
+			req.SetContext(ctx)
+			req.ApplyOptions(opts...)
+			return req, nil
+		},
+	}
+
+	for p.Next() {
+		if !fn(p.Page().(*ListRegistriesOutput), !p.HasNextPage()) {
+			break
+		}
+	}
+
+	return p.Err()
+}
+
+const opListSchemaVersions = "ListSchemaVersions"
+
+// ListSchemaVersionsRequest generates a "aws/request.Request" representing the
+// client's request for the ListSchemaVersions operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See ListSchemaVersions for more information on using the ListSchemaVersions
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the ListSchemaVersionsRequest method.
+//    req, resp := client.ListSchemaVersionsRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/ListSchemaVersions
+func (c *Glue) ListSchemaVersionsRequest(input *ListSchemaVersionsInput) (req *request.Request, output *ListSchemaVersionsOutput) {
+	op := &request.Operation{
+		Name:       opListSchemaVersions,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+		Paginator: &request.Paginator{
+			InputTokens:     []string{"NextToken"},
+			OutputTokens:    []string{"NextToken"},
+			LimitToken:      "MaxResults",
+			TruncationToken: "",
+		},
+	}
+
+	if input == nil {
+		input = &ListSchemaVersionsInput{}
+	}
+
+	output = &ListSchemaVersionsOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// ListSchemaVersions API operation for AWS Glue.
+//
+// Returns a list of schema versions that you have created, with minimal information.
+// Schema versions in Deleted status will not be included in the results. Empty
+// results will be returned if there are no schema versions available.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation ListSchemaVersions for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/ListSchemaVersions
+func (c *Glue) ListSchemaVersions(input *ListSchemaVersionsInput) (*ListSchemaVersionsOutput, error) {
+	req, out := c.ListSchemaVersionsRequest(input)
+	return out, req.Send()
+}
+
+// ListSchemaVersionsWithContext is the same as ListSchemaVersions with the addition of
+// the ability to pass a context and additional request options.
+//
+// See ListSchemaVersions for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) ListSchemaVersionsWithContext(ctx aws.Context, input *ListSchemaVersionsInput, opts ...request.Option) (*ListSchemaVersionsOutput, error) {
+	req, out := c.ListSchemaVersionsRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+// ListSchemaVersionsPages iterates over the pages of a ListSchemaVersions operation,
+// calling the "fn" function with the response data for each page. To stop
+// iterating, return false from the fn function.
+//
+// See ListSchemaVersions method for more information on how to use this operation.
+//
+// Note: This operation can generate multiple requests to a service.
+//
+//    // Example iterating over at most 3 pages of a ListSchemaVersions operation.
+//    pageNum := 0
+//    err := client.ListSchemaVersionsPages(params,
+//        func(page *glue.ListSchemaVersionsOutput, lastPage bool) bool {
+//            pageNum++
+//            fmt.Println(page)
+//            return pageNum <= 3
+//        })
+//
+func (c *Glue) ListSchemaVersionsPages(input *ListSchemaVersionsInput, fn func(*ListSchemaVersionsOutput, bool) bool) error {
+	return c.ListSchemaVersionsPagesWithContext(aws.BackgroundContext(), input, fn)
+}
+
+// ListSchemaVersionsPagesWithContext same as ListSchemaVersionsPages except
+// it takes a Context and allows setting request options on the pages.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) ListSchemaVersionsPagesWithContext(ctx aws.Context, input *ListSchemaVersionsInput, fn func(*ListSchemaVersionsOutput, bool) bool, opts ...request.Option) error {
+	p := request.Pagination{
+		NewRequest: func() (*request.Request, error) {
+			var inCpy *ListSchemaVersionsInput
+			if input != nil {
+				tmp := *input
+				inCpy = &tmp
+			}
+			req, _ := c.ListSchemaVersionsRequest(inCpy)
+			req.SetContext(ctx)
+			req.ApplyOptions(opts...)
+			return req, nil
+		},
+	}
+
+	for p.Next() {
+		if !fn(p.Page().(*ListSchemaVersionsOutput), !p.HasNextPage()) {
+			break
+		}
+	}
+
+	return p.Err()
+}
+
+const opListSchemas = "ListSchemas"
+
+// ListSchemasRequest generates a "aws/request.Request" representing the
+// client's request for the ListSchemas operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See ListSchemas for more information on using the ListSchemas
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the ListSchemasRequest method.
+//    req, resp := client.ListSchemasRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/ListSchemas
+func (c *Glue) ListSchemasRequest(input *ListSchemasInput) (req *request.Request, output *ListSchemasOutput) {
+	op := &request.Operation{
+		Name:       opListSchemas,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+		Paginator: &request.Paginator{
+			InputTokens:     []string{"NextToken"},
+			OutputTokens:    []string{"NextToken"},
+			LimitToken:      "MaxResults",
+			TruncationToken: "",
+		},
+	}
+
+	if input == nil {
+		input = &ListSchemasInput{}
+	}
+
+	output = &ListSchemasOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// ListSchemas API operation for AWS Glue.
+//
+// Returns a list of schemas with minimal details. Schemas in Deleting status
+// will not be included in the results. Empty results will be returned if there
+// are no schemas available.
+//
+// When the RegistryId is not provided, all the schemas across registries will
+// be part of the API response.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation ListSchemas for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/ListSchemas
+func (c *Glue) ListSchemas(input *ListSchemasInput) (*ListSchemasOutput, error) {
+	req, out := c.ListSchemasRequest(input)
+	return out, req.Send()
+}
+
+// ListSchemasWithContext is the same as ListSchemas with the addition of
+// the ability to pass a context and additional request options.
+//
+// See ListSchemas for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) ListSchemasWithContext(ctx aws.Context, input *ListSchemasInput, opts ...request.Option) (*ListSchemasOutput, error) {
+	req, out := c.ListSchemasRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+// ListSchemasPages iterates over the pages of a ListSchemas operation,
+// calling the "fn" function with the response data for each page. To stop
+// iterating, return false from the fn function.
+//
+// See ListSchemas method for more information on how to use this operation.
+//
+// Note: This operation can generate multiple requests to a service.
+//
+//    // Example iterating over at most 3 pages of a ListSchemas operation.
+//    pageNum := 0
+//    err := client.ListSchemasPages(params,
+//        func(page *glue.ListSchemasOutput, lastPage bool) bool {
+//            pageNum++
+//            fmt.Println(page)
+//            return pageNum <= 3
+//        })
+//
+func (c *Glue) ListSchemasPages(input *ListSchemasInput, fn func(*ListSchemasOutput, bool) bool) error {
+	return c.ListSchemasPagesWithContext(aws.BackgroundContext(), input, fn)
+}
+
+// ListSchemasPagesWithContext same as ListSchemasPages except
+// it takes a Context and allows setting request options on the pages.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) ListSchemasPagesWithContext(ctx aws.Context, input *ListSchemasInput, fn func(*ListSchemasOutput, bool) bool, opts ...request.Option) error {
+	p := request.Pagination{
+		NewRequest: func() (*request.Request, error) {
+			var inCpy *ListSchemasInput
+			if input != nil {
+				tmp := *input
+				inCpy = &tmp
+			}
+			req, _ := c.ListSchemasRequest(inCpy)
+			req.SetContext(ctx)
+			req.ApplyOptions(opts...)
+			return req, nil
+		},
+	}
+
+	for p.Next() {
+		if !fn(p.Page().(*ListSchemasOutput), !p.HasNextPage()) {
+			break
+		}
+	}
+
+	return p.Err()
+}
+
 const opListTriggers = "ListTriggers"
 
 // ListTriggersRequest generates a "aws/request.Request" representing the
@@ -10489,6 +12218,99 @@ func (c *Glue) PutResourcePolicyWithContext(ctx aws.Context, input *PutResourceP
 	return out, req.Send()
 }
 
+const opPutSchemaVersionMetadata = "PutSchemaVersionMetadata"
+
+// PutSchemaVersionMetadataRequest generates a "aws/request.Request" representing the
+// client's request for the PutSchemaVersionMetadata operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See PutSchemaVersionMetadata for more information on using the PutSchemaVersionMetadata
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the PutSchemaVersionMetadataRequest method.
+//    req, resp := client.PutSchemaVersionMetadataRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/PutSchemaVersionMetadata
+func (c *Glue) PutSchemaVersionMetadataRequest(input *PutSchemaVersionMetadataInput) (req *request.Request, output *PutSchemaVersionMetadataOutput) {
+	op := &request.Operation{
+		Name:       opPutSchemaVersionMetadata,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &PutSchemaVersionMetadataInput{}
+	}
+
+	output = &PutSchemaVersionMetadataOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// PutSchemaVersionMetadata API operation for AWS Glue.
+//
+// Puts the metadata key value pair for a specified schema version ID. A maximum
+// of 10 key value pairs will be allowed per schema version. They can be added
+// over one or more calls.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation PutSchemaVersionMetadata for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * AlreadyExistsException
+//   A resource to be created or added already exists.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * ResourceNumberLimitExceededException
+//   A resource numerical limit was exceeded.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/PutSchemaVersionMetadata
+func (c *Glue) PutSchemaVersionMetadata(input *PutSchemaVersionMetadataInput) (*PutSchemaVersionMetadataOutput, error) {
+	req, out := c.PutSchemaVersionMetadataRequest(input)
+	return out, req.Send()
+}
+
+// PutSchemaVersionMetadataWithContext is the same as PutSchemaVersionMetadata with the addition of
+// the ability to pass a context and additional request options.
+//
+// See PutSchemaVersionMetadata for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) PutSchemaVersionMetadataWithContext(ctx aws.Context, input *PutSchemaVersionMetadataInput, opts ...request.Option) (*PutSchemaVersionMetadataOutput, error) {
+	req, out := c.PutSchemaVersionMetadataRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opPutWorkflowRunProperties = "PutWorkflowRunProperties"
 
 // PutWorkflowRunPropertiesRequest generates a "aws/request.Request" representing the
@@ -10584,6 +12406,283 @@ func (c *Glue) PutWorkflowRunProperties(input *PutWorkflowRunPropertiesInput) (*
 // for more information on using Contexts.
 func (c *Glue) PutWorkflowRunPropertiesWithContext(ctx aws.Context, input *PutWorkflowRunPropertiesInput, opts ...request.Option) (*PutWorkflowRunPropertiesOutput, error) {
 	req, out := c.PutWorkflowRunPropertiesRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opQuerySchemaVersionMetadata = "QuerySchemaVersionMetadata"
+
+// QuerySchemaVersionMetadataRequest generates a "aws/request.Request" representing the
+// client's request for the QuerySchemaVersionMetadata operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See QuerySchemaVersionMetadata for more information on using the QuerySchemaVersionMetadata
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the QuerySchemaVersionMetadataRequest method.
+//    req, resp := client.QuerySchemaVersionMetadataRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/QuerySchemaVersionMetadata
+func (c *Glue) QuerySchemaVersionMetadataRequest(input *QuerySchemaVersionMetadataInput) (req *request.Request, output *QuerySchemaVersionMetadataOutput) {
+	op := &request.Operation{
+		Name:       opQuerySchemaVersionMetadata,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &QuerySchemaVersionMetadataInput{}
+	}
+
+	output = &QuerySchemaVersionMetadataOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// QuerySchemaVersionMetadata API operation for AWS Glue.
+//
+// Queries for the schema version metadata information.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation QuerySchemaVersionMetadata for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/QuerySchemaVersionMetadata
+func (c *Glue) QuerySchemaVersionMetadata(input *QuerySchemaVersionMetadataInput) (*QuerySchemaVersionMetadataOutput, error) {
+	req, out := c.QuerySchemaVersionMetadataRequest(input)
+	return out, req.Send()
+}
+
+// QuerySchemaVersionMetadataWithContext is the same as QuerySchemaVersionMetadata with the addition of
+// the ability to pass a context and additional request options.
+//
+// See QuerySchemaVersionMetadata for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) QuerySchemaVersionMetadataWithContext(ctx aws.Context, input *QuerySchemaVersionMetadataInput, opts ...request.Option) (*QuerySchemaVersionMetadataOutput, error) {
+	req, out := c.QuerySchemaVersionMetadataRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opRegisterSchemaVersion = "RegisterSchemaVersion"
+
+// RegisterSchemaVersionRequest generates a "aws/request.Request" representing the
+// client's request for the RegisterSchemaVersion operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See RegisterSchemaVersion for more information on using the RegisterSchemaVersion
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the RegisterSchemaVersionRequest method.
+//    req, resp := client.RegisterSchemaVersionRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/RegisterSchemaVersion
+func (c *Glue) RegisterSchemaVersionRequest(input *RegisterSchemaVersionInput) (req *request.Request, output *RegisterSchemaVersionOutput) {
+	op := &request.Operation{
+		Name:       opRegisterSchemaVersion,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &RegisterSchemaVersionInput{}
+	}
+
+	output = &RegisterSchemaVersionOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// RegisterSchemaVersion API operation for AWS Glue.
+//
+// Adds a new version to the existing schema. Returns an error if new version
+// of schema does not meet the compatibility requirements of the schema set.
+// This API will not create a new schema set and will return a 404 error if
+// the schema set is not already present in the Schema Registry.
+//
+// If this is the first schema definition to be registered in the Schema Registry,
+// this API will store the schema version and return immediately. Otherwise,
+// this call has the potential to run longer than other operations due to compatibility
+// modes. You can call the GetSchemaVersion API with the SchemaVersionId to
+// check compatibility modes.
+//
+// If the same schema definition is already stored in Schema Registry as a version,
+// the schema ID of the existing schema is returned to the caller.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation RegisterSchemaVersion for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * ResourceNumberLimitExceededException
+//   A resource numerical limit was exceeded.
+//
+//   * ConcurrentModificationException
+//   Two processes are trying to modify a resource simultaneously.
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/RegisterSchemaVersion
+func (c *Glue) RegisterSchemaVersion(input *RegisterSchemaVersionInput) (*RegisterSchemaVersionOutput, error) {
+	req, out := c.RegisterSchemaVersionRequest(input)
+	return out, req.Send()
+}
+
+// RegisterSchemaVersionWithContext is the same as RegisterSchemaVersion with the addition of
+// the ability to pass a context and additional request options.
+//
+// See RegisterSchemaVersion for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) RegisterSchemaVersionWithContext(ctx aws.Context, input *RegisterSchemaVersionInput, opts ...request.Option) (*RegisterSchemaVersionOutput, error) {
+	req, out := c.RegisterSchemaVersionRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opRemoveSchemaVersionMetadata = "RemoveSchemaVersionMetadata"
+
+// RemoveSchemaVersionMetadataRequest generates a "aws/request.Request" representing the
+// client's request for the RemoveSchemaVersionMetadata operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See RemoveSchemaVersionMetadata for more information on using the RemoveSchemaVersionMetadata
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the RemoveSchemaVersionMetadataRequest method.
+//    req, resp := client.RemoveSchemaVersionMetadataRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/RemoveSchemaVersionMetadata
+func (c *Glue) RemoveSchemaVersionMetadataRequest(input *RemoveSchemaVersionMetadataInput) (req *request.Request, output *RemoveSchemaVersionMetadataOutput) {
+	op := &request.Operation{
+		Name:       opRemoveSchemaVersionMetadata,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &RemoveSchemaVersionMetadataInput{}
+	}
+
+	output = &RemoveSchemaVersionMetadataOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// RemoveSchemaVersionMetadata API operation for AWS Glue.
+//
+// Removes a key value pair from the schema version metadata for the specified
+// schema version ID.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation RemoveSchemaVersionMetadata for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/RemoveSchemaVersionMetadata
+func (c *Glue) RemoveSchemaVersionMetadata(input *RemoveSchemaVersionMetadataInput) (*RemoveSchemaVersionMetadataOutput, error) {
+	req, out := c.RemoveSchemaVersionMetadataRequest(input)
+	return out, req.Send()
+}
+
+// RemoveSchemaVersionMetadataWithContext is the same as RemoveSchemaVersionMetadata with the addition of
+// the ability to pass a context and additional request options.
+//
+// See RemoveSchemaVersionMetadata for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) RemoveSchemaVersionMetadataWithContext(ctx aws.Context, input *RemoveSchemaVersionMetadataInput, opts ...request.Option) (*RemoveSchemaVersionMetadataOutput, error) {
+	req, out := c.RemoveSchemaVersionMetadataRequest(input)
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
@@ -12483,6 +14582,9 @@ func (c *Glue) UpdateColumnStatisticsForPartitionRequest(input *UpdateColumnStat
 //
 // Creates or updates partition statistics of columns.
 //
+// The Identity and Access Management (IAM) permission required for this operation
+// is UpdatePartition.
+//
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
 // the error.
@@ -12573,6 +14675,9 @@ func (c *Glue) UpdateColumnStatisticsForTableRequest(input *UpdateColumnStatisti
 // UpdateColumnStatisticsForTable API operation for AWS Glue.
 //
 // Creates or updates table statistics of columns.
+//
+// The Identity and Access Management (IAM) permission required for this operation
+// is UpdateTable.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -13359,6 +15464,202 @@ func (c *Glue) UpdatePartitionWithContext(ctx aws.Context, input *UpdatePartitio
 	return out, req.Send()
 }
 
+const opUpdateRegistry = "UpdateRegistry"
+
+// UpdateRegistryRequest generates a "aws/request.Request" representing the
+// client's request for the UpdateRegistry operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See UpdateRegistry for more information on using the UpdateRegistry
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the UpdateRegistryRequest method.
+//    req, resp := client.UpdateRegistryRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/UpdateRegistry
+func (c *Glue) UpdateRegistryRequest(input *UpdateRegistryInput) (req *request.Request, output *UpdateRegistryOutput) {
+	op := &request.Operation{
+		Name:       opUpdateRegistry,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &UpdateRegistryInput{}
+	}
+
+	output = &UpdateRegistryOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// UpdateRegistry API operation for AWS Glue.
+//
+// Updates an existing registry which is used to hold a collection of schemas.
+// The updated properties relate to the registry, and do not modify any of the
+// schemas within the registry.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation UpdateRegistry for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * ConcurrentModificationException
+//   Two processes are trying to modify a resource simultaneously.
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/UpdateRegistry
+func (c *Glue) UpdateRegistry(input *UpdateRegistryInput) (*UpdateRegistryOutput, error) {
+	req, out := c.UpdateRegistryRequest(input)
+	return out, req.Send()
+}
+
+// UpdateRegistryWithContext is the same as UpdateRegistry with the addition of
+// the ability to pass a context and additional request options.
+//
+// See UpdateRegistry for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) UpdateRegistryWithContext(ctx aws.Context, input *UpdateRegistryInput, opts ...request.Option) (*UpdateRegistryOutput, error) {
+	req, out := c.UpdateRegistryRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
+const opUpdateSchema = "UpdateSchema"
+
+// UpdateSchemaRequest generates a "aws/request.Request" representing the
+// client's request for the UpdateSchema operation. The "output" return
+// value will be populated with the request's response once the request completes
+// successfully.
+//
+// Use "Send" method on the returned Request to send the API call to the service.
+// the "output" return value is not valid until after Send returns without error.
+//
+// See UpdateSchema for more information on using the UpdateSchema
+// API call, and error handling.
+//
+// This method is useful when you want to inject custom logic or configuration
+// into the SDK's request lifecycle. Such as custom headers, or retry logic.
+//
+//
+//    // Example sending a request using the UpdateSchemaRequest method.
+//    req, resp := client.UpdateSchemaRequest(params)
+//
+//    err := req.Send()
+//    if err == nil { // resp is now filled
+//        fmt.Println(resp)
+//    }
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/UpdateSchema
+func (c *Glue) UpdateSchemaRequest(input *UpdateSchemaInput) (req *request.Request, output *UpdateSchemaOutput) {
+	op := &request.Operation{
+		Name:       opUpdateSchema,
+		HTTPMethod: "POST",
+		HTTPPath:   "/",
+	}
+
+	if input == nil {
+		input = &UpdateSchemaInput{}
+	}
+
+	output = &UpdateSchemaOutput{}
+	req = c.newRequest(op, input, output)
+	return
+}
+
+// UpdateSchema API operation for AWS Glue.
+//
+// Updates the description, compatibility setting, or version checkpoint for
+// a schema set.
+//
+// For updating the compatibility setting, the call will not validate compatibility
+// for the entire set of schema versions with the new compatibility setting.
+// If the value for Compatibility is provided, the VersionNumber (a checkpoint)
+// is also required. The API will validate the checkpoint version number for
+// consistency.
+//
+// If the value for the VersionNumber (checkpoint) is provided, Compatibility
+// is optional and this can be used to set/reset a checkpoint for the schema.
+//
+// This update will happen only if the schema is in the AVAILABLE state.
+//
+// Returns awserr.Error for service API and SDK errors. Use runtime type assertions
+// with awserr.Error's Code and Message methods to get detailed information about
+// the error.
+//
+// See the AWS API reference guide for AWS Glue's
+// API operation UpdateSchema for usage and error information.
+//
+// Returned Error Types:
+//   * InvalidInputException
+//   The input provided was not valid.
+//
+//   * AccessDeniedException
+//   Access to a resource was denied.
+//
+//   * EntityNotFoundException
+//   A specified entity does not exist
+//
+//   * ConcurrentModificationException
+//   Two processes are trying to modify a resource simultaneously.
+//
+//   * InternalServiceException
+//   An internal service error occurred.
+//
+// See also, https://docs.aws.amazon.com/goto/WebAPI/glue-2017-03-31/UpdateSchema
+func (c *Glue) UpdateSchema(input *UpdateSchemaInput) (*UpdateSchemaOutput, error) {
+	req, out := c.UpdateSchemaRequest(input)
+	return out, req.Send()
+}
+
+// UpdateSchemaWithContext is the same as UpdateSchema with the addition of
+// the ability to pass a context and additional request options.
+//
+// See UpdateSchema for details on how to use this API operation.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *Glue) UpdateSchemaWithContext(ctx aws.Context, input *UpdateSchemaInput, opts ...request.Option) (*UpdateSchemaOutput, error) {
+	req, out := c.UpdateSchemaRequest(input)
+	req.SetContext(ctx)
+	req.ApplyOptions(opts...)
+	return out, req.Send()
+}
+
 const opUpdateTable = "UpdateTable"
 
 // UpdateTableRequest generates a "aws/request.Request" representing the
@@ -13954,6 +16255,58 @@ func (s *AlreadyExistsException) StatusCode() int {
 // RequestID returns the service's response RequestID for request.
 func (s *AlreadyExistsException) RequestID() string {
 	return s.RespMetadata.RequestID
+}
+
+// A list of errors that can occur when registering partition indexes for an
+// existing table.
+//
+// These errors give the details about why an index registration failed and
+// provide a limited number of partitions in the response, so that you can fix
+// the partitions at fault and try registering the index again. The most common
+// set of errors that can occur are categorized as follows:
+//
+//    * EncryptedPartitionError: The partitions are encrypted.
+//
+//    * InvalidPartitionTypeDataError: The partition value doesn't match the
+//    data type for that partition column.
+//
+//    * MissingPartitionValueError: The partitions are encrypted.
+//
+//    * UnsupportedPartitionCharacterError: Characters inside the partition
+//    value are not supported. For example: U+0000 , U+0001, U+0002.
+//
+//    * InternalError: Any error which does not belong to other error codes.
+type BackfillError struct {
+	_ struct{} `type:"structure"`
+
+	// The error code for an error that occurred when registering partition indexes
+	// for an existing table.
+	Code *string `type:"string" enum:"BackfillErrorCode"`
+
+	// A list of a limited number of partitions in the response.
+	Partitions []*PartitionValueList `type:"list"`
+}
+
+// String returns the string representation
+func (s BackfillError) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s BackfillError) GoString() string {
+	return s.String()
+}
+
+// SetCode sets the Code field's value.
+func (s *BackfillError) SetCode(v string) *BackfillError {
+	s.Code = &v
+	return s
+}
+
+// SetPartitions sets the Partitions field's value.
+func (s *BackfillError) SetPartitions(v []*PartitionValueList) *BackfillError {
+	s.Partitions = v
+	return s
 }
 
 type BatchCreatePartitionInput struct {
@@ -15356,21 +17709,21 @@ func (s *BatchUpdatePartitionRequestEntry) SetPartitionValueList(v []*string) *B
 	return s
 }
 
-// Defines a binary column statistics data.
+// Defines column statistics supported for bit sequence data values.
 type BinaryColumnStatisticsData struct {
 	_ struct{} `type:"structure"`
 
-	// Average length of the column.
+	// The average bit sequence length in the column.
 	//
 	// AverageLength is a required field
 	AverageLength *float64 `type:"double" required:"true"`
 
-	// Maximum length of the column.
+	// The size of the longest bit sequence in the column.
 	//
 	// MaximumLength is a required field
 	MaximumLength *int64 `type:"long" required:"true"`
 
-	// Number of nulls.
+	// The number of null values in the column.
 	//
 	// NumberOfNulls is a required field
 	NumberOfNulls *int64 `type:"long" required:"true"`
@@ -15423,21 +17776,21 @@ func (s *BinaryColumnStatisticsData) SetNumberOfNulls(v int64) *BinaryColumnStat
 	return s
 }
 
-// Defines a boolean column statistics.
+// Defines column statistics supported for Boolean data columns.
 type BooleanColumnStatisticsData struct {
 	_ struct{} `type:"structure"`
 
-	// Number of false value.
+	// The number of false values in the column.
 	//
 	// NumberOfFalses is a required field
 	NumberOfFalses *int64 `type:"long" required:"true"`
 
-	// Number of nulls.
+	// The number of null values in the column.
 	//
 	// NumberOfNulls is a required field
 	NumberOfNulls *int64 `type:"long" required:"true"`
 
-	// Number of true value.
+	// The number of true values in the column.
 	//
 	// NumberOfTrues is a required field
 	NumberOfTrues *int64 `type:"long" required:"true"`
@@ -15746,6 +18099,93 @@ func (s *CatalogTarget) SetDatabaseName(v string) *CatalogTarget {
 // SetTables sets the Tables field's value.
 func (s *CatalogTarget) SetTables(v []*string) *CatalogTarget {
 	s.Tables = v
+	return s
+}
+
+type CheckSchemaVersionValidityInput struct {
+	_ struct{} `type:"structure"`
+
+	// The data format of the schema definition. Currently only AVRO is supported.
+	//
+	// DataFormat is a required field
+	DataFormat *string `type:"string" required:"true" enum:"DataFormat"`
+
+	// The definition of the schema that has to be validated.
+	//
+	// SchemaDefinition is a required field
+	SchemaDefinition *string `min:"1" type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s CheckSchemaVersionValidityInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CheckSchemaVersionValidityInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *CheckSchemaVersionValidityInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "CheckSchemaVersionValidityInput"}
+	if s.DataFormat == nil {
+		invalidParams.Add(request.NewErrParamRequired("DataFormat"))
+	}
+	if s.SchemaDefinition == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaDefinition"))
+	}
+	if s.SchemaDefinition != nil && len(*s.SchemaDefinition) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaDefinition", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetDataFormat sets the DataFormat field's value.
+func (s *CheckSchemaVersionValidityInput) SetDataFormat(v string) *CheckSchemaVersionValidityInput {
+	s.DataFormat = &v
+	return s
+}
+
+// SetSchemaDefinition sets the SchemaDefinition field's value.
+func (s *CheckSchemaVersionValidityInput) SetSchemaDefinition(v string) *CheckSchemaVersionValidityInput {
+	s.SchemaDefinition = &v
+	return s
+}
+
+type CheckSchemaVersionValidityOutput struct {
+	_ struct{} `type:"structure"`
+
+	// A validation failure error message.
+	Error *string `min:"1" type:"string"`
+
+	// Return true, if the schema is valid and false otherwise.
+	Valid *bool `type:"boolean"`
+}
+
+// String returns the string representation
+func (s CheckSchemaVersionValidityOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CheckSchemaVersionValidityOutput) GoString() string {
+	return s.String()
+}
+
+// SetError sets the Error field's value.
+func (s *CheckSchemaVersionValidityOutput) SetError(v string) *CheckSchemaVersionValidityOutput {
+	s.Error = &v
+	return s
+}
+
+// SetValid sets the Valid field's value.
+func (s *CheckSchemaVersionValidityOutput) SetValid(v bool) *CheckSchemaVersionValidityOutput {
+	s.Valid = &v
 	return s
 }
 
@@ -16129,14 +18569,14 @@ func (s *Column) SetType(v string) *Column {
 	return s
 }
 
-// Defines a column containing error.
+// Encapsulates a column name that failed and the reason for failure.
 type ColumnError struct {
 	_ struct{} `type:"structure"`
 
-	// The name of the column.
+	// The name of the column that failed.
 	ColumnName *string `min:"1" type:"string"`
 
-	// The error message occurred during operation.
+	// An error message with the reason for the failure of an operation.
 	Error *ErrorDetail `type:"structure"`
 }
 
@@ -16162,26 +18602,26 @@ func (s *ColumnError) SetError(v *ErrorDetail) *ColumnError {
 	return s
 }
 
-// Defines a column statistics.
+// Represents the generated column-level statistics for a table or partition.
 type ColumnStatistics struct {
 	_ struct{} `type:"structure"`
 
-	// The analyzed time of the column statistics.
+	// The timestamp of when column statistics were generated.
 	//
 	// AnalyzedTime is a required field
 	AnalyzedTime *time.Time `type:"timestamp" required:"true"`
 
-	// The name of the column.
+	// Name of column which statistics belong to.
 	//
 	// ColumnName is a required field
 	ColumnName *string `min:"1" type:"string" required:"true"`
 
-	// The type of the column.
+	// The data type of the column.
 	//
 	// ColumnType is a required field
 	ColumnType *string `type:"string" required:"true"`
 
-	// The statistics of the column.
+	// A ColumnStatisticData object that contains the statistics data values.
 	//
 	// StatisticsData is a required field
 	StatisticsData *ColumnStatisticsData `type:"structure" required:"true"`
@@ -16251,32 +18691,33 @@ func (s *ColumnStatistics) SetStatisticsData(v *ColumnStatisticsData) *ColumnSta
 	return s
 }
 
-// Defines a column statistics data.
+// Contains the individual types of column statistics data. Only one data object
+// should be set and indicated by the Type attribute.
 type ColumnStatisticsData struct {
 	_ struct{} `type:"structure"`
 
-	// Binary Column Statistics Data.
+	// Binary column statistics data.
 	BinaryColumnStatisticsData *BinaryColumnStatisticsData `type:"structure"`
 
-	// Boolean Column Statistics Data.
+	// Boolean column statistics data.
 	BooleanColumnStatisticsData *BooleanColumnStatisticsData `type:"structure"`
 
-	// Date Column Statistics Data.
+	// Date column statistics data.
 	DateColumnStatisticsData *DateColumnStatisticsData `type:"structure"`
 
-	// Decimal Column Statistics Data.
+	// Decimal column statistics data.
 	DecimalColumnStatisticsData *DecimalColumnStatisticsData `type:"structure"`
 
-	// Double Column Statistics Data.
+	// Double column statistics data.
 	DoubleColumnStatisticsData *DoubleColumnStatisticsData `type:"structure"`
 
-	// Long Column Statistics Data.
+	// Long column statistics data.
 	LongColumnStatisticsData *LongColumnStatisticsData `type:"structure"`
 
-	// String Column Statistics Data.
+	// String column statistics data.
 	StringColumnStatisticsData *StringColumnStatisticsData `type:"structure"`
 
-	// The name of the column.
+	// The type of column statistics data.
 	//
 	// Type is a required field
 	Type *string `type:"string" required:"true" enum:"ColumnStatisticsType"`
@@ -16388,14 +18829,14 @@ func (s *ColumnStatisticsData) SetType(v string) *ColumnStatisticsData {
 	return s
 }
 
-// Defines a column containing error.
+// Encapsulates a ColumnStatistics object that failed and the reason for failure.
 type ColumnStatisticsError struct {
 	_ struct{} `type:"structure"`
 
 	// The ColumnStatistics of the column.
 	ColumnStatistics *ColumnStatistics `type:"structure"`
 
-	// The error message occurred during operation.
+	// An error message with the reason for the failure of an operation.
 	Error *ErrorDetail `type:"structure"`
 }
 
@@ -17272,8 +19713,15 @@ type Crawler struct {
 	// The time that the crawler was last updated.
 	LastUpdated *time.Time `type:"timestamp"`
 
+	// A configuration that specifies whether data lineage is enabled for the crawler.
+	LineageConfiguration *LineageConfiguration `type:"structure"`
+
 	// The name of the crawler.
 	Name *string `min:"1" type:"string"`
+
+	// A policy that specifies whether to crawl the entire dataset again, or to
+	// crawl only folders that were added since the last crawler run.
+	RecrawlPolicy *RecrawlPolicy `type:"structure"`
 
 	// The Amazon Resource Name (ARN) of an IAM role that's used to access customer
 	// resources, such as Amazon Simple Storage Service (Amazon S3) data.
@@ -17362,9 +19810,21 @@ func (s *Crawler) SetLastUpdated(v time.Time) *Crawler {
 	return s
 }
 
+// SetLineageConfiguration sets the LineageConfiguration field's value.
+func (s *Crawler) SetLineageConfiguration(v *LineageConfiguration) *Crawler {
+	s.LineageConfiguration = v
+	return s
+}
+
 // SetName sets the Name field's value.
 func (s *Crawler) SetName(v string) *Crawler {
 	s.Name = &v
+	return s
+}
+
+// SetRecrawlPolicy sets the RecrawlPolicy field's value.
+func (s *Crawler) SetRecrawlPolicy(v *RecrawlPolicy) *Crawler {
+	s.RecrawlPolicy = v
 	return s
 }
 
@@ -17959,10 +20419,17 @@ type CreateCrawlerInput struct {
 	// A description of the new crawler.
 	Description *string `type:"string"`
 
+	// Specifies data lineage configuration settings for the crawler.
+	LineageConfiguration *LineageConfiguration `type:"structure"`
+
 	// Name of the new crawler.
 	//
 	// Name is a required field
 	Name *string `min:"1" type:"string" required:"true"`
+
+	// A policy that specifies whether to crawl the entire dataset again, or to
+	// crawl only folders that were added since the last crawler run.
+	RecrawlPolicy *RecrawlPolicy `type:"structure"`
 
 	// The IAM role or Amazon Resource Name (ARN) of an IAM role used by the new
 	// crawler to access customer resources.
@@ -18061,9 +20528,21 @@ func (s *CreateCrawlerInput) SetDescription(v string) *CreateCrawlerInput {
 	return s
 }
 
+// SetLineageConfiguration sets the LineageConfiguration field's value.
+func (s *CreateCrawlerInput) SetLineageConfiguration(v *LineageConfiguration) *CreateCrawlerInput {
+	s.LineageConfiguration = v
+	return s
+}
+
 // SetName sets the Name field's value.
 func (s *CreateCrawlerInput) SetName(v string) *CreateCrawlerInput {
 	s.Name = &v
+	return s
+}
+
+// SetRecrawlPolicy sets the RecrawlPolicy field's value.
+func (s *CreateCrawlerInput) SetRecrawlPolicy(v *RecrawlPolicy) *CreateCrawlerInput {
+	s.RecrawlPolicy = v
 	return s
 }
 
@@ -19269,6 +21748,11 @@ type CreateMLTransformInput struct {
 	// terminated and enters TIMEOUT status. The default is 2,880 minutes (48 hours).
 	Timeout *int64 `min:"1" type:"integer"`
 
+	// The encryption-at-rest settings of the transform that apply to accessing
+	// user data. Machine learning transforms can access user data encrypted in
+	// Amazon S3 using KMS.
+	TransformEncryption *TransformEncryption `type:"structure"`
+
 	// The type of predefined worker that is allocated when this task runs. Accepts
 	// a value of Standard, G.1X, or G.2X.
 	//
@@ -19344,6 +21828,11 @@ func (s *CreateMLTransformInput) Validate() error {
 			invalidParams.AddNested("Parameters", err.(request.ErrInvalidParams))
 		}
 	}
+	if s.TransformEncryption != nil {
+		if err := s.TransformEncryption.Validate(); err != nil {
+			invalidParams.AddNested("TransformEncryption", err.(request.ErrInvalidParams))
+		}
+	}
 
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -19417,6 +21906,12 @@ func (s *CreateMLTransformInput) SetTimeout(v int64) *CreateMLTransformInput {
 	return s
 }
 
+// SetTransformEncryption sets the TransformEncryption field's value.
+func (s *CreateMLTransformInput) SetTransformEncryption(v *TransformEncryption) *CreateMLTransformInput {
+	s.TransformEncryption = v
+	return s
+}
+
 // SetWorkerType sets the WorkerType field's value.
 func (s *CreateMLTransformInput) SetWorkerType(v string) *CreateMLTransformInput {
 	s.WorkerType = &v
@@ -19444,6 +21939,111 @@ func (s CreateMLTransformOutput) GoString() string {
 func (s *CreateMLTransformOutput) SetTransformId(v string) *CreateMLTransformOutput {
 	s.TransformId = &v
 	return s
+}
+
+type CreatePartitionIndexInput struct {
+	_ struct{} `type:"structure"`
+
+	// The catalog ID where the table resides.
+	CatalogId *string `min:"1" type:"string"`
+
+	// Specifies the name of a database in which you want to create a partition
+	// index.
+	//
+	// DatabaseName is a required field
+	DatabaseName *string `min:"1" type:"string" required:"true"`
+
+	// Specifies a PartitionIndex structure to create a partition index in an existing
+	// table.
+	//
+	// PartitionIndex is a required field
+	PartitionIndex *PartitionIndex `type:"structure" required:"true"`
+
+	// Specifies the name of a table in which you want to create a partition index.
+	//
+	// TableName is a required field
+	TableName *string `min:"1" type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s CreatePartitionIndexInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreatePartitionIndexInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *CreatePartitionIndexInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "CreatePartitionIndexInput"}
+	if s.CatalogId != nil && len(*s.CatalogId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("CatalogId", 1))
+	}
+	if s.DatabaseName == nil {
+		invalidParams.Add(request.NewErrParamRequired("DatabaseName"))
+	}
+	if s.DatabaseName != nil && len(*s.DatabaseName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("DatabaseName", 1))
+	}
+	if s.PartitionIndex == nil {
+		invalidParams.Add(request.NewErrParamRequired("PartitionIndex"))
+	}
+	if s.TableName == nil {
+		invalidParams.Add(request.NewErrParamRequired("TableName"))
+	}
+	if s.TableName != nil && len(*s.TableName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("TableName", 1))
+	}
+	if s.PartitionIndex != nil {
+		if err := s.PartitionIndex.Validate(); err != nil {
+			invalidParams.AddNested("PartitionIndex", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetCatalogId sets the CatalogId field's value.
+func (s *CreatePartitionIndexInput) SetCatalogId(v string) *CreatePartitionIndexInput {
+	s.CatalogId = &v
+	return s
+}
+
+// SetDatabaseName sets the DatabaseName field's value.
+func (s *CreatePartitionIndexInput) SetDatabaseName(v string) *CreatePartitionIndexInput {
+	s.DatabaseName = &v
+	return s
+}
+
+// SetPartitionIndex sets the PartitionIndex field's value.
+func (s *CreatePartitionIndexInput) SetPartitionIndex(v *PartitionIndex) *CreatePartitionIndexInput {
+	s.PartitionIndex = v
+	return s
+}
+
+// SetTableName sets the TableName field's value.
+func (s *CreatePartitionIndexInput) SetTableName(v string) *CreatePartitionIndexInput {
+	s.TableName = &v
+	return s
+}
+
+type CreatePartitionIndexOutput struct {
+	_ struct{} `type:"structure"`
+}
+
+// String returns the string representation
+func (s CreatePartitionIndexOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreatePartitionIndexOutput) GoString() string {
+	return s.String()
 }
 
 type CreatePartitionInput struct {
@@ -19547,6 +22147,412 @@ func (s CreatePartitionOutput) String() string {
 // GoString returns the string representation
 func (s CreatePartitionOutput) GoString() string {
 	return s.String()
+}
+
+type CreateRegistryInput struct {
+	_ struct{} `type:"structure"`
+
+	// A description of the registry. If description is not provided, there will
+	// not be any default value for this.
+	Description *string `type:"string"`
+
+	// Name of the registry to be created of max length of 255, and may only contain
+	// letters, numbers, hyphen, underscore, dollar sign, or hash mark. No whitespace.
+	//
+	// RegistryName is a required field
+	RegistryName *string `min:"1" type:"string" required:"true"`
+
+	// AWS tags that contain a key value pair and may be searched by console, command
+	// line, or API.
+	Tags map[string]*string `type:"map"`
+}
+
+// String returns the string representation
+func (s CreateRegistryInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreateRegistryInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *CreateRegistryInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "CreateRegistryInput"}
+	if s.RegistryName == nil {
+		invalidParams.Add(request.NewErrParamRequired("RegistryName"))
+	}
+	if s.RegistryName != nil && len(*s.RegistryName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("RegistryName", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetDescription sets the Description field's value.
+func (s *CreateRegistryInput) SetDescription(v string) *CreateRegistryInput {
+	s.Description = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *CreateRegistryInput) SetRegistryName(v string) *CreateRegistryInput {
+	s.RegistryName = &v
+	return s
+}
+
+// SetTags sets the Tags field's value.
+func (s *CreateRegistryInput) SetTags(v map[string]*string) *CreateRegistryInput {
+	s.Tags = v
+	return s
+}
+
+type CreateRegistryOutput struct {
+	_ struct{} `type:"structure"`
+
+	// A description of the registry.
+	Description *string `type:"string"`
+
+	// The Amazon Resource Name (ARN) of the newly created registry.
+	RegistryArn *string `min:"1" type:"string"`
+
+	// The name of the registry.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The tags for the registry.
+	Tags map[string]*string `type:"map"`
+}
+
+// String returns the string representation
+func (s CreateRegistryOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreateRegistryOutput) GoString() string {
+	return s.String()
+}
+
+// SetDescription sets the Description field's value.
+func (s *CreateRegistryOutput) SetDescription(v string) *CreateRegistryOutput {
+	s.Description = &v
+	return s
+}
+
+// SetRegistryArn sets the RegistryArn field's value.
+func (s *CreateRegistryOutput) SetRegistryArn(v string) *CreateRegistryOutput {
+	s.RegistryArn = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *CreateRegistryOutput) SetRegistryName(v string) *CreateRegistryOutput {
+	s.RegistryName = &v
+	return s
+}
+
+// SetTags sets the Tags field's value.
+func (s *CreateRegistryOutput) SetTags(v map[string]*string) *CreateRegistryOutput {
+	s.Tags = v
+	return s
+}
+
+type CreateSchemaInput struct {
+	_ struct{} `type:"structure"`
+
+	// The compatibility mode of the schema. The possible values are:
+	//
+	//    * NONE: No compatibility mode applies. You can use this choice in development
+	//    scenarios or if you do not know the compatibility mode that you want to
+	//    apply to schemas. Any new version added will be accepted without undergoing
+	//    a compatibility check.
+	//
+	//    * DISABLED: This compatibility choice prevents versioning for a particular
+	//    schema. You can use this choice to prevent future versioning of a schema.
+	//
+	//    * BACKWARD: This compatibility choice is recommended as it allows data
+	//    receivers to read both the current and one previous schema version. This
+	//    means that for instance, a new schema version cannot drop data fields
+	//    or change the type of these fields, so they can't be read by readers using
+	//    the previous version.
+	//
+	//    * BACKWARD_ALL: This compatibility choice allows data receivers to read
+	//    both the current and all previous schema versions. You can use this choice
+	//    when you need to delete fields or add optional fields, and check compatibility
+	//    against all previous schema versions.
+	//
+	//    * FORWARD: This compatibility choice allows data receivers to read both
+	//    the current and one next schema version, but not necessarily later versions.
+	//    You can use this choice when you need to add fields or delete optional
+	//    fields, but only check compatibility against the last schema version.
+	//
+	//    * FORWARD_ALL: This compatibility choice allows data receivers to read
+	//    written by producers of any new registered schema. You can use this choice
+	//    when you need to add fields or delete optional fields, and check compatibility
+	//    against all previous schema versions.
+	//
+	//    * FULL: This compatibility choice allows data receivers to read data written
+	//    by producers using the previous or next version of the schema, but not
+	//    necessarily earlier or later versions. You can use this choice when you
+	//    need to add or remove optional fields, but only check compatibility against
+	//    the last schema version.
+	//
+	//    * FULL_ALL: This compatibility choice allows data receivers to read data
+	//    written by producers using all previous schema versions. You can use this
+	//    choice when you need to add or remove optional fields, and check compatibility
+	//    against all previous schema versions.
+	Compatibility *string `type:"string" enum:"Compatibility"`
+
+	// The data format of the schema definition. Currently only AVRO is supported.
+	//
+	// DataFormat is a required field
+	DataFormat *string `type:"string" required:"true" enum:"DataFormat"`
+
+	// An optional description of the schema. If description is not provided, there
+	// will not be any automatic default value for this.
+	Description *string `type:"string"`
+
+	// This is a wrapper shape to contain the registry identity fields. If this
+	// is not provided, the default registry will be used. The ARN format for the
+	// same will be: arn:aws:glue:us-east-2:<customer id>:registry/default-registry:random-5-letter-id.
+	RegistryId *RegistryId `type:"structure"`
+
+	// The schema definition using the DataFormat setting for SchemaName.
+	SchemaDefinition *string `min:"1" type:"string"`
+
+	// Name of the schema to be created of max length of 255, and may only contain
+	// letters, numbers, hyphen, underscore, dollar sign, or hash mark. No whitespace.
+	//
+	// SchemaName is a required field
+	SchemaName *string `min:"1" type:"string" required:"true"`
+
+	// AWS tags that contain a key value pair and may be searched by console, command
+	// line, or API. If specified, follows the AWS tags-on-create pattern.
+	Tags map[string]*string `type:"map"`
+}
+
+// String returns the string representation
+func (s CreateSchemaInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreateSchemaInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *CreateSchemaInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "CreateSchemaInput"}
+	if s.DataFormat == nil {
+		invalidParams.Add(request.NewErrParamRequired("DataFormat"))
+	}
+	if s.SchemaDefinition != nil && len(*s.SchemaDefinition) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaDefinition", 1))
+	}
+	if s.SchemaName == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaName"))
+	}
+	if s.SchemaName != nil && len(*s.SchemaName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaName", 1))
+	}
+	if s.RegistryId != nil {
+		if err := s.RegistryId.Validate(); err != nil {
+			invalidParams.AddNested("RegistryId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetCompatibility sets the Compatibility field's value.
+func (s *CreateSchemaInput) SetCompatibility(v string) *CreateSchemaInput {
+	s.Compatibility = &v
+	return s
+}
+
+// SetDataFormat sets the DataFormat field's value.
+func (s *CreateSchemaInput) SetDataFormat(v string) *CreateSchemaInput {
+	s.DataFormat = &v
+	return s
+}
+
+// SetDescription sets the Description field's value.
+func (s *CreateSchemaInput) SetDescription(v string) *CreateSchemaInput {
+	s.Description = &v
+	return s
+}
+
+// SetRegistryId sets the RegistryId field's value.
+func (s *CreateSchemaInput) SetRegistryId(v *RegistryId) *CreateSchemaInput {
+	s.RegistryId = v
+	return s
+}
+
+// SetSchemaDefinition sets the SchemaDefinition field's value.
+func (s *CreateSchemaInput) SetSchemaDefinition(v string) *CreateSchemaInput {
+	s.SchemaDefinition = &v
+	return s
+}
+
+// SetSchemaName sets the SchemaName field's value.
+func (s *CreateSchemaInput) SetSchemaName(v string) *CreateSchemaInput {
+	s.SchemaName = &v
+	return s
+}
+
+// SetTags sets the Tags field's value.
+func (s *CreateSchemaInput) SetTags(v map[string]*string) *CreateSchemaInput {
+	s.Tags = v
+	return s
+}
+
+type CreateSchemaOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The schema compatibility mode.
+	Compatibility *string `type:"string" enum:"Compatibility"`
+
+	// The data format of the schema definition. Currently only AVRO is supported.
+	DataFormat *string `type:"string" enum:"DataFormat"`
+
+	// A description of the schema if specified when created.
+	Description *string `type:"string"`
+
+	// The latest version of the schema associated with the returned schema definition.
+	LatestSchemaVersion *int64 `min:"1" type:"long"`
+
+	// The next version of the schema associated with the returned schema definition.
+	NextSchemaVersion *int64 `min:"1" type:"long"`
+
+	// The Amazon Resource Name (ARN) of the registry.
+	RegistryArn *string `min:"1" type:"string"`
+
+	// The name of the registry.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The Amazon Resource Name (ARN) of the schema.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The version number of the checkpoint (the last time the compatibility mode
+	// was changed).
+	SchemaCheckpoint *int64 `min:"1" type:"long"`
+
+	// The name of the schema.
+	SchemaName *string `min:"1" type:"string"`
+
+	// The status of the schema.
+	SchemaStatus *string `type:"string" enum:"SchemaStatus"`
+
+	// The unique identifier of the first schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The status of the first schema version created.
+	SchemaVersionStatus *string `type:"string" enum:"SchemaVersionStatus"`
+
+	// The tags for the schema.
+	Tags map[string]*string `type:"map"`
+}
+
+// String returns the string representation
+func (s CreateSchemaOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreateSchemaOutput) GoString() string {
+	return s.String()
+}
+
+// SetCompatibility sets the Compatibility field's value.
+func (s *CreateSchemaOutput) SetCompatibility(v string) *CreateSchemaOutput {
+	s.Compatibility = &v
+	return s
+}
+
+// SetDataFormat sets the DataFormat field's value.
+func (s *CreateSchemaOutput) SetDataFormat(v string) *CreateSchemaOutput {
+	s.DataFormat = &v
+	return s
+}
+
+// SetDescription sets the Description field's value.
+func (s *CreateSchemaOutput) SetDescription(v string) *CreateSchemaOutput {
+	s.Description = &v
+	return s
+}
+
+// SetLatestSchemaVersion sets the LatestSchemaVersion field's value.
+func (s *CreateSchemaOutput) SetLatestSchemaVersion(v int64) *CreateSchemaOutput {
+	s.LatestSchemaVersion = &v
+	return s
+}
+
+// SetNextSchemaVersion sets the NextSchemaVersion field's value.
+func (s *CreateSchemaOutput) SetNextSchemaVersion(v int64) *CreateSchemaOutput {
+	s.NextSchemaVersion = &v
+	return s
+}
+
+// SetRegistryArn sets the RegistryArn field's value.
+func (s *CreateSchemaOutput) SetRegistryArn(v string) *CreateSchemaOutput {
+	s.RegistryArn = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *CreateSchemaOutput) SetRegistryName(v string) *CreateSchemaOutput {
+	s.RegistryName = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *CreateSchemaOutput) SetSchemaArn(v string) *CreateSchemaOutput {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaCheckpoint sets the SchemaCheckpoint field's value.
+func (s *CreateSchemaOutput) SetSchemaCheckpoint(v int64) *CreateSchemaOutput {
+	s.SchemaCheckpoint = &v
+	return s
+}
+
+// SetSchemaName sets the SchemaName field's value.
+func (s *CreateSchemaOutput) SetSchemaName(v string) *CreateSchemaOutput {
+	s.SchemaName = &v
+	return s
+}
+
+// SetSchemaStatus sets the SchemaStatus field's value.
+func (s *CreateSchemaOutput) SetSchemaStatus(v string) *CreateSchemaOutput {
+	s.SchemaStatus = &v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *CreateSchemaOutput) SetSchemaVersionId(v string) *CreateSchemaOutput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetSchemaVersionStatus sets the SchemaVersionStatus field's value.
+func (s *CreateSchemaOutput) SetSchemaVersionStatus(v string) *CreateSchemaOutput {
+	s.SchemaVersionStatus = &v
+	return s
+}
+
+// SetTags sets the Tags field's value.
+func (s *CreateSchemaOutput) SetTags(v map[string]*string) *CreateSchemaOutput {
+	s.Tags = v
+	return s
 }
 
 type CreateScriptInput struct {
@@ -20734,22 +23740,22 @@ func (s *DatabaseInput) SetTargetDatabase(v *DatabaseIdentifier) *DatabaseInput 
 	return s
 }
 
-// Defines a date column statistics data.
+// Defines column statistics supported for timestamp data columns.
 type DateColumnStatisticsData struct {
 	_ struct{} `type:"structure"`
 
-	// Maximum value of the column.
+	// The highest value in the column.
 	MaximumValue *time.Time `type:"timestamp"`
 
-	// Minimum value of the column.
+	// The lowest value in the column.
 	MinimumValue *time.Time `type:"timestamp"`
 
-	// Number of distinct values.
+	// The number of distinct values in a column.
 	//
 	// NumberOfDistinctValues is a required field
 	NumberOfDistinctValues *int64 `type:"long" required:"true"`
 
-	// Number of nulls.
+	// The number of null values in the column.
 	//
 	// NumberOfNulls is a required field
 	NumberOfNulls *int64 `type:"long" required:"true"`
@@ -20805,22 +23811,22 @@ func (s *DateColumnStatisticsData) SetNumberOfNulls(v int64) *DateColumnStatisti
 	return s
 }
 
-// Defines a decimal column statistics data.
+// Defines column statistics supported for fixed-point number data columns.
 type DecimalColumnStatisticsData struct {
 	_ struct{} `type:"structure"`
 
-	// Maximum value of the column.
+	// The highest value in the column.
 	MaximumValue *DecimalNumber `type:"structure"`
 
-	// Minimum value of the column.
+	// The lowest value in the column.
 	MinimumValue *DecimalNumber `type:"structure"`
 
-	// Number of distinct values.
+	// The number of distinct values in a column.
 	//
 	// NumberOfDistinctValues is a required field
 	NumberOfDistinctValues *int64 `type:"long" required:"true"`
 
-	// Number of nulls.
+	// The number of null values in the column.
 	//
 	// NumberOfNulls is a required field
 	NumberOfNulls *int64 `type:"long" required:"true"`
@@ -21586,6 +24592,108 @@ func (s *DeleteMLTransformOutput) SetTransformId(v string) *DeleteMLTransformOut
 	return s
 }
 
+type DeletePartitionIndexInput struct {
+	_ struct{} `type:"structure"`
+
+	// The catalog ID where the table resides.
+	CatalogId *string `min:"1" type:"string"`
+
+	// Specifies the name of a database from which you want to delete a partition
+	// index.
+	//
+	// DatabaseName is a required field
+	DatabaseName *string `min:"1" type:"string" required:"true"`
+
+	// The name of the partition index to be deleted.
+	//
+	// IndexName is a required field
+	IndexName *string `min:"1" type:"string" required:"true"`
+
+	// Specifies the name of a table from which you want to delete a partition index.
+	//
+	// TableName is a required field
+	TableName *string `min:"1" type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s DeletePartitionIndexInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeletePartitionIndexInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *DeletePartitionIndexInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "DeletePartitionIndexInput"}
+	if s.CatalogId != nil && len(*s.CatalogId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("CatalogId", 1))
+	}
+	if s.DatabaseName == nil {
+		invalidParams.Add(request.NewErrParamRequired("DatabaseName"))
+	}
+	if s.DatabaseName != nil && len(*s.DatabaseName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("DatabaseName", 1))
+	}
+	if s.IndexName == nil {
+		invalidParams.Add(request.NewErrParamRequired("IndexName"))
+	}
+	if s.IndexName != nil && len(*s.IndexName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("IndexName", 1))
+	}
+	if s.TableName == nil {
+		invalidParams.Add(request.NewErrParamRequired("TableName"))
+	}
+	if s.TableName != nil && len(*s.TableName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("TableName", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetCatalogId sets the CatalogId field's value.
+func (s *DeletePartitionIndexInput) SetCatalogId(v string) *DeletePartitionIndexInput {
+	s.CatalogId = &v
+	return s
+}
+
+// SetDatabaseName sets the DatabaseName field's value.
+func (s *DeletePartitionIndexInput) SetDatabaseName(v string) *DeletePartitionIndexInput {
+	s.DatabaseName = &v
+	return s
+}
+
+// SetIndexName sets the IndexName field's value.
+func (s *DeletePartitionIndexInput) SetIndexName(v string) *DeletePartitionIndexInput {
+	s.IndexName = &v
+	return s
+}
+
+// SetTableName sets the TableName field's value.
+func (s *DeletePartitionIndexInput) SetTableName(v string) *DeletePartitionIndexInput {
+	s.TableName = &v
+	return s
+}
+
+type DeletePartitionIndexOutput struct {
+	_ struct{} `type:"structure"`
+}
+
+// String returns the string representation
+func (s DeletePartitionIndexOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeletePartitionIndexOutput) GoString() string {
+	return s.String()
+}
+
 type DeletePartitionInput struct {
 	_ struct{} `type:"structure"`
 
@@ -21685,6 +24793,92 @@ func (s DeletePartitionOutput) GoString() string {
 	return s.String()
 }
 
+type DeleteRegistryInput struct {
+	_ struct{} `type:"structure"`
+
+	// This is a wrapper structure that may contain the registry name and Amazon
+	// Resource Name (ARN).
+	//
+	// RegistryId is a required field
+	RegistryId *RegistryId `type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s DeleteRegistryInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeleteRegistryInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *DeleteRegistryInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "DeleteRegistryInput"}
+	if s.RegistryId == nil {
+		invalidParams.Add(request.NewErrParamRequired("RegistryId"))
+	}
+	if s.RegistryId != nil {
+		if err := s.RegistryId.Validate(); err != nil {
+			invalidParams.AddNested("RegistryId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetRegistryId sets the RegistryId field's value.
+func (s *DeleteRegistryInput) SetRegistryId(v *RegistryId) *DeleteRegistryInput {
+	s.RegistryId = v
+	return s
+}
+
+type DeleteRegistryOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource Name (ARN) of the registry being deleted.
+	RegistryArn *string `min:"1" type:"string"`
+
+	// The name of the registry being deleted.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The status of the registry. A successful operation will return the Deleting
+	// status.
+	Status *string `type:"string" enum:"RegistryStatus"`
+}
+
+// String returns the string representation
+func (s DeleteRegistryOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeleteRegistryOutput) GoString() string {
+	return s.String()
+}
+
+// SetRegistryArn sets the RegistryArn field's value.
+func (s *DeleteRegistryOutput) SetRegistryArn(v string) *DeleteRegistryOutput {
+	s.RegistryArn = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *DeleteRegistryOutput) SetRegistryName(v string) *DeleteRegistryOutput {
+	s.RegistryName = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *DeleteRegistryOutput) SetStatus(v string) *DeleteRegistryOutput {
+	s.Status = &v
+	return s
+}
+
 type DeleteResourcePolicyInput struct {
 	_ struct{} `type:"structure"`
 
@@ -21745,6 +24939,180 @@ func (s DeleteResourcePolicyOutput) String() string {
 // GoString returns the string representation
 func (s DeleteResourcePolicyOutput) GoString() string {
 	return s.String()
+}
+
+type DeleteSchemaInput struct {
+	_ struct{} `type:"structure"`
+
+	// This is a wrapper structure that may contain the schema name and Amazon Resource
+	// Name (ARN).
+	//
+	// SchemaId is a required field
+	SchemaId *SchemaId `type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s DeleteSchemaInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeleteSchemaInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *DeleteSchemaInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "DeleteSchemaInput"}
+	if s.SchemaId == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaId"))
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *DeleteSchemaInput) SetSchemaId(v *SchemaId) *DeleteSchemaInput {
+	s.SchemaId = v
+	return s
+}
+
+type DeleteSchemaOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource Name (ARN) of the schema being deleted.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The name of the schema being deleted.
+	SchemaName *string `min:"1" type:"string"`
+
+	// The status of the schema.
+	Status *string `type:"string" enum:"SchemaStatus"`
+}
+
+// String returns the string representation
+func (s DeleteSchemaOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeleteSchemaOutput) GoString() string {
+	return s.String()
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *DeleteSchemaOutput) SetSchemaArn(v string) *DeleteSchemaOutput {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaName sets the SchemaName field's value.
+func (s *DeleteSchemaOutput) SetSchemaName(v string) *DeleteSchemaOutput {
+	s.SchemaName = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *DeleteSchemaOutput) SetStatus(v string) *DeleteSchemaOutput {
+	s.Status = &v
+	return s
+}
+
+type DeleteSchemaVersionsInput struct {
+	_ struct{} `type:"structure"`
+
+	// This is a wrapper structure that may contain the schema name and Amazon Resource
+	// Name (ARN).
+	//
+	// SchemaId is a required field
+	SchemaId *SchemaId `type:"structure" required:"true"`
+
+	// A version range may be supplied which may be of the format:
+	//
+	//    * a single version number, 5
+	//
+	//    * a range, 5-8 : deletes versions 5, 6, 7, 8
+	//
+	// Versions is a required field
+	Versions *string `min:"1" type:"string" required:"true"`
+}
+
+// String returns the string representation
+func (s DeleteSchemaVersionsInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeleteSchemaVersionsInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *DeleteSchemaVersionsInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "DeleteSchemaVersionsInput"}
+	if s.SchemaId == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaId"))
+	}
+	if s.Versions == nil {
+		invalidParams.Add(request.NewErrParamRequired("Versions"))
+	}
+	if s.Versions != nil && len(*s.Versions) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("Versions", 1))
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *DeleteSchemaVersionsInput) SetSchemaId(v *SchemaId) *DeleteSchemaVersionsInput {
+	s.SchemaId = v
+	return s
+}
+
+// SetVersions sets the Versions field's value.
+func (s *DeleteSchemaVersionsInput) SetVersions(v string) *DeleteSchemaVersionsInput {
+	s.Versions = &v
+	return s
+}
+
+type DeleteSchemaVersionsOutput struct {
+	_ struct{} `type:"structure"`
+
+	// A list of SchemaVersionErrorItem objects, each containing an error and schema
+	// version.
+	SchemaVersionErrors []*SchemaVersionErrorItem `type:"list"`
+}
+
+// String returns the string representation
+func (s DeleteSchemaVersionsOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DeleteSchemaVersionsOutput) GoString() string {
+	return s.String()
+}
+
+// SetSchemaVersionErrors sets the SchemaVersionErrors field's value.
+func (s *DeleteSchemaVersionsOutput) SetSchemaVersionErrors(v []*SchemaVersionErrorItem) *DeleteSchemaVersionsOutput {
+	s.SchemaVersionErrors = v
+	return s
 }
 
 type DeleteSecurityConfigurationInput struct {
@@ -22555,22 +25923,22 @@ func (s *DevEndpointCustomLibraries) SetExtraPythonLibsS3Path(v string) *DevEndp
 	return s
 }
 
-// Defines a double column statistics data.
+// Defines column statistics supported for floating-point number data columns.
 type DoubleColumnStatisticsData struct {
 	_ struct{} `type:"structure"`
 
-	// Maximum value of the column.
+	// The highest value in the column.
 	MaximumValue *float64 `type:"double"`
 
-	// Minimum value of the column.
+	// The lowest value in the column.
 	MinimumValue *float64 `type:"double"`
 
-	// Number of distinct values.
+	// The number of distinct values in a column.
 	//
 	// NumberOfDistinctValues is a required field
 	NumberOfDistinctValues *int64 `type:"long" required:"true"`
 
-	// Number of nulls.
+	// The number of null values in the column.
 	//
 	// NumberOfNulls is a required field
 	NumberOfNulls *int64 `type:"long" required:"true"`
@@ -22952,6 +26320,39 @@ func (s *ErrorDetail) SetErrorCode(v string) *ErrorDetail {
 
 // SetErrorMessage sets the ErrorMessage field's value.
 func (s *ErrorDetail) SetErrorMessage(v string) *ErrorDetail {
+	s.ErrorMessage = &v
+	return s
+}
+
+// An object containing error details.
+type ErrorDetails struct {
+	_ struct{} `type:"structure"`
+
+	// The error code for an error.
+	ErrorCode *string `type:"string"`
+
+	// The error message for an error.
+	ErrorMessage *string `type:"string"`
+}
+
+// String returns the string representation
+func (s ErrorDetails) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ErrorDetails) GoString() string {
+	return s.String()
+}
+
+// SetErrorCode sets the ErrorCode field's value.
+func (s *ErrorDetails) SetErrorCode(v string) *ErrorDetails {
+	s.ErrorCode = &v
+	return s
+}
+
+// SetErrorMessage sets the ErrorMessage field's value.
+func (s *ErrorDetails) SetErrorMessage(v string) *ErrorDetails {
 	s.ErrorMessage = &v
 	return s
 }
@@ -25409,6 +28810,11 @@ type GetMLTransformOutput struct {
 	// terminated and enters TIMEOUT status. The default is 2,880 minutes (48 hours).
 	Timeout *int64 `min:"1" type:"integer"`
 
+	// The encryption-at-rest settings of the transform that apply to accessing
+	// user data. Machine learning transforms can access user data encrypted in
+	// Amazon S3 using KMS.
+	TransformEncryption *TransformEncryption `type:"structure"`
+
 	// The unique identifier of the transform, generated at the time that the transform
 	// was created.
 	TransformId *string `min:"1" type:"string"`
@@ -25530,6 +28936,12 @@ func (s *GetMLTransformOutput) SetStatus(v string) *GetMLTransformOutput {
 // SetTimeout sets the Timeout field's value.
 func (s *GetMLTransformOutput) SetTimeout(v int64) *GetMLTransformOutput {
 	s.Timeout = &v
+	return s
+}
+
+// SetTransformEncryption sets the TransformEncryption field's value.
+func (s *GetMLTransformOutput) SetTransformEncryption(v *TransformEncryption) *GetMLTransformOutput {
+	s.TransformEncryption = v
 	return s
 }
 
@@ -26353,6 +29765,118 @@ func (s *GetPlanOutput) SetScalaCode(v string) *GetPlanOutput {
 	return s
 }
 
+type GetRegistryInput struct {
+	_ struct{} `type:"structure"`
+
+	// This is a wrapper structure that may contain the registry name and Amazon
+	// Resource Name (ARN).
+	//
+	// RegistryId is a required field
+	RegistryId *RegistryId `type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s GetRegistryInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetRegistryInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *GetRegistryInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "GetRegistryInput"}
+	if s.RegistryId == nil {
+		invalidParams.Add(request.NewErrParamRequired("RegistryId"))
+	}
+	if s.RegistryId != nil {
+		if err := s.RegistryId.Validate(); err != nil {
+			invalidParams.AddNested("RegistryId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetRegistryId sets the RegistryId field's value.
+func (s *GetRegistryInput) SetRegistryId(v *RegistryId) *GetRegistryInput {
+	s.RegistryId = v
+	return s
+}
+
+type GetRegistryOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The date and time the registry was created.
+	CreatedTime *string `type:"string"`
+
+	// A description of the registry.
+	Description *string `type:"string"`
+
+	// The Amazon Resource Name (ARN) of the registry.
+	RegistryArn *string `min:"1" type:"string"`
+
+	// The name of the registry.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The status of the registry.
+	Status *string `type:"string" enum:"RegistryStatus"`
+
+	// The date and time the registry was updated.
+	UpdatedTime *string `type:"string"`
+}
+
+// String returns the string representation
+func (s GetRegistryOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetRegistryOutput) GoString() string {
+	return s.String()
+}
+
+// SetCreatedTime sets the CreatedTime field's value.
+func (s *GetRegistryOutput) SetCreatedTime(v string) *GetRegistryOutput {
+	s.CreatedTime = &v
+	return s
+}
+
+// SetDescription sets the Description field's value.
+func (s *GetRegistryOutput) SetDescription(v string) *GetRegistryOutput {
+	s.Description = &v
+	return s
+}
+
+// SetRegistryArn sets the RegistryArn field's value.
+func (s *GetRegistryOutput) SetRegistryArn(v string) *GetRegistryOutput {
+	s.RegistryArn = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *GetRegistryOutput) SetRegistryName(v string) *GetRegistryOutput {
+	s.RegistryName = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *GetRegistryOutput) SetStatus(v string) *GetRegistryOutput {
+	s.Status = &v
+	return s
+}
+
+// SetUpdatedTime sets the UpdatedTime field's value.
+func (s *GetRegistryOutput) SetUpdatedTime(v string) *GetRegistryOutput {
+	s.UpdatedTime = &v
+	return s
+}
+
 type GetResourcePoliciesInput struct {
 	_ struct{} `type:"structure"`
 
@@ -26517,6 +30041,588 @@ func (s *GetResourcePolicyOutput) SetPolicyInJson(v string) *GetResourcePolicyOu
 // SetUpdateTime sets the UpdateTime field's value.
 func (s *GetResourcePolicyOutput) SetUpdateTime(v time.Time) *GetResourcePolicyOutput {
 	s.UpdateTime = &v
+	return s
+}
+
+type GetSchemaByDefinitionInput struct {
+	_ struct{} `type:"structure"`
+
+	// The definition of the schema for which schema details are required.
+	//
+	// SchemaDefinition is a required field
+	SchemaDefinition *string `min:"1" type:"string" required:"true"`
+
+	// This is a wrapper structure to contain schema identity fields. The structure
+	// contains:
+	//
+	//    * SchemaId$SchemaArn: The Amazon Resource Name (ARN) of the schema. One
+	//    of SchemaArn or SchemaName has to be provided.
+	//
+	//    * SchemaId$SchemaName: The name of the schema. One of SchemaArn or SchemaName
+	//    has to be provided.
+	//
+	// SchemaId is a required field
+	SchemaId *SchemaId `type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s GetSchemaByDefinitionInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetSchemaByDefinitionInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *GetSchemaByDefinitionInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "GetSchemaByDefinitionInput"}
+	if s.SchemaDefinition == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaDefinition"))
+	}
+	if s.SchemaDefinition != nil && len(*s.SchemaDefinition) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaDefinition", 1))
+	}
+	if s.SchemaId == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaId"))
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetSchemaDefinition sets the SchemaDefinition field's value.
+func (s *GetSchemaByDefinitionInput) SetSchemaDefinition(v string) *GetSchemaByDefinitionInput {
+	s.SchemaDefinition = &v
+	return s
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *GetSchemaByDefinitionInput) SetSchemaId(v *SchemaId) *GetSchemaByDefinitionInput {
+	s.SchemaId = v
+	return s
+}
+
+type GetSchemaByDefinitionOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The date and time the schema was created.
+	CreatedTime *string `type:"string"`
+
+	// The data format of the schema definition. Currently only AVRO is supported.
+	DataFormat *string `type:"string" enum:"DataFormat"`
+
+	// The Amazon Resource Name (ARN) of the schema.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The schema ID of the schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The status of the schema version.
+	Status *string `type:"string" enum:"SchemaVersionStatus"`
+}
+
+// String returns the string representation
+func (s GetSchemaByDefinitionOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetSchemaByDefinitionOutput) GoString() string {
+	return s.String()
+}
+
+// SetCreatedTime sets the CreatedTime field's value.
+func (s *GetSchemaByDefinitionOutput) SetCreatedTime(v string) *GetSchemaByDefinitionOutput {
+	s.CreatedTime = &v
+	return s
+}
+
+// SetDataFormat sets the DataFormat field's value.
+func (s *GetSchemaByDefinitionOutput) SetDataFormat(v string) *GetSchemaByDefinitionOutput {
+	s.DataFormat = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *GetSchemaByDefinitionOutput) SetSchemaArn(v string) *GetSchemaByDefinitionOutput {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *GetSchemaByDefinitionOutput) SetSchemaVersionId(v string) *GetSchemaByDefinitionOutput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *GetSchemaByDefinitionOutput) SetStatus(v string) *GetSchemaByDefinitionOutput {
+	s.Status = &v
+	return s
+}
+
+type GetSchemaInput struct {
+	_ struct{} `type:"structure"`
+
+	// This is a wrapper structure to contain schema identity fields. The structure
+	// contains:
+	//
+	//    * SchemaId$SchemaArn: The Amazon Resource Name (ARN) of the schema. Either
+	//    SchemaArn or SchemaName and RegistryName has to be provided.
+	//
+	//    * SchemaId$SchemaName: The name of the schema. Either SchemaArn or SchemaName
+	//    and RegistryName has to be provided.
+	//
+	// SchemaId is a required field
+	SchemaId *SchemaId `type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s GetSchemaInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetSchemaInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *GetSchemaInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "GetSchemaInput"}
+	if s.SchemaId == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaId"))
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *GetSchemaInput) SetSchemaId(v *SchemaId) *GetSchemaInput {
+	s.SchemaId = v
+	return s
+}
+
+type GetSchemaOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The compatibility mode of the schema.
+	Compatibility *string `type:"string" enum:"Compatibility"`
+
+	// The date and time the schema was created.
+	CreatedTime *string `type:"string"`
+
+	// The data format of the schema definition. Currently only AVRO is supported.
+	DataFormat *string `type:"string" enum:"DataFormat"`
+
+	// A description of schema if specified when created
+	Description *string `type:"string"`
+
+	// The latest version of the schema associated with the returned schema definition.
+	LatestSchemaVersion *int64 `min:"1" type:"long"`
+
+	// The next version of the schema associated with the returned schema definition.
+	NextSchemaVersion *int64 `min:"1" type:"long"`
+
+	// The Amazon Resource Name (ARN) of the registry.
+	RegistryArn *string `min:"1" type:"string"`
+
+	// The name of the registry.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The Amazon Resource Name (ARN) of the schema.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The version number of the checkpoint (the last time the compatibility mode
+	// was changed).
+	SchemaCheckpoint *int64 `min:"1" type:"long"`
+
+	// The name of the schema.
+	SchemaName *string `min:"1" type:"string"`
+
+	// The status of the schema.
+	SchemaStatus *string `type:"string" enum:"SchemaStatus"`
+
+	// The date and time the schema was updated.
+	UpdatedTime *string `type:"string"`
+}
+
+// String returns the string representation
+func (s GetSchemaOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetSchemaOutput) GoString() string {
+	return s.String()
+}
+
+// SetCompatibility sets the Compatibility field's value.
+func (s *GetSchemaOutput) SetCompatibility(v string) *GetSchemaOutput {
+	s.Compatibility = &v
+	return s
+}
+
+// SetCreatedTime sets the CreatedTime field's value.
+func (s *GetSchemaOutput) SetCreatedTime(v string) *GetSchemaOutput {
+	s.CreatedTime = &v
+	return s
+}
+
+// SetDataFormat sets the DataFormat field's value.
+func (s *GetSchemaOutput) SetDataFormat(v string) *GetSchemaOutput {
+	s.DataFormat = &v
+	return s
+}
+
+// SetDescription sets the Description field's value.
+func (s *GetSchemaOutput) SetDescription(v string) *GetSchemaOutput {
+	s.Description = &v
+	return s
+}
+
+// SetLatestSchemaVersion sets the LatestSchemaVersion field's value.
+func (s *GetSchemaOutput) SetLatestSchemaVersion(v int64) *GetSchemaOutput {
+	s.LatestSchemaVersion = &v
+	return s
+}
+
+// SetNextSchemaVersion sets the NextSchemaVersion field's value.
+func (s *GetSchemaOutput) SetNextSchemaVersion(v int64) *GetSchemaOutput {
+	s.NextSchemaVersion = &v
+	return s
+}
+
+// SetRegistryArn sets the RegistryArn field's value.
+func (s *GetSchemaOutput) SetRegistryArn(v string) *GetSchemaOutput {
+	s.RegistryArn = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *GetSchemaOutput) SetRegistryName(v string) *GetSchemaOutput {
+	s.RegistryName = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *GetSchemaOutput) SetSchemaArn(v string) *GetSchemaOutput {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaCheckpoint sets the SchemaCheckpoint field's value.
+func (s *GetSchemaOutput) SetSchemaCheckpoint(v int64) *GetSchemaOutput {
+	s.SchemaCheckpoint = &v
+	return s
+}
+
+// SetSchemaName sets the SchemaName field's value.
+func (s *GetSchemaOutput) SetSchemaName(v string) *GetSchemaOutput {
+	s.SchemaName = &v
+	return s
+}
+
+// SetSchemaStatus sets the SchemaStatus field's value.
+func (s *GetSchemaOutput) SetSchemaStatus(v string) *GetSchemaOutput {
+	s.SchemaStatus = &v
+	return s
+}
+
+// SetUpdatedTime sets the UpdatedTime field's value.
+func (s *GetSchemaOutput) SetUpdatedTime(v string) *GetSchemaOutput {
+	s.UpdatedTime = &v
+	return s
+}
+
+type GetSchemaVersionInput struct {
+	_ struct{} `type:"structure"`
+
+	// This is a wrapper structure to contain schema identity fields. The structure
+	// contains:
+	//
+	//    * SchemaId$SchemaArn: The Amazon Resource Name (ARN) of the schema. Either
+	//    SchemaArn or SchemaName and RegistryName has to be provided.
+	//
+	//    * SchemaId$SchemaName: The name of the schema. Either SchemaArn or SchemaName
+	//    and RegistryName has to be provided.
+	SchemaId *SchemaId `type:"structure"`
+
+	// The SchemaVersionId of the schema version. This field is required for fetching
+	// by schema ID. Either this or the SchemaId wrapper has to be provided.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The version number of the schema.
+	SchemaVersionNumber *SchemaVersionNumber `type:"structure"`
+}
+
+// String returns the string representation
+func (s GetSchemaVersionInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetSchemaVersionInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *GetSchemaVersionInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "GetSchemaVersionInput"}
+	if s.SchemaVersionId != nil && len(*s.SchemaVersionId) < 36 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaVersionId", 36))
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.SchemaVersionNumber != nil {
+		if err := s.SchemaVersionNumber.Validate(); err != nil {
+			invalidParams.AddNested("SchemaVersionNumber", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *GetSchemaVersionInput) SetSchemaId(v *SchemaId) *GetSchemaVersionInput {
+	s.SchemaId = v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *GetSchemaVersionInput) SetSchemaVersionId(v string) *GetSchemaVersionInput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetSchemaVersionNumber sets the SchemaVersionNumber field's value.
+func (s *GetSchemaVersionInput) SetSchemaVersionNumber(v *SchemaVersionNumber) *GetSchemaVersionInput {
+	s.SchemaVersionNumber = v
+	return s
+}
+
+type GetSchemaVersionOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The date and time the schema version was created.
+	CreatedTime *string `type:"string"`
+
+	// The data format of the schema definition. Currently only AVRO is supported.
+	DataFormat *string `type:"string" enum:"DataFormat"`
+
+	// The Amazon Resource Name (ARN) of the schema.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The schema definition for the schema ID.
+	SchemaDefinition *string `min:"1" type:"string"`
+
+	// The SchemaVersionId of the schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The status of the schema version.
+	Status *string `type:"string" enum:"SchemaVersionStatus"`
+
+	// The version number of the schema.
+	VersionNumber *int64 `min:"1" type:"long"`
+}
+
+// String returns the string representation
+func (s GetSchemaVersionOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetSchemaVersionOutput) GoString() string {
+	return s.String()
+}
+
+// SetCreatedTime sets the CreatedTime field's value.
+func (s *GetSchemaVersionOutput) SetCreatedTime(v string) *GetSchemaVersionOutput {
+	s.CreatedTime = &v
+	return s
+}
+
+// SetDataFormat sets the DataFormat field's value.
+func (s *GetSchemaVersionOutput) SetDataFormat(v string) *GetSchemaVersionOutput {
+	s.DataFormat = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *GetSchemaVersionOutput) SetSchemaArn(v string) *GetSchemaVersionOutput {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaDefinition sets the SchemaDefinition field's value.
+func (s *GetSchemaVersionOutput) SetSchemaDefinition(v string) *GetSchemaVersionOutput {
+	s.SchemaDefinition = &v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *GetSchemaVersionOutput) SetSchemaVersionId(v string) *GetSchemaVersionOutput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *GetSchemaVersionOutput) SetStatus(v string) *GetSchemaVersionOutput {
+	s.Status = &v
+	return s
+}
+
+// SetVersionNumber sets the VersionNumber field's value.
+func (s *GetSchemaVersionOutput) SetVersionNumber(v int64) *GetSchemaVersionOutput {
+	s.VersionNumber = &v
+	return s
+}
+
+type GetSchemaVersionsDiffInput struct {
+	_ struct{} `type:"structure"`
+
+	// The first of the two schema versions to be compared.
+	//
+	// FirstSchemaVersionNumber is a required field
+	FirstSchemaVersionNumber *SchemaVersionNumber `type:"structure" required:"true"`
+
+	// Refers to SYNTAX_DIFF, which is the currently supported diff type.
+	//
+	// SchemaDiffType is a required field
+	SchemaDiffType *string `type:"string" required:"true" enum:"SchemaDiffType"`
+
+	// This is a wrapper structure to contain schema identity fields. The structure
+	// contains:
+	//
+	//    * SchemaId$SchemaArn: The Amazon Resource Name (ARN) of the schema. One
+	//    of SchemaArn or SchemaName has to be provided.
+	//
+	//    * SchemaId$SchemaName: The name of the schema. One of SchemaArn or SchemaName
+	//    has to be provided.
+	//
+	// SchemaId is a required field
+	SchemaId *SchemaId `type:"structure" required:"true"`
+
+	// The second of the two schema versions to be compared.
+	//
+	// SecondSchemaVersionNumber is a required field
+	SecondSchemaVersionNumber *SchemaVersionNumber `type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s GetSchemaVersionsDiffInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetSchemaVersionsDiffInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *GetSchemaVersionsDiffInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "GetSchemaVersionsDiffInput"}
+	if s.FirstSchemaVersionNumber == nil {
+		invalidParams.Add(request.NewErrParamRequired("FirstSchemaVersionNumber"))
+	}
+	if s.SchemaDiffType == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaDiffType"))
+	}
+	if s.SchemaId == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaId"))
+	}
+	if s.SecondSchemaVersionNumber == nil {
+		invalidParams.Add(request.NewErrParamRequired("SecondSchemaVersionNumber"))
+	}
+	if s.FirstSchemaVersionNumber != nil {
+		if err := s.FirstSchemaVersionNumber.Validate(); err != nil {
+			invalidParams.AddNested("FirstSchemaVersionNumber", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.SecondSchemaVersionNumber != nil {
+		if err := s.SecondSchemaVersionNumber.Validate(); err != nil {
+			invalidParams.AddNested("SecondSchemaVersionNumber", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetFirstSchemaVersionNumber sets the FirstSchemaVersionNumber field's value.
+func (s *GetSchemaVersionsDiffInput) SetFirstSchemaVersionNumber(v *SchemaVersionNumber) *GetSchemaVersionsDiffInput {
+	s.FirstSchemaVersionNumber = v
+	return s
+}
+
+// SetSchemaDiffType sets the SchemaDiffType field's value.
+func (s *GetSchemaVersionsDiffInput) SetSchemaDiffType(v string) *GetSchemaVersionsDiffInput {
+	s.SchemaDiffType = &v
+	return s
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *GetSchemaVersionsDiffInput) SetSchemaId(v *SchemaId) *GetSchemaVersionsDiffInput {
+	s.SchemaId = v
+	return s
+}
+
+// SetSecondSchemaVersionNumber sets the SecondSchemaVersionNumber field's value.
+func (s *GetSchemaVersionsDiffInput) SetSecondSchemaVersionNumber(v *SchemaVersionNumber) *GetSchemaVersionsDiffInput {
+	s.SecondSchemaVersionNumber = v
+	return s
+}
+
+type GetSchemaVersionsDiffOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The difference between schemas as a string in JsonPatch format.
+	Diff *string `min:"1" type:"string"`
+}
+
+// String returns the string representation
+func (s GetSchemaVersionsDiffOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s GetSchemaVersionsDiffOutput) GoString() string {
+	return s.String()
+}
+
+// SetDiff sets the Diff field's value.
+func (s *GetSchemaVersionsDiffOutput) SetDiff(v string) *GetSchemaVersionsDiffOutput {
+	s.Diff = &v
 	return s
 }
 
@@ -29557,6 +33663,34 @@ func (s *LastCrawlInfo) SetStatus(v string) *LastCrawlInfo {
 	return s
 }
 
+// Specifies data lineage configuration settings for the crawler.
+type LineageConfiguration struct {
+	_ struct{} `type:"structure"`
+
+	// Specifies whether data lineage is enabled for the crawler. Valid values are:
+	//
+	//    * ENABLE: enables data lineage for the crawler
+	//
+	//    * DISABLE: disables data lineage for the crawler
+	CrawlerLineageSettings *string `type:"string" enum:"CrawlerLineageSettings"`
+}
+
+// String returns the string representation
+func (s LineageConfiguration) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s LineageConfiguration) GoString() string {
+	return s.String()
+}
+
+// SetCrawlerLineageSettings sets the CrawlerLineageSettings field's value.
+func (s *LineageConfiguration) SetCrawlerLineageSettings(v string) *LineageConfiguration {
+	s.CrawlerLineageSettings = &v
+	return s
+}
+
 type ListCrawlersInput struct {
 	_ struct{} `type:"structure"`
 
@@ -29938,6 +34072,285 @@ func (s *ListMLTransformsOutput) SetTransformIds(v []*string) *ListMLTransformsO
 	return s
 }
 
+type ListRegistriesInput struct {
+	_ struct{} `type:"structure"`
+
+	// Maximum number of results required per page. If the value is not supplied,
+	// this will be defaulted to 25 per page.
+	MaxResults *int64 `min:"1" type:"integer"`
+
+	// A continuation token, if this is a continuation call.
+	NextToken *string `type:"string"`
+}
+
+// String returns the string representation
+func (s ListRegistriesInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ListRegistriesInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *ListRegistriesInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "ListRegistriesInput"}
+	if s.MaxResults != nil && *s.MaxResults < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("MaxResults", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetMaxResults sets the MaxResults field's value.
+func (s *ListRegistriesInput) SetMaxResults(v int64) *ListRegistriesInput {
+	s.MaxResults = &v
+	return s
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *ListRegistriesInput) SetNextToken(v string) *ListRegistriesInput {
+	s.NextToken = &v
+	return s
+}
+
+type ListRegistriesOutput struct {
+	_ struct{} `type:"structure"`
+
+	// A continuation token for paginating the returned list of tokens, returned
+	// if the current segment of the list is not the last.
+	NextToken *string `type:"string"`
+
+	// An array of RegistryDetailedListItem objects containing minimal details of
+	// each registry.
+	Registries []*RegistryListItem `type:"list"`
+}
+
+// String returns the string representation
+func (s ListRegistriesOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ListRegistriesOutput) GoString() string {
+	return s.String()
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *ListRegistriesOutput) SetNextToken(v string) *ListRegistriesOutput {
+	s.NextToken = &v
+	return s
+}
+
+// SetRegistries sets the Registries field's value.
+func (s *ListRegistriesOutput) SetRegistries(v []*RegistryListItem) *ListRegistriesOutput {
+	s.Registries = v
+	return s
+}
+
+type ListSchemaVersionsInput struct {
+	_ struct{} `type:"structure"`
+
+	// Maximum number of results required per page. If the value is not supplied,
+	// this will be defaulted to 25 per page.
+	MaxResults *int64 `min:"1" type:"integer"`
+
+	// A continuation token, if this is a continuation call.
+	NextToken *string `type:"string"`
+
+	// This is a wrapper structure to contain schema identity fields. The structure
+	// contains:
+	//
+	//    * SchemaId$SchemaArn: The Amazon Resource Name (ARN) of the schema. Either
+	//    SchemaArn or SchemaName and RegistryName has to be provided.
+	//
+	//    * SchemaId$SchemaName: The name of the schema. Either SchemaArn or SchemaName
+	//    and RegistryName has to be provided.
+	//
+	// SchemaId is a required field
+	SchemaId *SchemaId `type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s ListSchemaVersionsInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ListSchemaVersionsInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *ListSchemaVersionsInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "ListSchemaVersionsInput"}
+	if s.MaxResults != nil && *s.MaxResults < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("MaxResults", 1))
+	}
+	if s.SchemaId == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaId"))
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetMaxResults sets the MaxResults field's value.
+func (s *ListSchemaVersionsInput) SetMaxResults(v int64) *ListSchemaVersionsInput {
+	s.MaxResults = &v
+	return s
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *ListSchemaVersionsInput) SetNextToken(v string) *ListSchemaVersionsInput {
+	s.NextToken = &v
+	return s
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *ListSchemaVersionsInput) SetSchemaId(v *SchemaId) *ListSchemaVersionsInput {
+	s.SchemaId = v
+	return s
+}
+
+type ListSchemaVersionsOutput struct {
+	_ struct{} `type:"structure"`
+
+	// A continuation token for paginating the returned list of tokens, returned
+	// if the current segment of the list is not the last.
+	NextToken *string `type:"string"`
+
+	// An array of SchemaVersionList objects containing details of each schema version.
+	Schemas []*SchemaVersionListItem `type:"list"`
+}
+
+// String returns the string representation
+func (s ListSchemaVersionsOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ListSchemaVersionsOutput) GoString() string {
+	return s.String()
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *ListSchemaVersionsOutput) SetNextToken(v string) *ListSchemaVersionsOutput {
+	s.NextToken = &v
+	return s
+}
+
+// SetSchemas sets the Schemas field's value.
+func (s *ListSchemaVersionsOutput) SetSchemas(v []*SchemaVersionListItem) *ListSchemaVersionsOutput {
+	s.Schemas = v
+	return s
+}
+
+type ListSchemasInput struct {
+	_ struct{} `type:"structure"`
+
+	// Maximum number of results required per page. If the value is not supplied,
+	// this will be defaulted to 25 per page.
+	MaxResults *int64 `min:"1" type:"integer"`
+
+	// A continuation token, if this is a continuation call.
+	NextToken *string `type:"string"`
+
+	// A wrapper structure that may contain the registry name and Amazon Resource
+	// Name (ARN).
+	RegistryId *RegistryId `type:"structure"`
+}
+
+// String returns the string representation
+func (s ListSchemasInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ListSchemasInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *ListSchemasInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "ListSchemasInput"}
+	if s.MaxResults != nil && *s.MaxResults < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("MaxResults", 1))
+	}
+	if s.RegistryId != nil {
+		if err := s.RegistryId.Validate(); err != nil {
+			invalidParams.AddNested("RegistryId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetMaxResults sets the MaxResults field's value.
+func (s *ListSchemasInput) SetMaxResults(v int64) *ListSchemasInput {
+	s.MaxResults = &v
+	return s
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *ListSchemasInput) SetNextToken(v string) *ListSchemasInput {
+	s.NextToken = &v
+	return s
+}
+
+// SetRegistryId sets the RegistryId field's value.
+func (s *ListSchemasInput) SetRegistryId(v *RegistryId) *ListSchemasInput {
+	s.RegistryId = v
+	return s
+}
+
+type ListSchemasOutput struct {
+	_ struct{} `type:"structure"`
+
+	// A continuation token for paginating the returned list of tokens, returned
+	// if the current segment of the list is not the last.
+	NextToken *string `type:"string"`
+
+	// An array of SchemaListItem objects containing details of each schema.
+	Schemas []*SchemaListItem `type:"list"`
+}
+
+// String returns the string representation
+func (s ListSchemasOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s ListSchemasOutput) GoString() string {
+	return s.String()
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *ListSchemasOutput) SetNextToken(v string) *ListSchemasOutput {
+	s.NextToken = &v
+	return s
+}
+
+// SetSchemas sets the Schemas field's value.
+func (s *ListSchemasOutput) SetSchemas(v []*SchemaListItem) *ListSchemasOutput {
+	s.Schemas = v
+	return s
+}
+
 type ListTriggersInput struct {
 	_ struct{} `type:"structure"`
 
@@ -30199,22 +34612,22 @@ func (s *Location) SetS3(v []*CodeGenNodeArg) *Location {
 	return s
 }
 
-// Defines a long column statistics data.
+// Defines column statistics supported for integer data columns.
 type LongColumnStatisticsData struct {
 	_ struct{} `type:"structure"`
 
-	// Maximum value of the column.
+	// The highest value in the column.
 	MaximumValue *int64 `type:"long"`
 
-	// Minimum value of the column.
+	// The lowest value in the column.
 	MinimumValue *int64 `type:"long"`
 
-	// Number of distinct values.
+	// The number of distinct values in a column.
 	//
 	// NumberOfDistinctValues is a required field
 	NumberOfDistinctValues *int64 `type:"long" required:"true"`
 
-	// Number of nulls.
+	// The number of null values in the column.
 	//
 	// NumberOfNulls is a required field
 	NumberOfNulls *int64 `type:"long" required:"true"`
@@ -30370,6 +34783,11 @@ type MLTransform struct {
 	// The timeout in minutes of the machine learning transform.
 	Timeout *int64 `min:"1" type:"integer"`
 
+	// The encryption-at-rest settings of the transform that apply to accessing
+	// user data. Machine learning transforms can access user data encrypted in
+	// Amazon S3 using KMS.
+	TransformEncryption *TransformEncryption `type:"structure"`
+
 	// The unique transform ID that is generated for the machine learning transform.
 	// The ID is guaranteed to be unique and does not change.
 	TransformId *string `min:"1" type:"string"`
@@ -30506,6 +34924,12 @@ func (s *MLTransform) SetTimeout(v int64) *MLTransform {
 	return s
 }
 
+// SetTransformEncryption sets the TransformEncryption field's value.
+func (s *MLTransform) SetTransformEncryption(v *TransformEncryption) *MLTransform {
+	s.TransformEncryption = v
+	return s
+}
+
 // SetTransformId sets the TransformId field's value.
 func (s *MLTransform) SetTransformId(v string) *MLTransform {
 	s.TransformId = &v
@@ -30575,6 +34999,63 @@ func (s *MLTransformNotReadyException) RequestID() string {
 	return s.RespMetadata.RequestID
 }
 
+// The encryption-at-rest settings of the transform that apply to accessing
+// user data.
+type MLUserDataEncryption struct {
+	_ struct{} `type:"structure"`
+
+	// The ID for the customer-provided KMS key.
+	KmsKeyId *string `min:"1" type:"string"`
+
+	// The encryption mode applied to user data. Valid values are:
+	//
+	//    * DISABLED: encryption is disabled
+	//
+	//    * SSEKMS: use of server-side encryption with AWS Key Management Service
+	//    (SSE-KMS) for user data stored in Amazon S3.
+	//
+	// MlUserDataEncryptionMode is a required field
+	MlUserDataEncryptionMode *string `type:"string" required:"true" enum:"MLUserDataEncryptionModeString"`
+}
+
+// String returns the string representation
+func (s MLUserDataEncryption) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s MLUserDataEncryption) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *MLUserDataEncryption) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "MLUserDataEncryption"}
+	if s.KmsKeyId != nil && len(*s.KmsKeyId) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("KmsKeyId", 1))
+	}
+	if s.MlUserDataEncryptionMode == nil {
+		invalidParams.Add(request.NewErrParamRequired("MlUserDataEncryptionMode"))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetKmsKeyId sets the KmsKeyId field's value.
+func (s *MLUserDataEncryption) SetKmsKeyId(v string) *MLUserDataEncryption {
+	s.KmsKeyId = &v
+	return s
+}
+
+// SetMlUserDataEncryptionMode sets the MlUserDataEncryptionMode field's value.
+func (s *MLUserDataEncryption) SetMlUserDataEncryptionMode(v string) *MLUserDataEncryption {
+	s.MlUserDataEncryptionMode = &v
+	return s
+}
+
 // Defines a mapping.
 type MappingEntry struct {
 	_ struct{} `type:"structure"`
@@ -30641,6 +35122,88 @@ func (s *MappingEntry) SetTargetTable(v string) *MappingEntry {
 // SetTargetType sets the TargetType field's value.
 func (s *MappingEntry) SetTargetType(v string) *MappingEntry {
 	s.TargetType = &v
+	return s
+}
+
+// A structure containing metadata information for a schema version.
+type MetadataInfo struct {
+	_ struct{} `type:"structure"`
+
+	// The time at which the entry was created.
+	CreatedTime *string `type:"string"`
+
+	// The metadata key’s corresponding value.
+	MetadataValue *string `min:"1" type:"string"`
+}
+
+// String returns the string representation
+func (s MetadataInfo) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s MetadataInfo) GoString() string {
+	return s.String()
+}
+
+// SetCreatedTime sets the CreatedTime field's value.
+func (s *MetadataInfo) SetCreatedTime(v string) *MetadataInfo {
+	s.CreatedTime = &v
+	return s
+}
+
+// SetMetadataValue sets the MetadataValue field's value.
+func (s *MetadataInfo) SetMetadataValue(v string) *MetadataInfo {
+	s.MetadataValue = &v
+	return s
+}
+
+// A structure containing a key value pair for metadata.
+type MetadataKeyValuePair struct {
+	_ struct{} `type:"structure"`
+
+	// A metadata key.
+	MetadataKey *string `min:"1" type:"string"`
+
+	// A metadata key’s corresponding value.
+	MetadataValue *string `min:"1" type:"string"`
+}
+
+// String returns the string representation
+func (s MetadataKeyValuePair) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s MetadataKeyValuePair) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *MetadataKeyValuePair) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "MetadataKeyValuePair"}
+	if s.MetadataKey != nil && len(*s.MetadataKey) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("MetadataKey", 1))
+	}
+	if s.MetadataValue != nil && len(*s.MetadataValue) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("MetadataValue", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetMetadataKey sets the MetadataKey field's value.
+func (s *MetadataKeyValuePair) SetMetadataKey(v string) *MetadataKeyValuePair {
+	s.MetadataKey = &v
+	return s
+}
+
+// SetMetadataValue sets the MetadataValue field's value.
+func (s *MetadataKeyValuePair) SetMetadataValue(v string) *MetadataKeyValuePair {
+	s.MetadataValue = &v
 	return s
 }
 
@@ -31163,12 +35726,27 @@ func (s *PartitionIndex) SetKeys(v []*string) *PartitionIndex {
 type PartitionIndexDescriptor struct {
 	_ struct{} `type:"structure"`
 
+	// A list of errors that can occur when registering partition indexes for an
+	// existing table.
+	BackfillErrors []*BackfillError `type:"list"`
+
 	// The name of the partition index.
 	//
 	// IndexName is a required field
 	IndexName *string `min:"1" type:"string" required:"true"`
 
 	// The status of the partition index.
+	//
+	// The possible statuses are:
+	//
+	//    * CREATING: The index is being created. When an index is in a CREATING
+	//    state, the index or its table cannot be deleted.
+	//
+	//    * ACTIVE: The index creation succeeds.
+	//
+	//    * FAILED: The index creation fails.
+	//
+	//    * DELETING: The index is deleted from the list of indexes.
 	//
 	// IndexStatus is a required field
 	IndexStatus *string `type:"string" required:"true" enum:"PartitionIndexStatus"`
@@ -31188,6 +35766,12 @@ func (s PartitionIndexDescriptor) String() string {
 // GoString returns the string representation
 func (s PartitionIndexDescriptor) GoString() string {
 	return s.String()
+}
+
+// SetBackfillErrors sets the BackfillErrors field's value.
+func (s *PartitionIndexDescriptor) SetBackfillErrors(v []*BackfillError) *PartitionIndexDescriptor {
+	s.BackfillErrors = v
+	return s
 }
 
 // SetIndexName sets the IndexName field's value.
@@ -31755,6 +36339,175 @@ func (s *PutResourcePolicyOutput) SetPolicyHash(v string) *PutResourcePolicyOutp
 	return s
 }
 
+type PutSchemaVersionMetadataInput struct {
+	_ struct{} `type:"structure"`
+
+	// The metadata key's corresponding value.
+	//
+	// MetadataKeyValue is a required field
+	MetadataKeyValue *MetadataKeyValuePair `type:"structure" required:"true"`
+
+	// The unique ID for the schema.
+	SchemaId *SchemaId `type:"structure"`
+
+	// The unique version ID of the schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The version number of the schema.
+	SchemaVersionNumber *SchemaVersionNumber `type:"structure"`
+}
+
+// String returns the string representation
+func (s PutSchemaVersionMetadataInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s PutSchemaVersionMetadataInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *PutSchemaVersionMetadataInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "PutSchemaVersionMetadataInput"}
+	if s.MetadataKeyValue == nil {
+		invalidParams.Add(request.NewErrParamRequired("MetadataKeyValue"))
+	}
+	if s.SchemaVersionId != nil && len(*s.SchemaVersionId) < 36 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaVersionId", 36))
+	}
+	if s.MetadataKeyValue != nil {
+		if err := s.MetadataKeyValue.Validate(); err != nil {
+			invalidParams.AddNested("MetadataKeyValue", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.SchemaVersionNumber != nil {
+		if err := s.SchemaVersionNumber.Validate(); err != nil {
+			invalidParams.AddNested("SchemaVersionNumber", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetMetadataKeyValue sets the MetadataKeyValue field's value.
+func (s *PutSchemaVersionMetadataInput) SetMetadataKeyValue(v *MetadataKeyValuePair) *PutSchemaVersionMetadataInput {
+	s.MetadataKeyValue = v
+	return s
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *PutSchemaVersionMetadataInput) SetSchemaId(v *SchemaId) *PutSchemaVersionMetadataInput {
+	s.SchemaId = v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *PutSchemaVersionMetadataInput) SetSchemaVersionId(v string) *PutSchemaVersionMetadataInput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetSchemaVersionNumber sets the SchemaVersionNumber field's value.
+func (s *PutSchemaVersionMetadataInput) SetSchemaVersionNumber(v *SchemaVersionNumber) *PutSchemaVersionMetadataInput {
+	s.SchemaVersionNumber = v
+	return s
+}
+
+type PutSchemaVersionMetadataOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The latest version of the schema.
+	LatestVersion *bool `type:"boolean"`
+
+	// The metadata key.
+	MetadataKey *string `min:"1" type:"string"`
+
+	// The value of the metadata key.
+	MetadataValue *string `min:"1" type:"string"`
+
+	// The name for the registry.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The Amazon Resource Name (ARN) for the schema.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The name for the schema.
+	SchemaName *string `min:"1" type:"string"`
+
+	// The unique version ID of the schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The version number of the schema.
+	VersionNumber *int64 `min:"1" type:"long"`
+}
+
+// String returns the string representation
+func (s PutSchemaVersionMetadataOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s PutSchemaVersionMetadataOutput) GoString() string {
+	return s.String()
+}
+
+// SetLatestVersion sets the LatestVersion field's value.
+func (s *PutSchemaVersionMetadataOutput) SetLatestVersion(v bool) *PutSchemaVersionMetadataOutput {
+	s.LatestVersion = &v
+	return s
+}
+
+// SetMetadataKey sets the MetadataKey field's value.
+func (s *PutSchemaVersionMetadataOutput) SetMetadataKey(v string) *PutSchemaVersionMetadataOutput {
+	s.MetadataKey = &v
+	return s
+}
+
+// SetMetadataValue sets the MetadataValue field's value.
+func (s *PutSchemaVersionMetadataOutput) SetMetadataValue(v string) *PutSchemaVersionMetadataOutput {
+	s.MetadataValue = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *PutSchemaVersionMetadataOutput) SetRegistryName(v string) *PutSchemaVersionMetadataOutput {
+	s.RegistryName = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *PutSchemaVersionMetadataOutput) SetSchemaArn(v string) *PutSchemaVersionMetadataOutput {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaName sets the SchemaName field's value.
+func (s *PutSchemaVersionMetadataOutput) SetSchemaName(v string) *PutSchemaVersionMetadataOutput {
+	s.SchemaName = &v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *PutSchemaVersionMetadataOutput) SetSchemaVersionId(v string) *PutSchemaVersionMetadataOutput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetVersionNumber sets the VersionNumber field's value.
+func (s *PutSchemaVersionMetadataOutput) SetVersionNumber(v int64) *PutSchemaVersionMetadataOutput {
+	s.VersionNumber = &v
+	return s
+}
+
 type PutWorkflowRunPropertiesInput struct {
 	_ struct{} `type:"structure"`
 
@@ -31839,6 +36592,589 @@ func (s PutWorkflowRunPropertiesOutput) String() string {
 // GoString returns the string representation
 func (s PutWorkflowRunPropertiesOutput) GoString() string {
 	return s.String()
+}
+
+type QuerySchemaVersionMetadataInput struct {
+	_ struct{} `type:"structure"`
+
+	// Maximum number of results required per page. If the value is not supplied,
+	// this will be defaulted to 25 per page.
+	MaxResults *int64 `min:"1" type:"integer"`
+
+	// Search key-value pairs for metadata, if they are not provided all the metadata
+	// information will be fetched.
+	MetadataList []*MetadataKeyValuePair `type:"list"`
+
+	// A continuation token, if this is a continuation call.
+	NextToken *string `type:"string"`
+
+	// A wrapper structure that may contain the schema name and Amazon Resource
+	// Name (ARN).
+	SchemaId *SchemaId `type:"structure"`
+
+	// The unique version ID of the schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The version number of the schema.
+	SchemaVersionNumber *SchemaVersionNumber `type:"structure"`
+}
+
+// String returns the string representation
+func (s QuerySchemaVersionMetadataInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s QuerySchemaVersionMetadataInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *QuerySchemaVersionMetadataInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "QuerySchemaVersionMetadataInput"}
+	if s.MaxResults != nil && *s.MaxResults < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("MaxResults", 1))
+	}
+	if s.SchemaVersionId != nil && len(*s.SchemaVersionId) < 36 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaVersionId", 36))
+	}
+	if s.MetadataList != nil {
+		for i, v := range s.MetadataList {
+			if v == nil {
+				continue
+			}
+			if err := v.Validate(); err != nil {
+				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "MetadataList", i), err.(request.ErrInvalidParams))
+			}
+		}
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.SchemaVersionNumber != nil {
+		if err := s.SchemaVersionNumber.Validate(); err != nil {
+			invalidParams.AddNested("SchemaVersionNumber", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetMaxResults sets the MaxResults field's value.
+func (s *QuerySchemaVersionMetadataInput) SetMaxResults(v int64) *QuerySchemaVersionMetadataInput {
+	s.MaxResults = &v
+	return s
+}
+
+// SetMetadataList sets the MetadataList field's value.
+func (s *QuerySchemaVersionMetadataInput) SetMetadataList(v []*MetadataKeyValuePair) *QuerySchemaVersionMetadataInput {
+	s.MetadataList = v
+	return s
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *QuerySchemaVersionMetadataInput) SetNextToken(v string) *QuerySchemaVersionMetadataInput {
+	s.NextToken = &v
+	return s
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *QuerySchemaVersionMetadataInput) SetSchemaId(v *SchemaId) *QuerySchemaVersionMetadataInput {
+	s.SchemaId = v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *QuerySchemaVersionMetadataInput) SetSchemaVersionId(v string) *QuerySchemaVersionMetadataInput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetSchemaVersionNumber sets the SchemaVersionNumber field's value.
+func (s *QuerySchemaVersionMetadataInput) SetSchemaVersionNumber(v *SchemaVersionNumber) *QuerySchemaVersionMetadataInput {
+	s.SchemaVersionNumber = v
+	return s
+}
+
+type QuerySchemaVersionMetadataOutput struct {
+	_ struct{} `type:"structure"`
+
+	// A map of a metadata key and associated values.
+	MetadataInfoMap map[string]*MetadataInfo `type:"map"`
+
+	// A continuation token for paginating the returned list of tokens, returned
+	// if the current segment of the list is not the last.
+	NextToken *string `type:"string"`
+
+	// The unique version ID of the schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+}
+
+// String returns the string representation
+func (s QuerySchemaVersionMetadataOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s QuerySchemaVersionMetadataOutput) GoString() string {
+	return s.String()
+}
+
+// SetMetadataInfoMap sets the MetadataInfoMap field's value.
+func (s *QuerySchemaVersionMetadataOutput) SetMetadataInfoMap(v map[string]*MetadataInfo) *QuerySchemaVersionMetadataOutput {
+	s.MetadataInfoMap = v
+	return s
+}
+
+// SetNextToken sets the NextToken field's value.
+func (s *QuerySchemaVersionMetadataOutput) SetNextToken(v string) *QuerySchemaVersionMetadataOutput {
+	s.NextToken = &v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *QuerySchemaVersionMetadataOutput) SetSchemaVersionId(v string) *QuerySchemaVersionMetadataOutput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// When crawling an Amazon S3 data source after the first crawl is complete,
+// specifies whether to crawl the entire dataset again or to crawl only folders
+// that were added since the last crawler run. For more information, see Incremental
+// Crawls in AWS Glue (https://docs.aws.amazon.com/glue/latest/dg/incremental-crawls.html)
+// in the developer guide.
+type RecrawlPolicy struct {
+	_ struct{} `type:"structure"`
+
+	// Specifies whether to crawl the entire dataset again or to crawl only folders
+	// that were added since the last crawler run.
+	//
+	// A value of CRAWL_EVERYTHING specifies crawling the entire dataset again.
+	//
+	// A value of CRAWL_NEW_FOLDERS_ONLY specifies crawling only folders that were
+	// added since the last crawler run.
+	RecrawlBehavior *string `type:"string" enum:"RecrawlBehavior"`
+}
+
+// String returns the string representation
+func (s RecrawlPolicy) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s RecrawlPolicy) GoString() string {
+	return s.String()
+}
+
+// SetRecrawlBehavior sets the RecrawlBehavior field's value.
+func (s *RecrawlPolicy) SetRecrawlBehavior(v string) *RecrawlPolicy {
+	s.RecrawlBehavior = &v
+	return s
+}
+
+type RegisterSchemaVersionInput struct {
+	_ struct{} `type:"structure"`
+
+	// The schema definition using the DataFormat setting for the SchemaName.
+	//
+	// SchemaDefinition is a required field
+	SchemaDefinition *string `min:"1" type:"string" required:"true"`
+
+	// This is a wrapper structure to contain schema identity fields. The structure
+	// contains:
+	//
+	//    * SchemaId$SchemaArn: The Amazon Resource Name (ARN) of the schema. Either
+	//    SchemaArn or SchemaName and RegistryName has to be provided.
+	//
+	//    * SchemaId$SchemaName: The name of the schema. Either SchemaArn or SchemaName
+	//    and RegistryName has to be provided.
+	//
+	// SchemaId is a required field
+	SchemaId *SchemaId `type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s RegisterSchemaVersionInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s RegisterSchemaVersionInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *RegisterSchemaVersionInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "RegisterSchemaVersionInput"}
+	if s.SchemaDefinition == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaDefinition"))
+	}
+	if s.SchemaDefinition != nil && len(*s.SchemaDefinition) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaDefinition", 1))
+	}
+	if s.SchemaId == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaId"))
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetSchemaDefinition sets the SchemaDefinition field's value.
+func (s *RegisterSchemaVersionInput) SetSchemaDefinition(v string) *RegisterSchemaVersionInput {
+	s.SchemaDefinition = &v
+	return s
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *RegisterSchemaVersionInput) SetSchemaId(v *SchemaId) *RegisterSchemaVersionInput {
+	s.SchemaId = v
+	return s
+}
+
+type RegisterSchemaVersionOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The unique ID that represents the version of this schema.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The status of the schema version.
+	Status *string `type:"string" enum:"SchemaVersionStatus"`
+
+	// The version of this schema (for sync flow only, in case this is the first
+	// version).
+	VersionNumber *int64 `min:"1" type:"long"`
+}
+
+// String returns the string representation
+func (s RegisterSchemaVersionOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s RegisterSchemaVersionOutput) GoString() string {
+	return s.String()
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *RegisterSchemaVersionOutput) SetSchemaVersionId(v string) *RegisterSchemaVersionOutput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *RegisterSchemaVersionOutput) SetStatus(v string) *RegisterSchemaVersionOutput {
+	s.Status = &v
+	return s
+}
+
+// SetVersionNumber sets the VersionNumber field's value.
+func (s *RegisterSchemaVersionOutput) SetVersionNumber(v int64) *RegisterSchemaVersionOutput {
+	s.VersionNumber = &v
+	return s
+}
+
+// A wrapper structure that may contain the registry name and Amazon Resource
+// Name (ARN).
+type RegistryId struct {
+	_ struct{} `type:"structure"`
+
+	// Arn of the registry to be updated. One of RegistryArn or RegistryName has
+	// to be provided.
+	RegistryArn *string `min:"1" type:"string"`
+
+	// Name of the registry. Used only for lookup. One of RegistryArn or RegistryName
+	// has to be provided.
+	RegistryName *string `min:"1" type:"string"`
+}
+
+// String returns the string representation
+func (s RegistryId) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s RegistryId) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *RegistryId) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "RegistryId"}
+	if s.RegistryArn != nil && len(*s.RegistryArn) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("RegistryArn", 1))
+	}
+	if s.RegistryName != nil && len(*s.RegistryName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("RegistryName", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetRegistryArn sets the RegistryArn field's value.
+func (s *RegistryId) SetRegistryArn(v string) *RegistryId {
+	s.RegistryArn = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *RegistryId) SetRegistryName(v string) *RegistryId {
+	s.RegistryName = &v
+	return s
+}
+
+// A structure containing the details for a registry.
+type RegistryListItem struct {
+	_ struct{} `type:"structure"`
+
+	// The data the registry was created.
+	CreatedTime *string `type:"string"`
+
+	// A description of the registry.
+	Description *string `type:"string"`
+
+	// The Amazon Resource Name (ARN) of the registry.
+	RegistryArn *string `min:"1" type:"string"`
+
+	// The name of the registry.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The status of the registry.
+	Status *string `type:"string" enum:"RegistryStatus"`
+
+	// The date the registry was updated.
+	UpdatedTime *string `type:"string"`
+}
+
+// String returns the string representation
+func (s RegistryListItem) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s RegistryListItem) GoString() string {
+	return s.String()
+}
+
+// SetCreatedTime sets the CreatedTime field's value.
+func (s *RegistryListItem) SetCreatedTime(v string) *RegistryListItem {
+	s.CreatedTime = &v
+	return s
+}
+
+// SetDescription sets the Description field's value.
+func (s *RegistryListItem) SetDescription(v string) *RegistryListItem {
+	s.Description = &v
+	return s
+}
+
+// SetRegistryArn sets the RegistryArn field's value.
+func (s *RegistryListItem) SetRegistryArn(v string) *RegistryListItem {
+	s.RegistryArn = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *RegistryListItem) SetRegistryName(v string) *RegistryListItem {
+	s.RegistryName = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *RegistryListItem) SetStatus(v string) *RegistryListItem {
+	s.Status = &v
+	return s
+}
+
+// SetUpdatedTime sets the UpdatedTime field's value.
+func (s *RegistryListItem) SetUpdatedTime(v string) *RegistryListItem {
+	s.UpdatedTime = &v
+	return s
+}
+
+type RemoveSchemaVersionMetadataInput struct {
+	_ struct{} `type:"structure"`
+
+	// The value of the metadata key.
+	//
+	// MetadataKeyValue is a required field
+	MetadataKeyValue *MetadataKeyValuePair `type:"structure" required:"true"`
+
+	// A wrapper structure that may contain the schema name and Amazon Resource
+	// Name (ARN).
+	SchemaId *SchemaId `type:"structure"`
+
+	// The unique version ID of the schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The version number of the schema.
+	SchemaVersionNumber *SchemaVersionNumber `type:"structure"`
+}
+
+// String returns the string representation
+func (s RemoveSchemaVersionMetadataInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s RemoveSchemaVersionMetadataInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *RemoveSchemaVersionMetadataInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "RemoveSchemaVersionMetadataInput"}
+	if s.MetadataKeyValue == nil {
+		invalidParams.Add(request.NewErrParamRequired("MetadataKeyValue"))
+	}
+	if s.SchemaVersionId != nil && len(*s.SchemaVersionId) < 36 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaVersionId", 36))
+	}
+	if s.MetadataKeyValue != nil {
+		if err := s.MetadataKeyValue.Validate(); err != nil {
+			invalidParams.AddNested("MetadataKeyValue", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.SchemaVersionNumber != nil {
+		if err := s.SchemaVersionNumber.Validate(); err != nil {
+			invalidParams.AddNested("SchemaVersionNumber", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetMetadataKeyValue sets the MetadataKeyValue field's value.
+func (s *RemoveSchemaVersionMetadataInput) SetMetadataKeyValue(v *MetadataKeyValuePair) *RemoveSchemaVersionMetadataInput {
+	s.MetadataKeyValue = v
+	return s
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *RemoveSchemaVersionMetadataInput) SetSchemaId(v *SchemaId) *RemoveSchemaVersionMetadataInput {
+	s.SchemaId = v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *RemoveSchemaVersionMetadataInput) SetSchemaVersionId(v string) *RemoveSchemaVersionMetadataInput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetSchemaVersionNumber sets the SchemaVersionNumber field's value.
+func (s *RemoveSchemaVersionMetadataInput) SetSchemaVersionNumber(v *SchemaVersionNumber) *RemoveSchemaVersionMetadataInput {
+	s.SchemaVersionNumber = v
+	return s
+}
+
+type RemoveSchemaVersionMetadataOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The latest version of the schema.
+	LatestVersion *bool `type:"boolean"`
+
+	// The metadata key.
+	MetadataKey *string `min:"1" type:"string"`
+
+	// The value of the metadata key.
+	MetadataValue *string `min:"1" type:"string"`
+
+	// The name of the registry.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The Amazon Resource Name (ARN) of the schema.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The name of the schema.
+	SchemaName *string `min:"1" type:"string"`
+
+	// The version ID for the schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The version number of the schema.
+	VersionNumber *int64 `min:"1" type:"long"`
+}
+
+// String returns the string representation
+func (s RemoveSchemaVersionMetadataOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s RemoveSchemaVersionMetadataOutput) GoString() string {
+	return s.String()
+}
+
+// SetLatestVersion sets the LatestVersion field's value.
+func (s *RemoveSchemaVersionMetadataOutput) SetLatestVersion(v bool) *RemoveSchemaVersionMetadataOutput {
+	s.LatestVersion = &v
+	return s
+}
+
+// SetMetadataKey sets the MetadataKey field's value.
+func (s *RemoveSchemaVersionMetadataOutput) SetMetadataKey(v string) *RemoveSchemaVersionMetadataOutput {
+	s.MetadataKey = &v
+	return s
+}
+
+// SetMetadataValue sets the MetadataValue field's value.
+func (s *RemoveSchemaVersionMetadataOutput) SetMetadataValue(v string) *RemoveSchemaVersionMetadataOutput {
+	s.MetadataValue = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *RemoveSchemaVersionMetadataOutput) SetRegistryName(v string) *RemoveSchemaVersionMetadataOutput {
+	s.RegistryName = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *RemoveSchemaVersionMetadataOutput) SetSchemaArn(v string) *RemoveSchemaVersionMetadataOutput {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaName sets the SchemaName field's value.
+func (s *RemoveSchemaVersionMetadataOutput) SetSchemaName(v string) *RemoveSchemaVersionMetadataOutput {
+	s.SchemaName = &v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *RemoveSchemaVersionMetadataOutput) SetSchemaVersionId(v string) *RemoveSchemaVersionMetadataOutput {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetVersionNumber sets the VersionNumber field's value.
+func (s *RemoveSchemaVersionMetadataOutput) SetVersionNumber(v int64) *RemoveSchemaVersionMetadataOutput {
+	s.VersionNumber = &v
+	return s
 }
 
 type ResetJobBookmarkInput struct {
@@ -32482,6 +37818,342 @@ func (s *SchemaColumn) SetDataType(v string) *SchemaColumn {
 // SetName sets the Name field's value.
 func (s *SchemaColumn) SetName(v string) *SchemaColumn {
 	s.Name = &v
+	return s
+}
+
+type SchemaId struct {
+	_ struct{} `type:"structure"`
+
+	RegistryName *string `min:"1" type:"string"`
+
+	SchemaArn *string `min:"1" type:"string"`
+
+	SchemaName *string `min:"1" type:"string"`
+}
+
+// String returns the string representation
+func (s SchemaId) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s SchemaId) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *SchemaId) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "SchemaId"}
+	if s.RegistryName != nil && len(*s.RegistryName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("RegistryName", 1))
+	}
+	if s.SchemaArn != nil && len(*s.SchemaArn) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaArn", 1))
+	}
+	if s.SchemaName != nil && len(*s.SchemaName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaName", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *SchemaId) SetRegistryName(v string) *SchemaId {
+	s.RegistryName = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *SchemaId) SetSchemaArn(v string) *SchemaId {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaName sets the SchemaName field's value.
+func (s *SchemaId) SetSchemaName(v string) *SchemaId {
+	s.SchemaName = &v
+	return s
+}
+
+// An object that contains minimal details for a schema.
+type SchemaListItem struct {
+	_ struct{} `type:"structure"`
+
+	// The date and time that a schema was created.
+	CreatedTime *string `type:"string"`
+
+	// A description for the schema.
+	Description *string `type:"string"`
+
+	// the name of the registry where the schema resides.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The Amazon Resource Name (ARN) for the schema.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The name of the schema.
+	SchemaName *string `min:"1" type:"string"`
+
+	// The status of the schema.
+	SchemaStatus *string `type:"string" enum:"SchemaStatus"`
+
+	// The date and time that a schema was updated.
+	UpdatedTime *string `type:"string"`
+}
+
+// String returns the string representation
+func (s SchemaListItem) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s SchemaListItem) GoString() string {
+	return s.String()
+}
+
+// SetCreatedTime sets the CreatedTime field's value.
+func (s *SchemaListItem) SetCreatedTime(v string) *SchemaListItem {
+	s.CreatedTime = &v
+	return s
+}
+
+// SetDescription sets the Description field's value.
+func (s *SchemaListItem) SetDescription(v string) *SchemaListItem {
+	s.Description = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *SchemaListItem) SetRegistryName(v string) *SchemaListItem {
+	s.RegistryName = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *SchemaListItem) SetSchemaArn(v string) *SchemaListItem {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaName sets the SchemaName field's value.
+func (s *SchemaListItem) SetSchemaName(v string) *SchemaListItem {
+	s.SchemaName = &v
+	return s
+}
+
+// SetSchemaStatus sets the SchemaStatus field's value.
+func (s *SchemaListItem) SetSchemaStatus(v string) *SchemaListItem {
+	s.SchemaStatus = &v
+	return s
+}
+
+// SetUpdatedTime sets the UpdatedTime field's value.
+func (s *SchemaListItem) SetUpdatedTime(v string) *SchemaListItem {
+	s.UpdatedTime = &v
+	return s
+}
+
+// An object that references a schema stored in the AWS Glue Schema Registry.
+type SchemaReference struct {
+	_ struct{} `type:"structure"`
+
+	// A structure that contains schema identity fields. Either this or the SchemaVersionId
+	// has to be provided.
+	SchemaId *SchemaId `type:"structure"`
+
+	// The unique ID assigned to a version of the schema. Either this or the SchemaId
+	// has to be provided.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The version number of the schema.
+	SchemaVersionNumber *int64 `min:"1" type:"long"`
+}
+
+// String returns the string representation
+func (s SchemaReference) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s SchemaReference) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *SchemaReference) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "SchemaReference"}
+	if s.SchemaVersionId != nil && len(*s.SchemaVersionId) < 36 {
+		invalidParams.Add(request.NewErrParamMinLen("SchemaVersionId", 36))
+	}
+	if s.SchemaVersionNumber != nil && *s.SchemaVersionNumber < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("SchemaVersionNumber", 1))
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *SchemaReference) SetSchemaId(v *SchemaId) *SchemaReference {
+	s.SchemaId = v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *SchemaReference) SetSchemaVersionId(v string) *SchemaReference {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetSchemaVersionNumber sets the SchemaVersionNumber field's value.
+func (s *SchemaReference) SetSchemaVersionNumber(v int64) *SchemaReference {
+	s.SchemaVersionNumber = &v
+	return s
+}
+
+// An object that contains the error details for an operation on a schema version.
+type SchemaVersionErrorItem struct {
+	_ struct{} `type:"structure"`
+
+	// The details of the error for the schema version.
+	ErrorDetails *ErrorDetails `type:"structure"`
+
+	// The version number of the schema.
+	VersionNumber *int64 `min:"1" type:"long"`
+}
+
+// String returns the string representation
+func (s SchemaVersionErrorItem) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s SchemaVersionErrorItem) GoString() string {
+	return s.String()
+}
+
+// SetErrorDetails sets the ErrorDetails field's value.
+func (s *SchemaVersionErrorItem) SetErrorDetails(v *ErrorDetails) *SchemaVersionErrorItem {
+	s.ErrorDetails = v
+	return s
+}
+
+// SetVersionNumber sets the VersionNumber field's value.
+func (s *SchemaVersionErrorItem) SetVersionNumber(v int64) *SchemaVersionErrorItem {
+	s.VersionNumber = &v
+	return s
+}
+
+// An object containing the details about a schema version.
+type SchemaVersionListItem struct {
+	_ struct{} `type:"structure"`
+
+	// The date and time the schema version was created.
+	CreatedTime *string `type:"string"`
+
+	// The Amazon Resource Name (ARN) of the schema.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The unique identifier of the schema version.
+	SchemaVersionId *string `min:"36" type:"string"`
+
+	// The status of the schema version.
+	Status *string `type:"string" enum:"SchemaVersionStatus"`
+
+	// The version number of the schema.
+	VersionNumber *int64 `min:"1" type:"long"`
+}
+
+// String returns the string representation
+func (s SchemaVersionListItem) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s SchemaVersionListItem) GoString() string {
+	return s.String()
+}
+
+// SetCreatedTime sets the CreatedTime field's value.
+func (s *SchemaVersionListItem) SetCreatedTime(v string) *SchemaVersionListItem {
+	s.CreatedTime = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *SchemaVersionListItem) SetSchemaArn(v string) *SchemaVersionListItem {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaVersionId sets the SchemaVersionId field's value.
+func (s *SchemaVersionListItem) SetSchemaVersionId(v string) *SchemaVersionListItem {
+	s.SchemaVersionId = &v
+	return s
+}
+
+// SetStatus sets the Status field's value.
+func (s *SchemaVersionListItem) SetStatus(v string) *SchemaVersionListItem {
+	s.Status = &v
+	return s
+}
+
+// SetVersionNumber sets the VersionNumber field's value.
+func (s *SchemaVersionListItem) SetVersionNumber(v int64) *SchemaVersionListItem {
+	s.VersionNumber = &v
+	return s
+}
+
+type SchemaVersionNumber struct {
+	_ struct{} `type:"structure"`
+
+	LatestVersion *bool `type:"boolean"`
+
+	VersionNumber *int64 `min:"1" type:"long"`
+}
+
+// String returns the string representation
+func (s SchemaVersionNumber) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s SchemaVersionNumber) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *SchemaVersionNumber) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "SchemaVersionNumber"}
+	if s.VersionNumber != nil && *s.VersionNumber < 1 {
+		invalidParams.Add(request.NewErrParamMinValue("VersionNumber", 1))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetLatestVersion sets the LatestVersion field's value.
+func (s *SchemaVersionNumber) SetLatestVersion(v bool) *SchemaVersionNumber {
+	s.LatestVersion = &v
+	return s
+}
+
+// SetVersionNumber sets the VersionNumber field's value.
+func (s *SchemaVersionNumber) SetVersionNumber(v int64) *SchemaVersionNumber {
+	s.VersionNumber = &v
 	return s
 }
 
@@ -33903,6 +39575,12 @@ type StorageDescriptor struct {
 	// The user-supplied properties in key-value form.
 	Parameters map[string]*string `type:"map"`
 
+	// An object that references a schema stored in the AWS Glue Schema Registry.
+	//
+	// When creating a table, you can pass an empty list of columns for the schema,
+	// and instead use a schema reference.
+	SchemaReference *SchemaReference `type:"structure"`
+
 	// The serialization/deserialization (SerDe) information.
 	SerdeInfo *SerDeInfo `type:"structure"`
 
@@ -33937,6 +39615,11 @@ func (s *StorageDescriptor) Validate() error {
 			if err := v.Validate(); err != nil {
 				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "Columns", i), err.(request.ErrInvalidParams))
 			}
+		}
+	}
+	if s.SchemaReference != nil {
+		if err := s.SchemaReference.Validate(); err != nil {
+			invalidParams.AddNested("SchemaReference", err.(request.ErrInvalidParams))
 		}
 	}
 	if s.SerdeInfo != nil {
@@ -34009,6 +39692,12 @@ func (s *StorageDescriptor) SetParameters(v map[string]*string) *StorageDescript
 	return s
 }
 
+// SetSchemaReference sets the SchemaReference field's value.
+func (s *StorageDescriptor) SetSchemaReference(v *SchemaReference) *StorageDescriptor {
+	s.SchemaReference = v
+	return s
+}
+
 // SetSerdeInfo sets the SerdeInfo field's value.
 func (s *StorageDescriptor) SetSerdeInfo(v *SerDeInfo) *StorageDescriptor {
 	s.SerdeInfo = v
@@ -34033,26 +39722,26 @@ func (s *StorageDescriptor) SetStoredAsSubDirectories(v bool) *StorageDescriptor
 	return s
 }
 
-// Defines a string column statistics data.
+// Defines column statistics supported for character sequence data values.
 type StringColumnStatisticsData struct {
 	_ struct{} `type:"structure"`
 
-	// Average value of the column.
+	// The average string length in the column.
 	//
 	// AverageLength is a required field
 	AverageLength *float64 `type:"double" required:"true"`
 
-	// Maximum value of the column.
+	// The size of the longest string in the column.
 	//
 	// MaximumLength is a required field
 	MaximumLength *int64 `type:"long" required:"true"`
 
-	// Number of distinct values.
+	// The number of distinct values in a column.
 	//
 	// NumberOfDistinctValues is a required field
 	NumberOfDistinctValues *int64 `type:"long" required:"true"`
 
-	// Number of nulls.
+	// The number of null values in the column.
 	//
 	// NumberOfNulls is a required field
 	NumberOfNulls *int64 `type:"long" required:"true"`
@@ -35093,6 +40782,63 @@ func (s *TaskRunSortCriteria) SetSortDirection(v string) *TaskRunSortCriteria {
 	return s
 }
 
+// The encryption-at-rest settings of the transform that apply to accessing
+// user data. Machine learning transforms can access user data encrypted in
+// Amazon S3 using KMS.
+//
+// Additionally, imported labels and trained transforms can now be encrypted
+// using a customer provided KMS key.
+type TransformEncryption struct {
+	_ struct{} `type:"structure"`
+
+	// An MLUserDataEncryption object containing the encryption mode and customer-provided
+	// KMS key ID.
+	MlUserDataEncryption *MLUserDataEncryption `type:"structure"`
+
+	// The name of the security configuration.
+	TaskRunSecurityConfigurationName *string `min:"1" type:"string"`
+}
+
+// String returns the string representation
+func (s TransformEncryption) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s TransformEncryption) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *TransformEncryption) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "TransformEncryption"}
+	if s.TaskRunSecurityConfigurationName != nil && len(*s.TaskRunSecurityConfigurationName) < 1 {
+		invalidParams.Add(request.NewErrParamMinLen("TaskRunSecurityConfigurationName", 1))
+	}
+	if s.MlUserDataEncryption != nil {
+		if err := s.MlUserDataEncryption.Validate(); err != nil {
+			invalidParams.AddNested("MlUserDataEncryption", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetMlUserDataEncryption sets the MlUserDataEncryption field's value.
+func (s *TransformEncryption) SetMlUserDataEncryption(v *MLUserDataEncryption) *TransformEncryption {
+	s.MlUserDataEncryption = v
+	return s
+}
+
+// SetTaskRunSecurityConfigurationName sets the TaskRunSecurityConfigurationName field's value.
+func (s *TransformEncryption) SetTaskRunSecurityConfigurationName(v string) *TransformEncryption {
+	s.TaskRunSecurityConfigurationName = &v
+	return s
+}
+
 // The criteria used to filter the machine learning transforms.
 type TransformFilterCriteria struct {
 	_ struct{} `type:"structure"`
@@ -35236,7 +40982,7 @@ type TransformParameters struct {
 	// The type of machine learning transform.
 	//
 	// For information about the types of machine learning transforms, see Creating
-	// Machine Learning Transforms (http://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html).
+	// Machine Learning Transforms (https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html).
 	//
 	// TransformType is a required field
 	TransformType *string `type:"string" required:"true" enum:"TransformType"`
@@ -36074,10 +41820,17 @@ type UpdateCrawlerInput struct {
 	// A description of the new crawler.
 	Description *string `type:"string"`
 
+	// Specifies data lineage configuration settings for the crawler.
+	LineageConfiguration *LineageConfiguration `type:"structure"`
+
 	// Name of the new crawler.
 	//
 	// Name is a required field
 	Name *string `min:"1" type:"string" required:"true"`
+
+	// A policy that specifies whether to crawl the entire dataset again, or to
+	// crawl only folders that were added since the last crawler run.
+	RecrawlPolicy *RecrawlPolicy `type:"structure"`
 
 	// The IAM role or Amazon Resource Name (ARN) of an IAM role that is used by
 	// the new crawler to access customer resources.
@@ -36160,9 +41913,21 @@ func (s *UpdateCrawlerInput) SetDescription(v string) *UpdateCrawlerInput {
 	return s
 }
 
+// SetLineageConfiguration sets the LineageConfiguration field's value.
+func (s *UpdateCrawlerInput) SetLineageConfiguration(v *LineageConfiguration) *UpdateCrawlerInput {
+	s.LineageConfiguration = v
+	return s
+}
+
 // SetName sets the Name field's value.
 func (s *UpdateCrawlerInput) SetName(v string) *UpdateCrawlerInput {
 	s.Name = &v
+	return s
+}
+
+// SetRecrawlPolicy sets the RecrawlPolicy field's value.
+func (s *UpdateCrawlerInput) SetRecrawlPolicy(v *RecrawlPolicy) *UpdateCrawlerInput {
+	s.RecrawlPolicy = v
 	return s
 }
 
@@ -37122,6 +42887,221 @@ func (s UpdatePartitionOutput) String() string {
 // GoString returns the string representation
 func (s UpdatePartitionOutput) GoString() string {
 	return s.String()
+}
+
+type UpdateRegistryInput struct {
+	_ struct{} `type:"structure"`
+
+	// A description of the registry. If description is not provided, this field
+	// will not be updated.
+	//
+	// Description is a required field
+	Description *string `type:"string" required:"true"`
+
+	// This is a wrapper structure that may contain the registry name and Amazon
+	// Resource Name (ARN).
+	//
+	// RegistryId is a required field
+	RegistryId *RegistryId `type:"structure" required:"true"`
+}
+
+// String returns the string representation
+func (s UpdateRegistryInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpdateRegistryInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *UpdateRegistryInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "UpdateRegistryInput"}
+	if s.Description == nil {
+		invalidParams.Add(request.NewErrParamRequired("Description"))
+	}
+	if s.RegistryId == nil {
+		invalidParams.Add(request.NewErrParamRequired("RegistryId"))
+	}
+	if s.RegistryId != nil {
+		if err := s.RegistryId.Validate(); err != nil {
+			invalidParams.AddNested("RegistryId", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetDescription sets the Description field's value.
+func (s *UpdateRegistryInput) SetDescription(v string) *UpdateRegistryInput {
+	s.Description = &v
+	return s
+}
+
+// SetRegistryId sets the RegistryId field's value.
+func (s *UpdateRegistryInput) SetRegistryId(v *RegistryId) *UpdateRegistryInput {
+	s.RegistryId = v
+	return s
+}
+
+type UpdateRegistryOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The Amazon Resource name (ARN) of the updated registry.
+	RegistryArn *string `min:"1" type:"string"`
+
+	// The name of the updated registry.
+	RegistryName *string `min:"1" type:"string"`
+}
+
+// String returns the string representation
+func (s UpdateRegistryOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpdateRegistryOutput) GoString() string {
+	return s.String()
+}
+
+// SetRegistryArn sets the RegistryArn field's value.
+func (s *UpdateRegistryOutput) SetRegistryArn(v string) *UpdateRegistryOutput {
+	s.RegistryArn = &v
+	return s
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *UpdateRegistryOutput) SetRegistryName(v string) *UpdateRegistryOutput {
+	s.RegistryName = &v
+	return s
+}
+
+type UpdateSchemaInput struct {
+	_ struct{} `type:"structure"`
+
+	// The new compatibility setting for the schema.
+	Compatibility *string `type:"string" enum:"Compatibility"`
+
+	// The new description for the schema.
+	Description *string `type:"string"`
+
+	// This is a wrapper structure to contain schema identity fields. The structure
+	// contains:
+	//
+	//    * SchemaId$SchemaArn: The Amazon Resource Name (ARN) of the schema. One
+	//    of SchemaArn or SchemaName has to be provided.
+	//
+	//    * SchemaId$SchemaName: The name of the schema. One of SchemaArn or SchemaName
+	//    has to be provided.
+	//
+	// SchemaId is a required field
+	SchemaId *SchemaId `type:"structure" required:"true"`
+
+	// Version number required for check pointing. One of VersionNumber or Compatibility
+	// has to be provided.
+	SchemaVersionNumber *SchemaVersionNumber `type:"structure"`
+}
+
+// String returns the string representation
+func (s UpdateSchemaInput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpdateSchemaInput) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *UpdateSchemaInput) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "UpdateSchemaInput"}
+	if s.SchemaId == nil {
+		invalidParams.Add(request.NewErrParamRequired("SchemaId"))
+	}
+	if s.SchemaId != nil {
+		if err := s.SchemaId.Validate(); err != nil {
+			invalidParams.AddNested("SchemaId", err.(request.ErrInvalidParams))
+		}
+	}
+	if s.SchemaVersionNumber != nil {
+		if err := s.SchemaVersionNumber.Validate(); err != nil {
+			invalidParams.AddNested("SchemaVersionNumber", err.(request.ErrInvalidParams))
+		}
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetCompatibility sets the Compatibility field's value.
+func (s *UpdateSchemaInput) SetCompatibility(v string) *UpdateSchemaInput {
+	s.Compatibility = &v
+	return s
+}
+
+// SetDescription sets the Description field's value.
+func (s *UpdateSchemaInput) SetDescription(v string) *UpdateSchemaInput {
+	s.Description = &v
+	return s
+}
+
+// SetSchemaId sets the SchemaId field's value.
+func (s *UpdateSchemaInput) SetSchemaId(v *SchemaId) *UpdateSchemaInput {
+	s.SchemaId = v
+	return s
+}
+
+// SetSchemaVersionNumber sets the SchemaVersionNumber field's value.
+func (s *UpdateSchemaInput) SetSchemaVersionNumber(v *SchemaVersionNumber) *UpdateSchemaInput {
+	s.SchemaVersionNumber = v
+	return s
+}
+
+type UpdateSchemaOutput struct {
+	_ struct{} `type:"structure"`
+
+	// The name of the registry that contains the schema.
+	RegistryName *string `min:"1" type:"string"`
+
+	// The Amazon Resource Name (ARN) of the schema.
+	SchemaArn *string `min:"1" type:"string"`
+
+	// The name of the schema.
+	SchemaName *string `min:"1" type:"string"`
+}
+
+// String returns the string representation
+func (s UpdateSchemaOutput) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s UpdateSchemaOutput) GoString() string {
+	return s.String()
+}
+
+// SetRegistryName sets the RegistryName field's value.
+func (s *UpdateSchemaOutput) SetRegistryName(v string) *UpdateSchemaOutput {
+	s.RegistryName = &v
+	return s
+}
+
+// SetSchemaArn sets the SchemaArn field's value.
+func (s *UpdateSchemaOutput) SetSchemaArn(v string) *UpdateSchemaOutput {
+	s.SchemaArn = &v
+	return s
+}
+
+// SetSchemaName sets the SchemaName field's value.
+func (s *UpdateSchemaOutput) SetSchemaName(v string) *UpdateSchemaOutput {
+	s.SchemaName = &v
+	return s
 }
 
 type UpdateTableInput struct {
@@ -38242,6 +44222,34 @@ func (s *XMLClassifier) SetVersion(v int64) *XMLClassifier {
 }
 
 const (
+	// BackfillErrorCodeEncryptedPartitionError is a BackfillErrorCode enum value
+	BackfillErrorCodeEncryptedPartitionError = "ENCRYPTED_PARTITION_ERROR"
+
+	// BackfillErrorCodeInternalError is a BackfillErrorCode enum value
+	BackfillErrorCodeInternalError = "INTERNAL_ERROR"
+
+	// BackfillErrorCodeInvalidPartitionTypeDataError is a BackfillErrorCode enum value
+	BackfillErrorCodeInvalidPartitionTypeDataError = "INVALID_PARTITION_TYPE_DATA_ERROR"
+
+	// BackfillErrorCodeMissingPartitionValueError is a BackfillErrorCode enum value
+	BackfillErrorCodeMissingPartitionValueError = "MISSING_PARTITION_VALUE_ERROR"
+
+	// BackfillErrorCodeUnsupportedPartitionCharacterError is a BackfillErrorCode enum value
+	BackfillErrorCodeUnsupportedPartitionCharacterError = "UNSUPPORTED_PARTITION_CHARACTER_ERROR"
+)
+
+// BackfillErrorCode_Values returns all elements of the BackfillErrorCode enum
+func BackfillErrorCode_Values() []string {
+	return []string{
+		BackfillErrorCodeEncryptedPartitionError,
+		BackfillErrorCodeInternalError,
+		BackfillErrorCodeInvalidPartitionTypeDataError,
+		BackfillErrorCodeMissingPartitionValueError,
+		BackfillErrorCodeUnsupportedPartitionCharacterError,
+	}
+}
+
+const (
 	// CatalogEncryptionModeDisabled is a CatalogEncryptionMode enum value
 	CatalogEncryptionModeDisabled = "DISABLED"
 
@@ -38334,6 +44342,46 @@ func Comparator_Values() []string {
 		ComparatorLessThan,
 		ComparatorGreaterThanEquals,
 		ComparatorLessThanEquals,
+	}
+}
+
+const (
+	// CompatibilityNone is a Compatibility enum value
+	CompatibilityNone = "NONE"
+
+	// CompatibilityDisabled is a Compatibility enum value
+	CompatibilityDisabled = "DISABLED"
+
+	// CompatibilityBackward is a Compatibility enum value
+	CompatibilityBackward = "BACKWARD"
+
+	// CompatibilityBackwardAll is a Compatibility enum value
+	CompatibilityBackwardAll = "BACKWARD_ALL"
+
+	// CompatibilityForward is a Compatibility enum value
+	CompatibilityForward = "FORWARD"
+
+	// CompatibilityForwardAll is a Compatibility enum value
+	CompatibilityForwardAll = "FORWARD_ALL"
+
+	// CompatibilityFull is a Compatibility enum value
+	CompatibilityFull = "FULL"
+
+	// CompatibilityFullAll is a Compatibility enum value
+	CompatibilityFullAll = "FULL_ALL"
+)
+
+// Compatibility_Values returns all elements of the Compatibility enum
+func Compatibility_Values() []string {
+	return []string{
+		CompatibilityNone,
+		CompatibilityDisabled,
+		CompatibilityBackward,
+		CompatibilityBackwardAll,
+		CompatibilityForward,
+		CompatibilityForwardAll,
+		CompatibilityFull,
+		CompatibilityFullAll,
 	}
 }
 
@@ -38486,6 +44534,22 @@ func CrawlState_Values() []string {
 }
 
 const (
+	// CrawlerLineageSettingsEnable is a CrawlerLineageSettings enum value
+	CrawlerLineageSettingsEnable = "ENABLE"
+
+	// CrawlerLineageSettingsDisable is a CrawlerLineageSettings enum value
+	CrawlerLineageSettingsDisable = "DISABLE"
+)
+
+// CrawlerLineageSettings_Values returns all elements of the CrawlerLineageSettings enum
+func CrawlerLineageSettings_Values() []string {
+	return []string{
+		CrawlerLineageSettingsEnable,
+		CrawlerLineageSettingsDisable,
+	}
+}
+
+const (
 	// CrawlerStateReady is a CrawlerState enum value
 	CrawlerStateReady = "READY"
 
@@ -38522,6 +44586,18 @@ func CsvHeaderOption_Values() []string {
 		CsvHeaderOptionUnknown,
 		CsvHeaderOptionPresent,
 		CsvHeaderOptionAbsent,
+	}
+}
+
+const (
+	// DataFormatAvro is a DataFormat enum value
+	DataFormatAvro = "AVRO"
+)
+
+// DataFormat_Values returns all elements of the DataFormat enum
+func DataFormat_Values() []string {
+	return []string{
+		DataFormatAvro,
 	}
 }
 
@@ -38698,6 +44774,22 @@ func LogicalOperator_Values() []string {
 }
 
 const (
+	// MLUserDataEncryptionModeStringDisabled is a MLUserDataEncryptionModeString enum value
+	MLUserDataEncryptionModeStringDisabled = "DISABLED"
+
+	// MLUserDataEncryptionModeStringSseKms is a MLUserDataEncryptionModeString enum value
+	MLUserDataEncryptionModeStringSseKms = "SSE-KMS"
+)
+
+// MLUserDataEncryptionModeString_Values returns all elements of the MLUserDataEncryptionModeString enum
+func MLUserDataEncryptionModeString_Values() []string {
+	return []string{
+		MLUserDataEncryptionModeStringDisabled,
+		MLUserDataEncryptionModeStringSseKms,
+	}
+}
+
+const (
 	// NodeTypeCrawler is a NodeType enum value
 	NodeTypeCrawler = "CRAWLER"
 
@@ -38718,14 +44810,26 @@ func NodeType_Values() []string {
 }
 
 const (
+	// PartitionIndexStatusCreating is a PartitionIndexStatus enum value
+	PartitionIndexStatusCreating = "CREATING"
+
 	// PartitionIndexStatusActive is a PartitionIndexStatus enum value
 	PartitionIndexStatusActive = "ACTIVE"
+
+	// PartitionIndexStatusDeleting is a PartitionIndexStatus enum value
+	PartitionIndexStatusDeleting = "DELETING"
+
+	// PartitionIndexStatusFailed is a PartitionIndexStatus enum value
+	PartitionIndexStatusFailed = "FAILED"
 )
 
 // PartitionIndexStatus_Values returns all elements of the PartitionIndexStatus enum
 func PartitionIndexStatus_Values() []string {
 	return []string{
+		PartitionIndexStatusCreating,
 		PartitionIndexStatusActive,
+		PartitionIndexStatusDeleting,
+		PartitionIndexStatusFailed,
 	}
 }
 
@@ -38790,6 +44894,38 @@ func PrincipalType_Values() []string {
 		PrincipalTypeUser,
 		PrincipalTypeRole,
 		PrincipalTypeGroup,
+	}
+}
+
+const (
+	// RecrawlBehaviorCrawlEverything is a RecrawlBehavior enum value
+	RecrawlBehaviorCrawlEverything = "CRAWL_EVERYTHING"
+
+	// RecrawlBehaviorCrawlNewFoldersOnly is a RecrawlBehavior enum value
+	RecrawlBehaviorCrawlNewFoldersOnly = "CRAWL_NEW_FOLDERS_ONLY"
+)
+
+// RecrawlBehavior_Values returns all elements of the RecrawlBehavior enum
+func RecrawlBehavior_Values() []string {
+	return []string{
+		RecrawlBehaviorCrawlEverything,
+		RecrawlBehaviorCrawlNewFoldersOnly,
+	}
+}
+
+const (
+	// RegistryStatusAvailable is a RegistryStatus enum value
+	RegistryStatusAvailable = "AVAILABLE"
+
+	// RegistryStatusDeleting is a RegistryStatus enum value
+	RegistryStatusDeleting = "DELETING"
+)
+
+// RegistryStatus_Values returns all elements of the RegistryStatus enum
+func RegistryStatus_Values() []string {
+	return []string{
+		RegistryStatusAvailable,
+		RegistryStatusDeleting,
 	}
 }
 
@@ -38866,6 +45002,62 @@ func ScheduleState_Values() []string {
 		ScheduleStateScheduled,
 		ScheduleStateNotScheduled,
 		ScheduleStateTransitioning,
+	}
+}
+
+const (
+	// SchemaDiffTypeSyntaxDiff is a SchemaDiffType enum value
+	SchemaDiffTypeSyntaxDiff = "SYNTAX_DIFF"
+)
+
+// SchemaDiffType_Values returns all elements of the SchemaDiffType enum
+func SchemaDiffType_Values() []string {
+	return []string{
+		SchemaDiffTypeSyntaxDiff,
+	}
+}
+
+const (
+	// SchemaStatusAvailable is a SchemaStatus enum value
+	SchemaStatusAvailable = "AVAILABLE"
+
+	// SchemaStatusPending is a SchemaStatus enum value
+	SchemaStatusPending = "PENDING"
+
+	// SchemaStatusDeleting is a SchemaStatus enum value
+	SchemaStatusDeleting = "DELETING"
+)
+
+// SchemaStatus_Values returns all elements of the SchemaStatus enum
+func SchemaStatus_Values() []string {
+	return []string{
+		SchemaStatusAvailable,
+		SchemaStatusPending,
+		SchemaStatusDeleting,
+	}
+}
+
+const (
+	// SchemaVersionStatusAvailable is a SchemaVersionStatus enum value
+	SchemaVersionStatusAvailable = "AVAILABLE"
+
+	// SchemaVersionStatusPending is a SchemaVersionStatus enum value
+	SchemaVersionStatusPending = "PENDING"
+
+	// SchemaVersionStatusFailure is a SchemaVersionStatus enum value
+	SchemaVersionStatusFailure = "FAILURE"
+
+	// SchemaVersionStatusDeleting is a SchemaVersionStatus enum value
+	SchemaVersionStatusDeleting = "DELETING"
+)
+
+// SchemaVersionStatus_Values returns all elements of the SchemaVersionStatus enum
+func SchemaVersionStatus_Values() []string {
+	return []string{
+		SchemaVersionStatusAvailable,
+		SchemaVersionStatusPending,
+		SchemaVersionStatusFailure,
+		SchemaVersionStatusDeleting,
 	}
 }
 

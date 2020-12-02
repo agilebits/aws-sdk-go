@@ -1,3 +1,46 @@
+Release v1.36.0 (2020-12-02)
+===
+
+### Service Client Updates
+* `service/customer-profiles`: Adds new service
+
+### SDK Features
+* `service/profile`: Remove incorrectly named client package, profile.
+  * Removes an incorrectly named service client package `profile` that was included in release, v1.35.37.
+
+Release v1.35.37 (2020-12-01)
+===
+
+### Service Client Updates
+* `service/amplifybackend`: Adds new service
+* `service/appintegrations`: Adds new service
+* `service/connect`: Updates service API, documentation, and paginators
+* `service/connect-contact-lens`: Adds new service
+* `service/devops-guru`: Adds new service
+* `service/ds`: Updates service API and documentation
+  * Adding client authentication feature for AWS AD Connector
+* `service/ec2`: Updates service API and documentation
+  * This release adds support for: EBS gp3 volumes; and D3/D3en/R5b/M5zn instances powered by Intel Cascade Lake CPUs
+* `service/ecr-public`: Adds new service
+* `service/eks`: Updates service API, documentation, waiters, and paginators
+* `service/honeycode`: Updates service API, documentation, and paginators
+* `service/lambda`: Updates service API and documentation
+  * This release includes support for a new feature: Container images support in AWS Lambda. This adds APIs for deploying functions as container images. AWS Lambda now supports memory up to 10240MB.
+* `service/lookoutvision`: Adds new service
+* `service/profile`: Adds new service
+* `service/s3`: Updates service API, documentation, and examples
+  * S3 adds support for multiple-destination replication, option to sync replica modifications;  S3 Bucket Keys to reduce cost of S3 SSE with AWS KMS
+* `service/sagemaker`: Updates service API, documentation, and paginators
+  * Amazon SageMaker Pipelines for ML workflows. Amazon SageMaker Feature Store, a fully managed repository for ML features.
+* `service/sagemaker-featurestore-runtime`: Adds new service
+
+Release v1.35.36 (2020-12-01)
+===
+
+### Service Client Updates
+* `service/ec2`: Updates service API
+  * This release introduces Amazon EC2 Mac1 instances, a new Amazon EC2 instance family built on Apple Mac mini computers, powered by AWS Nitro System, and support running macOS workloads on Amazon EC2
+
 Release v1.35.35 (2020-11-24)
 ===
 
